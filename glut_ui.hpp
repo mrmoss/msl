@@ -9,6 +9,9 @@
 //	glui
 //	glut/freeglut
 
+//Warning:  Glui is a known memory leaker...well kind of...
+//	"I'd call it a static allocation instead of a memory leak." - Dr. Lawlor
+
 //Begin Define Guards
 #ifndef MSL_GLUT_UI_H
 #define MSL_GLUT_UI_H
@@ -117,3 +120,162 @@ namespace msl
 
 //End Define Guards
 #endif
+
+//Example
+/*
+//Glut User Interface Header
+#include "glut_ui.hpp"
+
+//C Standard Library Header
+#include <cstdlib>
+
+//Glui and Glut Header
+#ifndef __APPLE__
+	#include <GL/glui.h>
+	#include <GL/glut.h>
+#else
+	#include <GLUT/glui.h>
+	#include <GLUT/glut.h>
+#endif
+
+//Glut Callback Declarations
+void idle();
+void display();
+void reshape(int width,int height);
+
+//Globals
+bool exit_down=false;
+bool exit_pressed=false;
+float quad_red=0.5;
+float quad_green=0.5;
+float quad_blue=0.5;
+
+//Main
+int main(int argc,char** argv)
+{
+	//Initialize Glut
+	glutInit(&argc,argv);
+	glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGBA|GLUT_DEPTH);
+	glutInitWindowSize(640,480);
+
+	//Create Glut Window
+	int glut_window=glutCreateWindow("MSL Glut UI");
+
+	//Setup Glui
+	msl::ui_setup(glut_window);
+
+	//Create UI
+	msl::ui_panel_begin(ui_panel_left);
+		msl::ui_button_add("Exit",exit_down,exit_pressed);
+		msl::ui_group_begin("Quad Color",true);
+		msl::ui_scrollbar_vertical_add(quad_red,0,1);
+		msl::ui_column_add(true);
+		msl::ui_scrollbar_vertical_add(quad_green,0,1);
+		msl::ui_column_add(true);
+		msl::ui_scrollbar_vertical_add(quad_blue,0,1);
+		msl::ui_group_end();
+	msl::ui_panel_end();
+
+	//Glut Settings
+	glClearColor(0,0,0,1);
+	glEnable(GL_DEPTH_TEST);
+
+	//Glut Callbacks
+	glutDisplayFunc(display);
+
+	//Glui Idle Function
+	if(msl::ui_in_use())
+		GLUI_Master.set_glutIdleFunc(idle);
+	else
+		glutIdleFunc(idle);
+
+	//For Glui
+	if(msl::ui_in_use())
+		GLUI_Master.set_glutReshapeFunc(reshape);
+	else
+		glutReshapeFunc(reshape);
+
+	//Start Glut
+	glutMainLoop();
+
+	//Call Me Plz!!! T_T
+	return 0;
+}
+
+//Glut Idle Callback
+void idle()
+{
+	//Update UI
+	msl::ui_idle();
+
+	//Exit Button
+	if(exit_pressed)
+		exit(0);
+
+	//Reset Pressed and Released UI Inputs
+	if(msl::ui_in_use())
+		msl::ui_reset();
+
+	//Redisplay
+	glutPostRedisplay();
+}
+
+//Glut Display Callback
+void display()
+{
+	//Pre-Display (Clearing and Such)
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_FASTEST);
+	glLoadIdentity();
+
+	//Draw Quad
+	glPushMatrix();
+		glColor3f(quad_red,quad_green,quad_blue);
+
+		glBegin(GL_QUADS);
+			glVertex2d(-30,30);
+			glVertex2d(30,30);
+			glVertex2d(30,-30);
+			glVertex2d(-30,-30);
+		glEnd();
+	glPopMatrix();
+
+	//Double Buffering
+	glutSwapBuffers();
+}
+
+//Glut Reshape Callback
+void reshape(int width,int height)
+{
+	//Set Viewport Size
+	glViewport(0,0,width,height);
+
+	//Goto Projection View
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	//Get Original Dimensions
+	double window_width=glutGet(GLUT_INIT_WINDOW_WIDTH);
+	double window_height=glutGet(GLUT_INIT_WINDOW_HEIGHT);
+
+	//If Width Dependent
+	if(width<=height)
+	{
+		double scaler=(double)glutGet(GLUT_WINDOW_HEIGHT)/(double)glutGet(GLUT_WINDOW_WIDTH);
+		window_height=glutGet(GLUT_INIT_WINDOW_WIDTH)*scaler;
+	}
+
+	//If Height Dependent
+	else
+	{
+		double scaler=(double)glutGet(GLUT_WINDOW_WIDTH)/(double)glutGet(GLUT_WINDOW_HEIGHT);
+		window_width=glutGet(GLUT_INIT_WINDOW_HEIGHT)*scaler;
+	}
+
+	//Set View
+	glOrtho(-window_width/2,window_width/2,-window_height/2,window_height/2,0,1);
+
+	//Return to Model View
+	glMatrixMode(GL_MODELVIEW);
+}
+*/

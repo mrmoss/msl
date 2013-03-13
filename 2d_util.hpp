@@ -26,7 +26,7 @@ namespace msl
 			float a;
 	};
 
-	//Point Direction Function (Returns direction between two points)
+	//Point Direction Function (Returns direction between two points in degrees)
 	double point_direction(const double x1,const double y1,const double x2,const double y2);
 
 	//Point Distance Function (Returns distance between two points)
@@ -35,3 +35,24 @@ namespace msl
 
 //End Define Guards
 #endif
+
+//Example
+/*
+#include "2d_util.hpp"
+#include <iostream>
+#include "sprite.hpp"
+using namespace msl;
+
+int main()
+{
+	double ax=10;
+	double ay=0;
+	double bx=10;
+	double by=20;
+
+	std::cout<<"Direction between points a and b is:\t"<<point_direction(ax,ay,bx,by)<<std::endl;
+	std::cout<<"Distance between points a and b is:\t"<<point_distance(ax,ay,bx,by)<<std::endl;
+
+	return 0;
+}
+*/

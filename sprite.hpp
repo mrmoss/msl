@@ -76,3 +76,113 @@ namespace msl
 
 //End Define Guards
 #endif
+
+//Example (You need to make a sprite called sprite.png for this to work)
+/*
+//Sprite Header
+#include "sprite.hpp"
+
+//Glut Header
+#ifndef __APPLE__
+	#include <GL/glut.h>
+#else
+	#include <GLUT/glut.h>
+#endif
+
+//Glut Callback Declarations
+void idle();
+void display();
+void reshape(int width,int height);
+
+//Globals
+msl::sprite my_sprite;
+
+//Main
+int main(int argc,char** argv)
+{
+	//Initialize Glut
+	glutInit(&argc,argv);
+	glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGBA|GLUT_DEPTH);
+	glutInitWindowSize(640,480);
+
+	//Create Glut Window
+	glutCreateWindow("MSL Sprite");
+
+	//Load Sprite
+	my_sprite=msl::sprite("sprite.png");
+
+	//Glut Settings
+	glClearColor(0,0,0,1);
+	glEnable(GL_DEPTH_TEST);
+
+	//Glut Callbacks
+	glutIdleFunc(idle);
+	glutDisplayFunc(display);
+
+	//Reshape Callback
+	glutReshapeFunc(reshape);
+
+	//Start Glut
+	glutMainLoop();
+
+	//Call Me Plz!!! T_T
+	return 0;
+}
+
+//Glut Idle Callback
+void idle()
+{
+	//Redisplay
+	glutPostRedisplay();
+}
+
+//Glut Display Callback
+void display()
+{
+	//Pre-Display (Clearing and Such)
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_FASTEST);
+	glLoadIdentity();
+
+	//Draw Sprite (At (0,100) at a 90 degree angle)
+	my_sprite.draw(0,100,90);
+
+	//Double Buffering
+	glutSwapBuffers();
+}
+
+//Glut Reshape Callback
+void reshape(int width,int height)
+{
+	//Set Viewport Size
+	glViewport(0,0,width,height);
+
+	//Goto Projection View
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	//Get Original Dimensions
+	double window_width=glutGet(GLUT_INIT_WINDOW_WIDTH);
+	double window_height=glutGet(GLUT_INIT_WINDOW_HEIGHT);
+
+	//If Width Dependent
+	if(width<=height)
+	{
+		double scaler=(double)glutGet(GLUT_WINDOW_HEIGHT)/(double)glutGet(GLUT_WINDOW_WIDTH);
+		window_height=glutGet(GLUT_INIT_WINDOW_WIDTH)*scaler;
+	}
+
+	//If Height Dependent
+	else
+	{
+		double scaler=(double)glutGet(GLUT_WINDOW_WIDTH)/(double)glutGet(GLUT_WINDOW_HEIGHT);
+		window_width=glutGet(GLUT_INIT_WINDOW_HEIGHT)*scaler;
+	}
+
+	//Set View
+	glOrtho(-window_width/2,window_width/2,-window_height/2,window_height/2,0,1);
+
+	//Return to Model View
+	glMatrixMode(GL_MODELVIEW);
+}
+*/

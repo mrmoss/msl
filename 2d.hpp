@@ -74,3 +74,33 @@ namespace msl
 
 //End Define Guards
 #endif
+
+//Example
+/*
+//2D Header
+#include "2d.hpp"
+
+int main()
+{
+	//Create a Window (640x480 scaled with a white background)
+	start_2d("2D Example",640,480,true,msl::color(1,1,1));
+	return 0;
+}
+
+void setup()
+{
+}
+
+void loop(const double dt)
+{
+	//Escape Button Exits
+	if(msl::input_check_pressed(kb_escape))
+		exit(0);
+}
+
+void draw()
+{
+	//Draw Circle (at mouse cursor with radius 32 and a red color)
+	msl::draw_circle(msl::mouse_x,msl::mouse_y,32,msl::color(1,0,0));
+}
+*/

@@ -9,6 +9,9 @@
 //	glui
 //	glut/freeglut
 
+//Warning:  Glui is a known memory leaker...well kind of...
+//	"I'd call it a static allocation instead of a memory leak." - Dr. Lawlor
+
 //Definitions for "glut_ui.hpp"
 #include "glut_ui.hpp"
 
@@ -76,7 +79,7 @@ void msl::ui_stop()
 //UI In Use Function (Checks if glui is being used...helpful for setting callbacks...because glui has it's own callback functions...)
 bool msl::ui_in_use()
 {
-	return (glui_panels.size()>0);
+	return (glui_window>-1);
 }
 
 //UI Idle Function (Updates and syncs values)
@@ -139,6 +142,9 @@ void msl::ui_panel_end()
 
 	//Clear Panels
 	glui_panels.clear();
+
+	//Create Initial Grouping (So when there is no group you make things on the panel)
+	glui_groups.push_back((GLUI_Panel*)glui_panels.back());
 
 	//Clear Groups
 	glui_groups.clear();

@@ -9,6 +9,8 @@
 //	glut/freeglut
 //	soil
 
+//Needs an image strip that has monospaced font in ascii order starting with ascii value ' ' (space) and ending with ascii value '~' (tilde).
+
 //Definitions for "font.hpp"
 #include "font.hpp"
 
@@ -32,8 +34,8 @@ msl::font::font(const std::string& filename)
 }
 
 //Sprite Class Draw Function
-void msl::font::draw(const double x,const double y,const std::string& text,const msl::halign& h_align,
-	const msl::valign& v_align,const msl::color& color) const
+void msl::font::draw(const double x,const double y,const std::string& text,const int h_align,
+	const int v_align,const msl::color& color) const
 {
 	//Parsing Variables
 	std::vector<std::string> sub_strings;
@@ -68,11 +70,11 @@ void msl::font::draw(const double x,const double y,const std::string& text,const
 	double y_offset=-static_cast<double>(_sprite.height())/2.0;
 
 	//Middle Alignment
-	if(v_align==MIDDLE)
+	if(v_align==font_middle)
 		y_offset+=static_cast<double>(_sprite.height())*sub_strings.size()/2.0;
 
 	//Bottom Alignment
-	if(v_align==BOTTOM)
+	if(v_align==font_bottom)
 		y_offset+=static_cast<double>(_sprite.height())*sub_strings.size();
 
 	//Go Through Sub Strings
@@ -82,11 +84,11 @@ void msl::font::draw(const double x,const double y,const std::string& text,const
 		double x_offset=static_cast<double>(_sprite.width())/2.0;
 
 		//Center Alignment
-		if(h_align==CENTER)
+		if(h_align==font_center)
 			x_offset-=static_cast<double>(_sprite.width())*sub_strings[ii].size()/2.0;
 
 		//Right Alignment
-		if(h_align==RIGHT)
+		if(h_align==font_right)
 			x_offset-=static_cast<double>(_sprite.width())*sub_strings[ii].size();
 
 		//Go Through Characters of Sub String

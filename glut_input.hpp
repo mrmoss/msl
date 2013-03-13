@@ -99,3 +99,135 @@ namespace msl
 
 //End Define Guards
 #endif
+
+//Example
+/*
+//Glut Input Header
+#include "glut_input.hpp"
+
+//Glut Header
+#ifndef __APPLE__
+	#include <GL/glut.h>
+#else
+	#include <GLUT/glut.h>
+#endif
+
+//Glut Callback Declarations
+void idle();
+void display();
+void reshape(int width,int height);
+
+//Globals
+bool red=false;
+
+//Main
+int main(int argc,char** argv)
+{
+	//Initialize Glut
+	glutInit(&argc,argv);
+	glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGBA|GLUT_DEPTH);
+	glutInitWindowSize(640,480);
+
+	//Create Glut Window
+	glutCreateWindow("MSL Glut Input");
+
+	//Glut Settings
+	glClearColor(0,0,0,1);
+	glEnable(GL_DEPTH_TEST);
+
+	//Glut Callbacks
+	msl::input_setup();
+	glutIdleFunc(idle);
+	glutDisplayFunc(display);
+
+	//Reshape Callback
+	glutReshapeFunc(reshape);
+
+	//Start Glut
+	glutMainLoop();
+
+	//Call Me Plz!!! T_T
+	return 0;
+}
+
+//Glut Idle Callback
+void idle()
+{
+	//Escape Key Exits
+	if(msl::input_check_pressed(kb_escape))
+		exit(0);
+
+	//Change Color of Quad
+	red=msl::input_check(mb_left);
+
+	//Reset Pressed and Released Inputs
+	msl::input_reset();
+
+	//Redisplay
+	glutPostRedisplay();
+}
+
+//Glut Display Callback
+void display()
+{
+	//Pre-Display (Clearing and Such)
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_FASTEST);
+	glLoadIdentity();
+
+	//Draw Quad at Mouse Coordinates
+	glPushMatrix();
+		glTranslatef(msl::mouse_x,msl::mouse_y,0);
+
+		if(red)
+			glColor3f(1,0,0);
+		else
+			glColor3f(1,1,1);
+
+		glBegin(GL_QUADS);
+			glVertex2d(-30,30);
+			glVertex2d(30,30);
+			glVertex2d(30,-30);
+			glVertex2d(-30,-30);
+		glEnd();
+	glPopMatrix();
+
+	//Double Buffering
+	glutSwapBuffers();
+}
+
+//Glut Reshape Callback
+void reshape(int width,int height)
+{
+	//Set Viewport Size
+	glViewport(0,0,width,height);
+
+	//Goto Projection View
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	//Get Original Dimensions
+	double window_width=glutGet(GLUT_INIT_WINDOW_WIDTH);
+	double window_height=glutGet(GLUT_INIT_WINDOW_HEIGHT);
+
+	//If Width Dependent
+	if(width<=height)
+	{
+		double scaler=(double)glutGet(GLUT_WINDOW_HEIGHT)/(double)glutGet(GLUT_WINDOW_WIDTH);
+		window_height=glutGet(GLUT_INIT_WINDOW_WIDTH)*scaler;
+	}
+
+	//If Height Dependent
+	else
+	{
+		double scaler=(double)glutGet(GLUT_WINDOW_WIDTH)/(double)glutGet(GLUT_WINDOW_HEIGHT);
+		window_width=glutGet(GLUT_INIT_WINDOW_HEIGHT)*scaler;
+	}
+
+	//Set View
+	glOrtho(-window_width/2,window_width/2,-window_height/2,window_height/2,0,1);
+
+	//Return to Model View
+	glMatrixMode(GL_MODELVIEW);
+}
+*/

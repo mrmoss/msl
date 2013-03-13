@@ -179,30 +179,18 @@ void msl::start_2d(const std::string& window_title,const int view_width,const in
 
 	//Glui Idle Function
 	if(msl::ui_in_use())
-	{
 		GLUI_Master.set_glutIdleFunc(idle);
-	}
-
-	//Just Glut Idle Function
 	else
-	{
 		glutIdleFunc(idle);
-	}
 
 	//Scale Reshape Function
 	if(window_scale)
 	{
 		//For Glui
 		if(msl::ui_in_use())
-		{
 			GLUI_Master.set_glutReshapeFunc(reshape_scale);
-		}
-
-		//Just Glut
 		else
-		{
 			glutReshapeFunc(reshape_scale);
-		}
 	}
 
 	//Resize Reshape Function
@@ -210,15 +198,9 @@ void msl::start_2d(const std::string& window_title,const int view_width,const in
 	{
 		//For Glui
 		if(msl::ui_in_use())
-		{
 			GLUI_Master.set_glutReshapeFunc(reshape);
-		}
-
-		//Just Glut
 		else
-		{
 			glutReshapeFunc(reshape);
-		}
 	}
 
 	//Get Time

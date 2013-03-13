@@ -44,3 +44,43 @@ namespace msl
 
 //End Define Guards
 #endif
+
+//Example
+/*
+#include <iostream>
+#include <string>
+#include "string_util.hpp"
+using namespace msl;
+
+int main()
+{
+	std::cout<<"Convert from string:"<<std::endl;
+	std::string str_double="3.1415";
+	std::string str_bool="false";
+	std::string str_int="1234";
+
+	std::cout<<"\t"<<to_double(str_double)<<std::endl;
+	std::cout<<"\t"<<to_bool(str_bool)<<std::endl;
+	std::cout<<"\t"<<to_int(str_int)<<std::endl<<std::endl;
+
+	std::cout<<"Convert to string:"<<std::endl;
+	double test_double=89.9;
+	bool test_bool=true;
+	int test_int=255;
+
+	std::cout<<"\t"<<to_string(test_double)<<std::endl;
+	std::cout<<"\t"<<to_string(test_bool)<<std::endl;
+	std::cout<<"\t"<<to_string(test_int)<<std::endl<<std::endl;
+
+	std::cout<<"String starts and ends:"<<std::endl;
+	std::string test="Hello world!";
+
+	if(starts_with(test,"Hello"))
+		std::cout<<"\tString starts with \"Hel\""<<std::endl;
+
+	if(ends_with(test,"world!"))
+		std::cout<<"\tString ends with \"rld!\""<<std::endl;
+
+	return 0;
+}
+*/

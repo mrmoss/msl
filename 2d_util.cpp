@@ -12,7 +12,7 @@
 msl::color::color(const float red,const float green,const float blue,const float alpha):r(red),g(green),b(blue),a(alpha)
 {}
 
-//Point Direction Function (Returns direction between two points)
+//Point Direction Function (Returns direction between two points in degrees)
 double msl::point_direction(const double x1,const double y1,const double x2,const double y2)
 {
 	return atan2(y2-y1,x2-x1)*180.0/M_PI;
