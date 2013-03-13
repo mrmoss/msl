@@ -1,8 +1,12 @@
 //Glut Input Source
 //	Created By:		Mike Moss
-//	Modified On:	02/22/2013
+//	Modified On:	03/12/2013
 
-//This requires GLEW and GLUT to work!
+//Required Libraries:
+//	gl
+//	glew
+//	glu
+//	glut/freeglut
 
 //Definitions for "glut_input.hpp"
 #include "glut_input.hpp"
@@ -280,7 +284,7 @@ void msl::input_setup()
 	glutPassiveMotionFunc(mouse_motion_2d);
 }
 
-//Input Released and Pressed Keys Reset Function (Call at end of timer function.)
+//Input Released and Pressed Keys Reset Function (Call at end of timer function)
 void msl::input_reset()
 {
 	//Reset Pressed and Released Keyboard Keys

@@ -1,8 +1,14 @@
 //2D Graphics Source
 //	Created By:		Mike Moss
-//	Modified On:	02/22/2013
+//	Modified On:	03/12/2013
 
-//This requires GLEW, GLUI, and GLUT to work!
+//Required Libraries:
+//	gl
+//	glew
+//	glu
+//	glui
+//	glut/freeglut
+//	soil
 
 //Definitions for "2d.hpp"
 #include "2d.hpp"

@@ -1,8 +1,14 @@
 //2D Graphics Header
 //	Created By:		Mike Moss
-//	Modified On:	02/22/2013
+//	Modified On:	03/12/2013
 
-//This requires GLEW, GLUI, and GLUT to work!
+//Required Libraries:
+//	gl
+//	glew
+//	glu
+//	glui
+//	glut/freeglut
+//	soil
 
 //Begin Define Guards
 #ifndef MSL_2D_H
@@ -11,7 +17,7 @@
 //2D Utilities Header
 #include "2d_util.hpp"
 
-//C Standard Library Header (For exit)
+//C Standard Library Header
 #include <cstdlib>
 
 //Glut Input Header

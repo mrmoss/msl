@@ -1,3 +1,14 @@
+//Glut User Interface Header
+//	Created By:		Mike Moss
+//	Modified On:	03/12/2013
+
+//This requires:
+//	gl
+//	glew
+//	glu
+//	glui
+//	glut/freeglut
+
 //Begin Define Guards
 #ifndef MSL_GLUT_UI_H
 #define MSL_GLUT_UI_H
@@ -33,13 +44,13 @@
 //MSL Namespace
 namespace msl
 {
-	//UI Setup Function (Sets up Glui and the first panel)
+	//UI Setup Function (Sets up glui)
 	void ui_setup(const int glut_window);
 
-	//UI Stop Function (Stops UI and cleans up Glui...as best as it can...because Glui is full of memory leaks...not my fault...)
+	//UI Stop Function (Stops UI and cleans up glui...as best as it can...because glui is full of memory leaks...not my fault...)
 	void ui_stop();
 
-	//UI In Use Function (Checks if Glui is being used...helpful for setting callbacks...because Glui has it's own callback functions...)
+	//UI In Use Function (Checks if glui is being used...helpful for setting callbacks...because glui has it's own callback functions...)
 	bool ui_in_use();
 
 	//UI Idle Function (Updates and syncs values)

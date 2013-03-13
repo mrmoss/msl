@@ -1,6 +1,9 @@
 //Socket Header
 //	Created By:		Mike Moss
-//	Modified On:	02/22/2013
+//	Modified On:	03/12/2013
+
+//Required Libraries:
+//	wsock32 (windows only)
 
 //Begin Define Guards
 #ifndef MSL_SOCKET_H

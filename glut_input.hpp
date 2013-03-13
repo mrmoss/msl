@@ -1,8 +1,13 @@
 //Glut Input Header
 //	Created By:		Mike Moss
-//	Modified On:	02/22/2013
+//	Modified On:	03/12/2013
 
-//This requires GLEW and GLUT to work!
+//Required Libraries:
+//	gl
+//	glew
+//	glu
+//	glui
+//	glut/freeglut
 
 //Begin Define Guards
 #ifndef MSL_GLUT_INPUT_H
@@ -85,10 +90,10 @@ namespace msl
 	bool input_check_pressed(const int key);
 	bool input_check_released(const int key);
 
-	//Input Start Routine (Sets up glut.)
+	//Input Start Routine (Sets up glut)
 	void input_setup();
 
-	//Input Released and Pressed Keys Reset Function (Call at end of timer function.)
+	//Input Released and Pressed Keys Reset Function (Call at end of timer function)
 	void input_reset();
 }
 

@@ -1,6 +1,6 @@
 //String Utility Source
 //	Created By:		Mike Moss
-//	Modified On:	02/26/2013
+//	Modified On:	03/12/2013
 
 //Definitions for "string_util.hpp"
 #include "string_util.hpp"

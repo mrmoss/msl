@@ -1,8 +1,13 @@
 //2D Sprite Header
 //	Created By:		Mike Moss
-//	Modified On:	02/26/2013
+//	Modified On:	03/12/2013
 
-//This requires GLEW,GLUT, and libSOIL to work!
+//Required Libraries:
+//	gl
+//	glew
+//	glu
+//	glut/freeglut
+//	soil
 
 //Begin Define Guards
 #ifndef MSL_SPRITE_H

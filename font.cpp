@@ -1,8 +1,13 @@
 //2D Font Source
 //	Created By:		Mike Moss
-//	Modified On:	02/26/2013
+//	Modified On:	03/12/2013
 
-//This requires GLEW,GLUT, and libSOIL to work!
+//Required Libraries:
+//	gl
+//	glew
+//	glu
+//	glut/freeglut
+//	soil
 
 //Definitions for "font.hpp"
 #include "font.hpp"
@@ -10,7 +15,7 @@
 //Vector Header
 #include <vector>
 
-//Font Class Constructor (Default, String Filename)
+//Font Class Constructor (Default and 1 argument version)
 msl::font::font(const std::string& filename)
 {
 	//Default Filename

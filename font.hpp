@@ -1,8 +1,13 @@
 //2D Font Header
 //	Created By:		Mike Moss
-//	Modified On:	02/26/2013
+//	Modified On:	03/12/2013
 
-//This requires GLEW,GLUT, and libSOIL to work!
+//Required Libraries:
+//	gl
+//	glew
+//	glu
+//	glut/freeglut
+//	soil
 
 //Begin Define Guards
 #ifndef MSL_FONT_H
@@ -28,7 +33,7 @@ namespace msl
 	class font
 	{
 		public:
-			//Constructor (Default, String Filename)
+			//Constructor (Default and 1 argument version)
 			font(const std::string& filename="");
 
 			//Draw Function

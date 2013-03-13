@@ -1,8 +1,13 @@
 //2D Sprite Source
 //	Created By:		Mike Moss
-//	Modified On:	02/26/2013
+//	Modified On:	03/12/2013
 
-//This requires GLEW,GLUT, and libSOIL to work!
+//Required Libraries:
+//	gl
+//	glew
+//	glu
+//	glut/freeglut
+//	soil
 
 //Definitions for "sprite.hpp"
 #include "sprite.hpp"
@@ -16,7 +21,7 @@
 //Soil Header
 #include <SOIL/SOIL.h>
 
-//Glew and Glut Header
+//OpenGL Headers
 #ifndef __APPLE__
 	#include <GL/glew.h>
 	#include <GL/glut.h>

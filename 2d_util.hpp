@@ -1,6 +1,6 @@
 //2D Utilities Header
 //	Created By:		Mike Moss
-//	Modified On:	02/22/2013
+//	Modified On:	03/12/2013
 
 //Begin Define Guards
 #ifndef MSL_2D_UTIL_H
