@@ -18,6 +18,7 @@
 //Windows Dependices
 #if(defined(_WIN32)&&!defined(__CYGWIN__))
 	#include <winsock.h>
+	#pragma comment(lib,"Ws2_32.lib")
 
 	#if(!defined(socklen_t))
 		typedef int socklen_t;
