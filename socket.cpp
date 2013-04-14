@@ -184,17 +184,31 @@ bool msl::socket::operator!() const
 	return !static_cast<bool>(*this);
 }
 
-//Create Function (Hosts a Socket Locally)
-void msl::socket::create()
+//Create Function (Hosts a Socket Locally) (TCP)
+void msl::socket::create_tcp()
 {
 	_socket=socket_create(_address);
 	_hosting=true;
 }
 
-//Connect Function (Connects to a Remote Socket)
-void msl::socket::connect()
+//Create Function (Hosts a Socket Locally) (UDP)
+void msl::socket::create_udp(const unsigned int buffersize)
 {
-	_socket=socket_connect(_address);
+	_socket=socket_create(_address,0,true,buffersize);
+	_hosting=true;
+}
+
+//Connect Function (Connects to a Remote Socket) (TCP)
+void msl::socket::connect_tcp()
+{
+	_socket=socket_connect(_address,0,false);
+	_hosting=false;
+}
+
+//Connect Function (Connects to a Remote Socket) (UDP)
+void msl::socket::connect_udp()
+{
+	_socket=socket_connect(_address,0,true);
 	_hosting=false;
 }
 
@@ -231,6 +245,12 @@ bool msl::socket::write(void* buffer,const unsigned int size) const
 int msl::socket::check() const
 {
 	return socket_check_read(_socket);
+}
+
+//IP Address Accessor (Read Only)
+msl::ipv4 msl::socket::ip() const
+{
+	return _address;
 }
 
 //Temporary Socket Variables

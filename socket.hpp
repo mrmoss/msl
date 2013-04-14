@@ -93,11 +93,13 @@ namespace msl
 			//Not Operator (For Boolean Operator)
 			bool operator!() const;
 
-			//Create Function (Hosts a Socket Locally)
-			void create();
+			//Create Functions (Hosts a Socket Locally)
+			void create_tcp();
+			void create_udp(const unsigned int buffersize);
 
-			//Connect Function (Connects to a Remote Socket)
-			void connect();
+			//Connect Functions (Connects to a Remote Socket)
+			void connect_tcp();
+			void connect_udp();
 
 			//Close Function (Closes a Local Socket)
 			void close();
@@ -113,6 +115,9 @@ namespace msl
 
 			//Check Function (Checks How Many Bytes there are to be Read, -1 on Error)
 			int check() const;
+
+			//IP Address Accessor (Read Only)
+			msl::ipv4 ip() const;
 
 			//Stream Out Operator
 			template <typename T> friend msl::socket& operator<<(msl::socket& lhs,const T& rhs);
@@ -199,7 +204,7 @@ int main()
 {
 	//Create Server
 	msl::socket server("0.0.0.0:8080");
-	server.create();
+	server.create_tcp();
 
 	//Check Server
 	if(server)

@@ -393,11 +393,11 @@ void msl::draw_text(const double x,const double y,const std::string& text,const 
 			//Get Current Line Width
 			unsigned int line_width=0;
 
-			for(unsigned int jj=ii-1;text[jj]!='\t'&&text[jj]!='\n'&&jj>=0;--jj)
+			for(int jj=ii-1;jj>=0&&text[jj]!='\t'&&text[jj]!='\n';--jj)
 				++line_width;
 
 			//Add Indents
-			for(unsigned int jj=line_width%5;jj<5;++jj)
+			for(unsigned int jj=line_width%4;jj<4;++jj)
 				glutBitmapCharacter(GLUT_BITMAP_8_BY_13,' ');
 		}
 
