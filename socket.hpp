@@ -108,16 +108,19 @@ namespace msl
 			msl::socket accept();
 
 			//Read Function (Returns True if Read was Successful)
-			bool read(void* buffer,const unsigned int size) const;
+			int read(void* buffer,const unsigned int size,const int flags=0) const;
 
 			//Write Function (Returns True if Write was Successful)
-			bool write(void* buffer,const unsigned int size) const;
+			int write(void* buffer,const unsigned int size,const int flags=0) const;
 
 			//Check Function (Checks How Many Bytes there are to be Read, -1 on Error)
 			int check() const;
 
 			//IP Address Accessor (Read Only)
 			msl::ipv4 ip() const;
+
+			//System Socket Accessor
+			SOCKET system_socket() const;
 
 			//Stream Out Operator
 			template <typename T> friend msl::socket& operator<<(msl::socket& lhs,const T& rhs);
@@ -162,41 +165,45 @@ SOCKET socket_close(const SOCKET socket);
 int socket_check_read(const SOCKET socket,const unsigned int time_out=0);
 
 //Socket Peek Function (Same as socket_read but Leaves Bytes in Socket Buffer)
-bool socket_peek(const SOCKET socket,void* buffer,const unsigned int size);
+int socket_peek(const SOCKET socket,void* buffer,const unsigned int size,const int flags=0);
 
 //Socket Read Function (Reads Bytes from Socket Buffer)
-bool socket_read(const SOCKET socket,void* buffer,const unsigned int size);
+int socket_read(const SOCKET socket,void* buffer,const unsigned int size,const int flags=0);
 
 //Socket Write Function (Writes Bytes to Socket)
-bool socket_write(const SOCKET socket,void* buffer,const unsigned int size);
+int socket_write(const SOCKET socket,void* buffer,const unsigned int size,const int flags=0);
 
 //End Define Guards
 #endif
 
 //Example (You need to make a folder called web and put index.html and not_found.html, located in comments below this example, in it for this to work)
 /*
+//Basic Web Server Source
+//	Created By:		Mike Moss
+//	Modified On:	03/12/2013
+
 //File Utility Header
-#include "file_util.hpp"
+#include "msl/file_util.hpp"
 
 //IO Stream Header
 #include <iostream>
 
 //Socket Header
-#include "socket.hpp"
+#include "msl/socket.hpp"
 
 //Socket Utility Header
-#include "socket_util.hpp"
+#include "msl/socket_util.hpp"
 
 //String Header
 #include <string>
 
 //String Utility Header
-#include "string_util.hpp"
+#include "msl/string_util.hpp"
 
 //Vector Header
 #include <vector>
 
-//Service Client Function Declaration - YOU NEED TO LOOK AT THIS DEFINITION
+//Service Client Function Declaration
 void service_client(msl::socket& client,const std::string& message);
 
 //Main
@@ -239,7 +246,7 @@ int main()
 				char byte='\n';
 
 				//Get a Byte
-				if(clients[ii].check()>0&&clients[ii].read(&byte,1))
+				if(clients[ii].check()>0&&clients[ii].read(&byte,1)==1)
 				{
 					//End Byte (Not really...but it works for what we're doing...)
 					if(byte=='\n')
@@ -335,12 +342,12 @@ void service_client(msl::socket& client,const std::string& message)
 		else if(msl::file_to_string(web_root+"/not_found.html",file))
 			client<<msl::http_pack_string(file);
 
-		//not_found.html Not Found?!
+		//not_found.html...Not Found?!  >_<
 		else
 			client.close();
 	}
 
-	//Other Requests (Just kill connection...)
+	//Other Requests (Just kill connection...it's either hackers or idiots...)
 	else
 	{
 		client.close();

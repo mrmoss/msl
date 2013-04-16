@@ -230,15 +230,15 @@ msl::socket msl::socket::accept()
 }
 
 //Read Function (Returns True if Read was Successful)
-bool msl::socket::read(void* buffer,const unsigned int size) const
+int msl::socket::read(void* buffer,const unsigned int size,const int flags) const
 {
-	return socket_read(_socket,buffer,size);
+	return socket_read(_socket,buffer,size,flags);
 }
 
 //Write Function (Returns True if Write was Successful)
-bool msl::socket::write(void* buffer,const unsigned int size) const
+int msl::socket::write(void* buffer,const unsigned int size,const int flags) const
 {
-	return socket_write(_socket,buffer,size);
+	return socket_write(_socket,buffer,size,flags);
 }
 
 //Check Function (Checks How Many Bytes there are to be Read, -1 on Error)
@@ -251,6 +251,12 @@ int msl::socket::check() const
 msl::ipv4 msl::socket::ip() const
 {
 	return _address;
+}
+
+//System Socket Accessor
+SOCKET msl::socket::system_socket() const
+{
+	return _socket;
 }
 
 //Temporary Socket Variables
@@ -475,7 +481,7 @@ int socket_check_read(const SOCKET socket,const unsigned int time_out)
 }
 
 //Socket Peek Function (Same as socket_read but Leaves Bytes in Socket Buffer)
-bool socket_peek(const SOCKET socket,void* buffer,const unsigned int size)
+int socket_peek(const SOCKET socket,void* buffer,const unsigned int size,const int flags)
 {
 	//Check for Bad Socket
 	if(socket==static_cast<unsigned int>(SOCKET_ERROR))
@@ -492,23 +498,23 @@ bool socket_peek(const SOCKET socket,void* buffer,const unsigned int size)
 	{
 		//Get Bytes in Read Buffer
 		socket_ignore_sigpipe=true;
-		unsigned int bytes_read=recv(socket,reinterpret_cast<char*>(buffer)+(size-bytes_unread),bytes_unread,MSG_PEEK);
+		unsigned int bytes_read=recv(socket,reinterpret_cast<char*>(buffer)+(size-bytes_unread),bytes_unread,MSG_PEEK|flags);
 		socket_ignore_sigpipe=false;
 
 		//On Error
 		if(bytes_read<=0)
-			return false;
+			return -1;
 
 		//Subtract Read Bytes
 		bytes_unread-=bytes_read;
 	}
 
 	//Return Success
-	return true;
+	return (size-bytes_unread);
 }
 
 //Socket Read Function (Reads Bytes from Socket Buffer)
-bool socket_read(const SOCKET socket,void* buffer,const unsigned int size)
+int socket_read(const SOCKET socket,void* buffer,const unsigned int size,const int flags)
 {
 	//Check for Bad Socket
 	if(socket==static_cast<unsigned int>(SOCKET_ERROR))
@@ -525,23 +531,23 @@ bool socket_read(const SOCKET socket,void* buffer,const unsigned int size)
 	{
 		//Get Bytes in Read Buffer
 		socket_ignore_sigpipe=true;
-		unsigned int bytes_read=recv(socket,reinterpret_cast<char*>(buffer)+(size-bytes_unread),bytes_unread,0);
+		unsigned int bytes_read=recv(socket,reinterpret_cast<char*>(buffer)+(size-bytes_unread),bytes_unread,flags);
 		socket_ignore_sigpipe=false;
 
 		//On Error
 		if(bytes_read<=0)
-			return false;
+			return -1;
 
 		//Subtract Read Bytes
 		bytes_unread-=bytes_read;
 	}
 
 	//Return Success
-	return true;
+	return (size-bytes_unread);
 }
 
 //Socket Write Function (Writes Bytes to Socket)
-bool socket_write(const SOCKET socket,void* buffer,const unsigned int size)
+int socket_write(const SOCKET socket,void* buffer,const unsigned int size,const int flags)
 {
 	//Check for Bad Socket
 	if(socket==static_cast<unsigned int>(SOCKET_ERROR))
@@ -558,17 +564,17 @@ bool socket_write(const SOCKET socket,void* buffer,const unsigned int size)
 	{
 		//Send Bytes into Write Buffer
 		socket_ignore_sigpipe=true;
-		int bytes_sent=send(socket,reinterpret_cast<char*>(buffer)+(size-bytes_unsent),bytes_unsent,0);
+		int bytes_sent=send(socket,reinterpret_cast<char*>(buffer)+(size-bytes_unsent),bytes_unsent,flags);
 		socket_ignore_sigpipe=false;
 
 		//On Error
 		if(bytes_sent<=0)
-			return false;
+			return -1;
 
 		//Subtract Written Bytes
 		bytes_unsent-=(unsigned int)bytes_sent;
 	}
 
 	//Return Success
-	return true;
+	return (size-bytes_unsent);
 }
