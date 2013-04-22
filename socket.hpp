@@ -107,14 +107,20 @@ namespace msl
 			//Accept Function (Accepts a Remote Connection to a Local Socket)
 			msl::socket accept();
 
-			//Read Function (Returns True if Read was Successful)
+			//Read Function (Returns Number of Bytes Read, -1 on Error)
 			int read(void* buffer,const unsigned int size,const int flags=0) const;
 
-			//Write Function (Returns True if Write was Successful)
+			//Write Function (Returns Number of Bytes Sent, -1 on Error)
 			int write(void* buffer,const unsigned int size,const int flags=0) const;
 
 			//Check Function (Checks How Many Bytes there are to be Read, -1 on Error)
 			int check() const;
+
+			//Connection Timeout Mutator
+			void set_timeout(const unsigned int time_out);
+
+			//Connection Timeout Accessor
+			unsigned int timeout() const;
 
 			//IP Address Accessor (Read Only)
 			msl::ipv4 ip() const;
@@ -130,6 +136,7 @@ namespace msl
 			msl::ipv4 _address;
 			SOCKET _socket;
 			bool _hosting;
+			unsigned int _time_out;
 	};
 
 	//Socket Class Stream Operator (Templated Function)
@@ -165,13 +172,13 @@ SOCKET socket_close(const SOCKET socket);
 int socket_check_read(const SOCKET socket,const unsigned int time_out=0);
 
 //Socket Peek Function (Same as socket_read but Leaves Bytes in Socket Buffer)
-int socket_peek(const SOCKET socket,void* buffer,const unsigned int size,const int flags=0);
+int socket_peek(const SOCKET socket,void* buffer,const unsigned int size,const unsigned int time_out=200,const int flags=0);
 
-//Socket Read Function (Reads Bytes from Socket Buffer)
-int socket_read(const SOCKET socket,void* buffer,const unsigned int size,const int flags=0);
+//Socket Read Function (Returns Number of Bytes Read, -1 on Error)
+int socket_read(const SOCKET socket,void* buffer,const unsigned int size,const unsigned int time_out=200,const int flags=0);
 
-//Socket Write Function (Writes Bytes to Socket)
-int socket_write(const SOCKET socket,void* buffer,const unsigned int size,const int flags=0);
+//Socket Write Function (Returns Number of Bytes Sent, -1 on Error)
+int socket_write(const SOCKET socket,void* buffer,const unsigned int size,const unsigned int time_out=200,const int flags=0);
 
 //End Define Guards
 #endif
