@@ -20,6 +20,10 @@ std::string msl::http_create_header(const unsigned int message_size,const std::s
 	header<<"Content-Type: "<<mime_type<<"; charset=UTF-8\n";
 	header<<"Connection: close\n\n";
 
+	//Support Compressed Files
+	if(mime_type=="application.x-gzip")
+		header<<"Content-Encoding: gzip\n";
+
 	//Return HTML Header
 	return header.str();
 }
