@@ -18,11 +18,13 @@ std::string msl::http_create_header(const unsigned int message_size,const std::s
 	header<<"Last-Modified: From the future\n";
 	header<<"Content-Length: "<<message_size<<'\n';
 	header<<"Content-Type: "<<mime_type<<"; charset=UTF-8\n";
-	header<<"Connection: close\n\n";
 
 	//Support Compressed Files
 	if(mime_type=="application.x-gzip"||compressed)
 		header<<"Content-Encoding: gzip\n";
+
+	//Set Connection Type
+	header<<"Connection: close\n\n";
 
 	//Return HTML Header
 	return header.str();
@@ -87,5 +89,5 @@ std::string msl::http_to_ascii(std::string symbols)
 //HTTP Pack String Function (Packages a string for http travel)
 std::string msl::http_pack_string(const std::string& message,const std::string& mime_type,const bool compressed)
 {
-	return msl::http_create_header(message.size(),mime_type)+message;
+	return msl::http_create_header(message.size(),mime_type,compressed)+message;
 }
