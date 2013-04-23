@@ -137,7 +137,8 @@ msl::socket::socket(const std::string& address):std::ostream(reinterpret_cast<st
 }
 
 //Socket Class Copy Constructor
-msl::socket::socket(const msl::socket& copy):std::ostream(reinterpret_cast<std::streambuf*>(NULL)),_address(copy._address),_socket(copy._socket),_hosting(copy._hosting)
+msl::socket::socket(const msl::socket& copy):std::ostream(reinterpret_cast<std::streambuf*>(NULL)),
+	_address(copy._address),_socket(copy._socket),_hosting(copy._hosting),_time_out(copy._time_out)
 {}
 
 //Socket Class Copy Assignment Operator
@@ -148,6 +149,7 @@ msl::socket& msl::socket::operator=(const msl::socket& copy)
 		_address=copy._address;
 		_socket=copy._socket;
 		_hosting=copy._hosting;
+		_time_out=copy._time_out;
 	}
 
 	return *this;
