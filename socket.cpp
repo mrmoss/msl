@@ -323,7 +323,7 @@ SOCKET socket_create(const msl::ipv4 ip,const unsigned int time_out,const bool U
 	socket_init();
 
 	//Connection Variables
-	unsigned int time_start=time(0);
+	unsigned int time_start=time(0)/1000;
 	sockaddr_in address=ip.build();
 	socklen_t address_length=sizeof(address);
 	int on=1;
@@ -364,7 +364,7 @@ SOCKET socket_create(const msl::ipv4 ip,const unsigned int time_out,const bool U
 			return ret;
 		}
 	}
-	while(time(0)-time_start<time_out);
+	while(time(0)/1000-time_start<time_out);
 
 	//Close on Error
 	return socket_close(ret);
@@ -377,7 +377,7 @@ SOCKET socket_connect(const msl::ipv4 ip,const unsigned int time_out,const bool 
 	socket_init();
 
 	//Connection Variables
-	unsigned int time_start=time(0);
+	unsigned int time_start=time(0)/1000;
 	sockaddr_in address=ip.build();
 	int type=SOCK_STREAM;
 	SOCKET ret=SOCKET_ERROR;
@@ -396,7 +396,7 @@ SOCKET socket_connect(const msl::ipv4 ip,const unsigned int time_out,const bool 
 		if(connect(ret,reinterpret_cast<sockaddr*>(&address),sizeof(address))!=SOCKET_ERROR)
 			return ret;
 	}
-	while(time(0)-time_start<time_out);
+	while(time(0)/1000-time_start<time_out);
 
 	//Return Error Otherwise
 	return SOCKET_ERROR;
@@ -413,7 +413,7 @@ SOCKET socket_accept(const SOCKET socket,msl::ipv4& client_ip,const unsigned int
 	socket_init();
 
 	//Connection Variables
-	unsigned int time_start=time(0);
+	unsigned int time_start=time(0)/1000;
 	sockaddr_in address;
 	socklen_t address_length=sizeof(address);
 	SOCKET ret=SOCKET_ERROR;
@@ -431,7 +431,7 @@ SOCKET socket_accept(const SOCKET socket,msl::ipv4& client_ip,const unsigned int
 			return ret;
 		}
 	}
-	while(time(0)-time_start<time_out);
+	while(time(0)/1000-time_start<time_out);
 
 	//Return Error Otherwise
 	return SOCKET_ERROR;
@@ -488,7 +488,7 @@ int socket_check_read(const SOCKET socket,const unsigned int time_out)
 		socket_ignore_sigpipe=false;
 		return read;
 	}
-	while(time(0)-time_start<time_out);
+	while(time(0)/1000-time_start<time_out);
 
 	//Return -1 on Error
 	return -1;
@@ -533,7 +533,7 @@ int socket_read(const SOCKET socket,void* buffer,const unsigned int size,const u
 				return size;
 		}
 	}
-	while(time(0)-time_start<time_out&&socket!=static_cast<unsigned int>(SOCKET_ERROR));
+	while(time(0)/1000-time_start<time_out&&socket!=static_cast<unsigned int>(SOCKET_ERROR));
 
 	//Return Bytes Read
 	return (size-bytes_unread);
@@ -572,7 +572,7 @@ int socket_write(const SOCKET socket,void* buffer,const unsigned int size,const 
 				return size;
 		}
 	}
-	while(time(0)-time_start<time_out&&socket!=static_cast<unsigned int>(SOCKET_ERROR));
+	while(time(0)/1000-time_start<time_out&&socket!=static_cast<unsigned int>(SOCKET_ERROR));
 
 	//Return Bytes Sent
 	return (size-bytes_unsent);
