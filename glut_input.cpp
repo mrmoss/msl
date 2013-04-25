@@ -1,6 +1,6 @@
 //Glut Input Source
 //	Created By:		Mike Moss
-//	Modified On:	03/12/2013
+//	Modified On:	04/24/2013
 
 //Required Libraries:
 //	gl
@@ -140,7 +140,7 @@ static void mouse_2d(int button,int state,int x,int y)
 }
 
 //Glut Mouse Motion Callback
-static void mouse_motion_2d(int x,int y)
+static void mouse_motion_2d_scaled(int x,int y)
 {
 	//Get Original Dimensions
 	double window_width=glutGet(GLUT_INIT_WINDOW_WIDTH);
@@ -167,6 +167,14 @@ static void mouse_motion_2d(int x,int y)
 	//Set Mouse Coordinates
 	msl::mouse_x=(x-glutGet(GLUT_WINDOW_WIDTH)/2.0)/scale_width;
 	msl::mouse_y=(-y+glutGet(GLUT_WINDOW_HEIGHT)/2.0)/scale_height;
+}
+
+//Glut Mouse Motion Callback
+static void mouse_motion_2d(int x,int y)
+{
+	//Set Mouse Coordinates
+	msl::mouse_x=x-glutGet(GLUT_WINDOW_WIDTH)/2.0;
+	msl::mouse_y=-y+glutGet(GLUT_WINDOW_HEIGHT)/2.0;
 }
 
 //Input Check Function
@@ -269,7 +277,7 @@ bool msl::input_check_released(const int key)
 }
 
 //Input Start Routine (Sets up glut)
-void msl::input_setup()
+void msl::input_setup(const bool scaled_window)
 {
 	//For Pressed and Released
 	glutIgnoreKeyRepeat(true);
@@ -280,8 +288,20 @@ void msl::input_setup()
 	glutSpecialFunc(special_down_2d);
 	glutSpecialUpFunc(special_up_2d);
 	glutMouseFunc(mouse_2d);
-	glutMotionFunc(mouse_motion_2d);
-	glutPassiveMotionFunc(mouse_motion_2d);
+
+	//Scaled Mouse Motion Functions
+	if(scaled_window)
+	{
+		glutMotionFunc(mouse_motion_2d_scaled);
+		glutPassiveMotionFunc(mouse_motion_2d_scaled);
+	}
+
+	//Non Scaled Mouse Motion Functions
+	else
+	{
+		glutMotionFunc(mouse_motion_2d);
+		glutPassiveMotionFunc(mouse_motion_2d);
+	}
 }
 
 //Input Released and Pressed Keys Reset Function (Call at end of timer function)

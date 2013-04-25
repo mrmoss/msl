@@ -1,6 +1,6 @@
 //2D Graphics Source
 //	Created By:		Mike Moss
-//	Modified On:	03/12/2013
+//	Modified On:	04/24/2013
 
 //Required Libraries:
 //	gl
@@ -174,7 +174,7 @@ void msl::start_2d(const std::string& window_title,const int view_width,const in
 	glDisable(GL_DEPTH_TEST);
 
 	//Glut Callbacks
-	msl::input_setup();
+	msl::input_setup(window_scale);
 	glutDisplayFunc(display);
 
 	//Glui Idle Function

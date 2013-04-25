@@ -1,6 +1,6 @@
 //Glut Input Header
 //	Created By:		Mike Moss
-//	Modified On:	03/12/2013
+//	Modified On:	04/24/2013
 
 //Required Libraries:
 //	gl
@@ -91,7 +91,7 @@ namespace msl
 	bool input_check_released(const int key);
 
 	//Input Start Routine (Sets up glut)
-	void input_setup();
+	void input_setup(const bool scaled_window=true);
 
 	//Input Released and Pressed Keys Reset Function (Call at end of timer function)
 	void input_reset();
