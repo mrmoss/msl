@@ -1,6 +1,6 @@
 //Socket Header
 //	Created By:		Mike Moss
-//	Modified On:	03/12/2013
+//	Modified On:	04/25/2013
 
 //Required Libraries:
 //	wsock32 (windows only)
@@ -187,7 +187,7 @@ int socket_write(const SOCKET socket,void* buffer,const unsigned int size,const 
 /*
 //Basic Web Server Source
 //	Created By:		Mike Moss
-//	Modified On:	03/12/2013
+//	Modified On:	04/25/2013
 
 //File Utility Header
 #include "msl/file_util.hpp"
@@ -255,17 +255,14 @@ int main()
 				//Get a Byte
 				if(clients[ii].check()>0&&clients[ii].read(&byte,1)==1)
 				{
-					//End Byte (Not really...but it works for what we're doing...)
-					if(byte=='\n')
+					//Add the Byte to Client Buffer
+					client_messages[ii]+=byte;
+
+					//Check for an End Byte
+					if(msl::ends_with(client_messages[ii],"\r\n\r\n"))
 					{
 						service_client(clients[ii],client_messages[ii]);
 						client_messages[ii].clear();
-					}
-
-					//Other Bytes
-					else
-					{
-						client_messages[ii]+=byte;
 					}
 				}
 			}
@@ -291,18 +288,16 @@ void service_client(msl::socket& client,const std::string& message)
 	//Get Requests
 	if(msl::starts_with(message,"GET"))
 	{
-		//Convert Request
-		std::string request=msl::http_to_ascii(message);
+		//Create Parser
+		std::istringstream istr(msl::http_to_ascii(message));
 
-		//Remove "GET /"
-		for(unsigned int ii=0;ii<5;++ii)
-			if(request.size()>0)
-				request.erase(request.begin());
+		//Parse the Request
+		std::string request;
+		istr>>request;
+		istr>>request;
 
-		//Remove " HTTP/1.1 "
-		for(unsigned int ii=0;ii<10;++ii)
-			if(request.size()>0)
-				request.erase(request.end()-1);
+		//Remove Beginning "/"
+		request.erase(request.begin());
 
 		//Web Root Variable (Where your web files are)
 		std::string web_root="web";
@@ -349,9 +344,8 @@ void service_client(msl::socket& client,const std::string& message)
 		else if(msl::file_to_string(web_root+"/not_found.html",file))
 			client<<msl::http_pack_string(file);
 
-		//not_found.html...Not Found?!  >_<
-		else
-			client.close();
+		//Close Connection
+		client.close();
 	}
 
 	//Other Requests (Just kill connection...it's either hackers or idiots...)
