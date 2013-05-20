@@ -90,6 +90,9 @@ namespace msl
 			//Not Operator (For Boolean Operator)
 			bool operator!() const;
 
+			//Good Function (Tests If Socket Is Good)
+			bool good() const;
+
 			//Create Functions (Hosts a Socket Locally)
 			void create_tcp();
 			void create_udp(const unsigned int buffersize);
@@ -218,7 +221,7 @@ int main()
 	server.create_tcp();
 
 	//Check Server
-	if(server)
+	if(server.good())
 		std::cout<<"=)"<<std::endl;
 	else
 		std::cout<<"=("<<std::endl;
@@ -234,7 +237,7 @@ int main()
 		msl::socket client=server.accept();
 
 		//If Client Connected
-		if(client)
+		if(client.good())
 		{
 			clients.push_back(client);
 			client_messages.push_back("");
@@ -244,7 +247,7 @@ int main()
 		for(unsigned int ii=0;ii<clients.size();++ii)
 		{
 			//Service Good Clients
-			if(clients[ii])
+			if(clients[ii].good())
 			{
 				//Temp
 				char byte='\n';

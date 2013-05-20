@@ -151,6 +151,18 @@ msl::socket& msl::socket::operator=(const msl::socket& copy)
 //Boolean Operator (Tests If Socket Is Good)
 msl::socket::operator bool() const
 {
+	return good();
+}
+
+//Not Operator (For Boolean Operator)
+bool msl::socket::operator!() const
+{
+	return !static_cast<bool>(*this);
+}
+
+//Good Function (Tests If Socket Is Good)
+bool msl::socket::good() const
+{
 	//Check for Errored Socket
 	if(_socket==static_cast<unsigned int>(SOCKET_ERROR)||_socket==static_cast<unsigned int>(INVALID_SOCKET))
 		return false;
@@ -171,12 +183,6 @@ msl::socket::operator bool() const
 
 	//Else Socket is Good
 	return true;
-}
-
-//Not Operator (For Boolean Operator)
-bool msl::socket::operator!() const
-{
-	return !static_cast<bool>(*this);
 }
 
 //Create Function (Hosts a Socket Locally) (TCP)
