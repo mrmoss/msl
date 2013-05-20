@@ -219,9 +219,9 @@ int main()
 
 	//Check Server
 	if(server)
-		std::cout<<"Server started =)"<<std::endl;
+		std::cout<<"=)"<<std::endl;
 	else
-		std::cout<<"Server failed =("<<std::endl;
+		std::cout<<"=("<<std::endl;
 
 	//Vectors for Clients
 	std::vector<msl::socket> clients;
