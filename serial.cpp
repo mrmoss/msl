@@ -1,12 +1,51 @@
 //CURRENTLY_UNIX_ONLY
 
 #include "serial.hpp"
-#include "msl/time_util.hpp"
+#include "time_util.hpp"
 
-#include <unistd.h>
-#include <fcntl.h>
-#include <termios.h>
-#include <sys/ioctl.h>
+//Windows Dependencies
+#if(defined(_WIN32)&&!defined(__CYGWIN__))
+	ssize_t read(SERIAL fd,void* buf,size_t count)
+	{
+		DWORD bytes_read=-1;
+
+		if(ReadFile(fd,buf,count,&bytes_read,0))
+			return bytes_read;
+
+		return -1;
+	}
+
+	ssize_t write(SERIAL fd,void* buf,size_t count)
+	{
+		DWORD bytes_sent=-1;
+
+		if(WriteFile(fd,buf,count,&bytes_sent,0))
+			return bytes_sent;
+
+		return -1;
+	}
+
+	int select(SERIAL nfds)
+	{
+		//Checking Variables
+		COMSTAT port_stats;
+		DWORD error_flags=0;
+
+		//Get Bytes in RX Buffer
+		if(ClearCommError(nfds,&error_flags,&port_stats))
+			return port_stats.cbInQue;
+
+		//On Error
+		return -1;
+	}
+
+//Unix Dependencies
+#else
+	#include <unistd.h>
+	#include <fcntl.h>
+	#include <termios.h>
+	#include <sys/ioctl.h>
+#endif
 
 msl::serial::serial(const std::string& name,const unsigned int baud):_port(SERIAL_ERROR),_name(name),_baud(baud),_time_out(200)
 {}
@@ -63,71 +102,110 @@ SERIAL msl::serial::system_serial() const
 
 SERIAL msl::serial_connect(const std::string& name,const unsigned int baud)
 {
-	SERIAL port=open(name.c_str(),O_RDWR|O_NOCTTY|O_SYNC);
+	//Windows
+	#if(defined(_WIN32)&&!defined(__CYGWIN__))
+		SERIAL port=CreateFile(name.c_str(),GENERIC_READ|GENERIC_WRITE,0,0,CREATE_ALWAYS,0,0);
 
-	if(port==SERIAL_ERROR)
-		return serial_close(port);
+		if(port==SERIAL_ERROR)
+			return serial_close(port);
 
-	if(fcntl(port,F_SETFL,FNDELAY)==-1)
-		return serial_close(port);
+		DCB options;
 
-	if(ioctl(port,TIOCEXCL)==-1)
-		return serial_close(port);
+		if(!GetCommState(port,&options))
+			return serial_close(port);
 
-	termios options;
+		if(baud!=300&&baud!=1200&&baud!=2400&&baud!=4800&&baud!=9600&&baud!=19200&&baud!=38400&&baud!=57600&&baud!=115200)
+			return serial_close(port);
 
-	if(tcgetattr(port,&options)==-1)
-		return serial_close(port);
+		options.BaudRate=baud;
+		options.fParity=FALSE;
+		options.Parity=NOPARITY;
+		options.StopBits=ONESTOPBIT;
+		options.ByteSize=8;
+		options.fOutxCtsFlow=FALSE;
+		options.fOutxDsrFlow=FALSE;
+		options.fDtrControl=DTR_CONTROL_DISABLE;
+		options.fRtsControl=RTS_CONTROL_DISABLE;
 
-	speed_t baud_rate;
+		if(!SetCommState(port,&options))
+			return serial_close(port);
 
-	if(baud==300)
-		baud_rate=B300;
-	else if(baud==1200)
-		baud_rate=B1200;
-	else if(baud==2400)
-		baud_rate=B2400;
-	else if(baud==4800)
-		baud_rate=B4800;
-	else if(baud==9600)
-		baud_rate=B9600;
-	else if(baud==19200)
-		baud_rate=B19200;
-	else if(baud==38400)
-		baud_rate=B38400;
-	else if(baud==57600)
-		baud_rate=B57600;
-	else if(baud==115200)
-		baud_rate=B115200;
-	else
-		return serial_close(port);
+	//Unix
+	#else
+		SERIAL port=open(name.c_str(),O_RDWR|O_NOCTTY|O_SYNC);
 
-	if(cfsetispeed(&options,baud_rate)==-1||cfsetospeed(&options,baud_rate)==-1)
-		return serial_close(port);
+		if(port==SERIAL_ERROR)
+			return serial_close(port);
 
-	options.c_cflag|=(CS8|CLOCAL|CREAD|HUPCL);
-	options.c_iflag|=(IGNBRK|IGNPAR);
-	options.c_iflag&=~(IXON|IXOFF|IXANY);
-	options.c_lflag=0;
-	options.c_oflag=0;
-	options.c_cc[VMIN]=0;
-	options.c_cc[VTIME]=1;
-	options.c_cflag&=~(PARENB|PARODD);
-	options.c_cflag&=~CSTOPB;
-	options.c_cflag&=~CRTSCTS;
+		if(fcntl(port,F_SETFL,FNDELAY)==-1)
+			return serial_close(port);
 
-	if(tcsetattr(port,TCSANOW,&options)==-1)
-		return serial_close(port);
+		if(ioctl(port,TIOCEXCL)==-1)
+			return serial_close(port);
 
-	if(tcflush(port,TCIFLUSH)==-1||tcdrain(port)==-1)
-		return serial_close(port);
+		termios options;
+
+		if(tcgetattr(port,&options)==-1)
+			return serial_close(port);
+
+		speed_t baud_rate;
+
+		if(baud==300)
+			baud_rate=B300;
+		else if(baud==1200)
+			baud_rate=B1200;
+		else if(baud==2400)
+			baud_rate=B2400;
+		else if(baud==4800)
+			baud_rate=B4800;
+		else if(baud==9600)
+			baud_rate=B9600;
+		else if(baud==19200)
+			baud_rate=B19200;
+		else if(baud==38400)
+			baud_rate=B38400;
+		else if(baud==57600)
+			baud_rate=B57600;
+		else if(baud==115200)
+			baud_rate=B115200;
+		else
+			return serial_close(port);
+
+		if(cfsetispeed(&options,baud_rate)==-1||cfsetospeed(&options,baud_rate)==-1)
+			return serial_close(port);
+
+		options.c_cflag|=(CS8|CLOCAL|CREAD|HUPCL);
+		options.c_iflag|=(IGNBRK|IGNPAR);
+		options.c_iflag&=~(IXON|IXOFF|IXANY);
+		options.c_lflag=0;
+		options.c_oflag=0;
+		options.c_cc[VMIN]=0;
+		options.c_cc[VTIME]=1;
+		options.c_cflag&=~(PARENB|PARODD);
+		options.c_cflag&=~CSTOPB;
+		options.c_cflag&=~CRTSCTS;
+
+		if(tcsetattr(port,TCSANOW,&options)==-1)
+			return serial_close(port);
+
+		if(tcflush(port,TCIFLUSH)==-1||tcdrain(port)==-1)
+			return serial_close(port);
+	#endif
 
 	return port;
 }
 
 SERIAL msl::serial_close(const SERIAL port)
 {
-	close(port);
+	//Windows
+	#if(defined(_WIN32)&&!defined(__CYGWIN__))
+		CloseHandle(port);
+
+	//Unix
+	#else
+		close(port);
+	#endif
+
 	return SERIAL_ERROR;
 }
 
@@ -137,16 +215,26 @@ int msl::serial_available(const SERIAL port,const long time_out)
 		return false;
 
 	int return_value=-1;
-
-	timeval temp={0,0};
-	fd_set rfds;
-	FD_ZERO(&rfds);
-	FD_SET(port,&rfds);
 	long time_start=msl::millis();
+
+	//Unix
+	#if(!defined(_WIN32)||defined(__CYGWIN__))
+		timeval temp={0,0};
+		fd_set rfds;
+		FD_ZERO(&rfds);
+		FD_SET(port,&rfds);
+	#endif
 
 	do
 	{
-		return_value=select(1+port,&rfds,NULL,NULL,&temp);
+		//Windows
+		#if(defined(_WIN32)&&!defined(__CYGWIN__))
+			return_value=select(port);
+
+		//Unix
+		#else
+			return_value=select(1+port,&rfds,NULL,NULL,&temp);
+		#endif
 
 		if(return_value>0)
 			break;

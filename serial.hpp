@@ -7,8 +7,20 @@
 
 #include <sstream>
 
-#define SERIAL int
-#define SERIAL_ERROR (-1)
+//Windows Dependencies
+#if(defined(_WIN32)&&!defined(__CYGWIN__))
+	#include <conio.h>
+	#include <stdio.h>
+	#include <windows.h>
+	#include <commctrl.h>
+	#define SERIAL HANDLE
+	#define SERIAL_ERROR INVALID_HANDLE_VALUE
+
+//Unix Dependencies
+#else
+	#define SERIAL int
+	#define SERIAL_ERROR (-1)
+#endif
 
 namespace msl
 {

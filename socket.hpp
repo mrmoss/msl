@@ -15,7 +15,7 @@
 //String Stream Header
 #include <sstream>
 
-//Windows Dependices
+//Windows Dependencies
 #if(defined(_WIN32)&&!defined(__CYGWIN__))
 	#include <winsock.h>
 	#pragma comment(lib,"Ws2_32.lib")
@@ -24,7 +24,7 @@
 		typedef int socklen_t;
 	#endif
 
-//Unix Dependices
+//Unix Dependencies
 #else
 	#include <netinet/in.h>
 	#include <unistd.h>
