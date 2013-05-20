@@ -1,5 +1,3 @@
-//CURRENTLY_UNIX_ONLY
-
 #ifndef MSL_SERIAL_H
 #define MSL_SERIAL_H
 

@@ -1,5 +1,3 @@
-//CURRENTLY_UNIX_ONLY
-
 #include "serial.hpp"
 #include "time_util.hpp"
 
