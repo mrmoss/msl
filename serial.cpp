@@ -13,7 +13,7 @@ msl::serial::serial(const std::string& name,const unsigned int baud):_port(SERIA
 
 msl::serial::operator bool() const
 {
-	return !(_port==SERIAL_ERROR);
+	return (_port!=SERIAL_ERROR&&available()>=0);
 }
 
 bool msl::serial::operator!() const
