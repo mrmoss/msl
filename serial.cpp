@@ -1,28 +1,45 @@
+//Serial Source
+//	Created By:		Mike Moss
+//	Modified On:	05/20/2013
+
+//Definitions for "serial.hpp"
 #include "serial.hpp"
+
+//Time Utility Header
 #include "time_util.hpp"
 
 //Windows Dependencies
 #if(defined(_WIN32)&&!defined(__CYGWIN__))
+
+	//Windows Read Function (Unix-like replacement)
 	ssize_t read(SERIAL fd,void* buf,size_t count)
 	{
+		//Return Value
 		DWORD bytes_read=-1;
 
+		//Read Bytes (this blocks)
 		if(ReadFile(fd,buf,count,&bytes_read,0))
 			return bytes_read;
 
+		//On Error
 		return -1;
 	}
 
+	//Windows Write Function (Unix-like replacement)
 	ssize_t write(SERIAL fd,void* buf,size_t count)
 	{
+		//Return Value
 		DWORD bytes_sent=-1;
 
+		//Write Bytes (this blocks)
 		if(WriteFile(fd,buf,count,&bytes_sent,0))
 			return bytes_sent;
 
+		//On Error
 		return -1;
 	}
 
+	//Windows Select Function (Unix-like replacement)
 	int select(SERIAL nfds)
 	{
 		//Checking Variables
@@ -45,76 +62,101 @@
 	#include <sys/ioctl.h>
 #endif
 
+//Constructor(Default)
 msl::serial::serial(const std::string& name,const unsigned int baud):_port(SERIAL_ERROR),_name(name),_baud(baud),_time_out(200)
 {}
 
+//Boolean Operator (Tests if Port is Good)
 msl::serial::operator bool() const
 {
-	return (_port!=SERIAL_ERROR&&available()>=0);
+	return good();
 }
 
+//Not Operator (For Boolean Operator)
 bool msl::serial::operator!() const
 {
 	return !static_cast<bool>(*this);
 }
 
+//Good Function (Tests if Port is Good)
+bool msl::serial::good() const
+{
+	return (_port!=SERIAL_ERROR&&available()>=0);
+}
+
+//Connect Function (Connects to a Port)
 void msl::serial::connect()
 {
 	_port=serial_connect(_name,_baud);
 }
 
+//Close Function (Disconnects from a Port)
 void msl::serial::close()
 {
 	serial_close(_port);
 }
 
+//Available Function (Checks if there are Bytes to be Read, -1 on Error)
 int msl::serial::available() const
 {
 	return serial_available(_port,0);
 }
 
+//Read Function (Returns -1 on Error Else Returns Number of Bytes Read)
 int msl::serial::read(void* buffer,const unsigned int size)
 {
 	return serial_read(_port,buffer,size,_time_out);
 }
 
+//Write Function (Returns -1 on Error Else Returns Number of Bytes Sent)
 int msl::serial::write(void* buffer,const unsigned int size)
 {
 	return serial_write(_port,buffer,size,_time_out);
 }
 
+//Connection Timeout Mutator
 void msl::serial::set_timeout(const long time_out)
 {
 	_time_out=time_out;
 }
 
+//Connection Timeout Accessor
 long msl::serial::timeout() const
 {
 	return _time_out;
 }
 
-SERIAL msl::serial::system_serial() const
+//System Port Accessor
+SERIAL msl::serial::system_port() const
 {
 	return _port;
 }
 
+//Serial Connection Function (Connects to a Port)
 SERIAL msl::serial_connect(const std::string& name,const unsigned int baud)
 {
 	//Windows
 	#if(defined(_WIN32)&&!defined(__CYGWIN__))
+
+		//Open Serial Port
 		SERIAL port=CreateFile(name.c_str(),GENERIC_READ|GENERIC_WRITE,0,0,CREATE_ALWAYS,0,0);
 
+		//On Open Error
 		if(port==SERIAL_ERROR)
 			return serial_close(port);
 
-		DCB options;
-
-		if(!GetCommState(port,&options))
-			return serial_close(port);
-
+		//Check for Valid Baud Rate
 		if(baud!=300&&baud!=1200&&baud!=2400&&baud!=4800&&baud!=9600&&baud!=19200&&baud!=38400&&baud!=57600&&baud!=115200)
 			return serial_close(port);
 
+		//Serial Port Options Variable
+		DCB options;
+
+		//Get Current Serial Port Options
+		if(!GetCommState(port,&options))
+			return serial_close(port);
+
+		//Setup Serial Port Settings
 		options.BaudRate=baud;
 		options.fParity=FALSE;
 		options.Parity=NOPARITY;
@@ -125,27 +167,28 @@ SERIAL msl::serial_connect(const std::string& name,const unsigned int baud)
 		options.fDtrControl=DTR_CONTROL_DISABLE;
 		options.fRtsControl=RTS_CONTROL_DISABLE;
 
+		//Apply Serial Port Settings
 		if(!SetCommState(port,&options))
 			return serial_close(port);
 
 	//Unix
 	#else
+		//Open Serial Port
 		SERIAL port=open(name.c_str(),O_RDWR|O_NOCTTY|O_SYNC);
 
+		//On Open Error
 		if(port==SERIAL_ERROR)
 			return serial_close(port);
 
+		//Set Serial Port to Non-blocking ode
 		if(fcntl(port,F_SETFL,FNDELAY)==-1)
 			return serial_close(port);
 
+		//Get Exclusive Rights to Serial Port
 		if(ioctl(port,TIOCEXCL)==-1)
 			return serial_close(port);
 
-		termios options;
-
-		if(tcgetattr(port,&options)==-1)
-			return serial_close(port);
-
+		//Check for Valid Baud Rate
 		speed_t baud_rate;
 
 		if(baud==300)
@@ -169,9 +212,18 @@ SERIAL msl::serial_connect(const std::string& name,const unsigned int baud)
 		else
 			return serial_close(port);
 
+		//Serial Port Options Variable
+		termios options;
+
+		//Get Current Serial Port Options
+		if(tcgetattr(port,&options)==-1)
+			return serial_close(port);
+
+		//Setup Serial Port Baud Rate
 		if(cfsetispeed(&options,baud_rate)==-1||cfsetospeed(&options,baud_rate)==-1)
 			return serial_close(port);
 
+		//Setup Other Serial Port Settings
 		options.c_cflag|=(CS8|CLOCAL|CREAD|HUPCL);
 		options.c_iflag|=(IGNBRK|IGNPAR);
 		options.c_iflag&=~(IXON|IXOFF|IXANY);
@@ -183,16 +235,20 @@ SERIAL msl::serial_connect(const std::string& name,const unsigned int baud)
 		options.c_cflag&=~CSTOPB;
 		options.c_cflag&=~CRTSCTS;
 
+		//Apply Serial Port Settings
 		if(tcsetattr(port,TCSANOW,&options)==-1)
 			return serial_close(port);
 
+		//Flush Serial Port
 		if(tcflush(port,TCIFLUSH)==-1||tcdrain(port)==-1)
 			return serial_close(port);
 	#endif
 
+	//Return Serial Port
 	return port;
 }
 
+//Serial Close Function (Disconnects from a Port)
 SERIAL msl::serial_close(const SERIAL port)
 {
 	//Windows
@@ -207,12 +263,17 @@ SERIAL msl::serial_close(const SERIAL port)
 	return SERIAL_ERROR;
 }
 
+//Serial Available Function (Checks if there are Bytes to be Read, -1 on Error)
 int msl::serial_available(const SERIAL port,const long time_out)
 {
+	//Check for Errored Port
 	if(port==SERIAL_ERROR)
 		return false;
 
+	//Return Variable
 	int return_value=-1;
+
+	//Reading Variables
 	long time_start=msl::millis();
 
 	//Unix
@@ -223,6 +284,7 @@ int msl::serial_available(const SERIAL port,const long time_out)
 		FD_SET(port,&rfds);
 	#endif
 
+	//While Port is Good
 	do
 	{
 		//Windows
@@ -234,60 +296,80 @@ int msl::serial_available(const SERIAL port,const long time_out)
 			return_value=select(1+port,&rfds,NULL,NULL,&temp);
 		#endif
 
+		//If Bytes Break
 		if(return_value>0)
 			break;
 	}
 	while(msl::millis()-time_start<time_out);
 
+	//Return Bytes Waiting
 	return return_value;
 }
 
+//Serial Read Function (Returns Number of Bytes Read, -1 on Error)
 int msl::serial_read(const SERIAL port,void* buffer,const unsigned int size,const long time_out)
 {
+	//Check for Bad Port
 	if(port==SERIAL_ERROR)
 		return -1;
 
+	//Reading Variables
 	unsigned int bytes_unread=size;
 	long time_start=msl::millis();
 
+	//While Port is Good and There are Bytes to Read
 	do
 	{
+		//Get Bytes in Read Buffer
 		unsigned int bytes_read=read(port,reinterpret_cast<char*>(buffer)+(size-bytes_unread),bytes_unread);
 
+		//If Bytes Were Read
 		if(bytes_read>0)
 		{
+			//Subtract Read Bytes
 			bytes_unread-=bytes_read;
 
+			//If Done Break
 			if(bytes_unread==0)
 				return size;
 		}
 	}
 	while(msl::millis()-time_start<time_out);
 
+	//Return Bytes Read
 	return (size-bytes_unread);
 }
 
+//Serial Write Function (Returns Number of Bytes Sent, -1 on Error)
 int msl::serial_write(const SERIAL port,void* buffer,const unsigned int size,const long time_out)
 {
+	//Check for Bad Port
 	if(port==SERIAL_ERROR)
 		return -1;
 
+	//Writing Variables
 	unsigned int bytes_unsent=size;
 	long time_start=msl::millis();
 
+	//While Port is Good and There are Bytes to Send
 	do
 	{
+		//Get Bytes in Send Buffer
 		unsigned int bytes_sent=write(port,reinterpret_cast<char*>(buffer)+(size-bytes_unsent),bytes_unsent);
 
+		//If Bytes Were Sent
 		if(bytes_sent>0)
 		{
+			//Subtract Sent Bytes
 			bytes_unsent-=bytes_sent;
 
+			//If Done Break
 			if(bytes_unsent==0)
 				return size;
 		}
 	}
 	while(msl::millis()-time_start<time_out);
 
+	//Return Bytes Sent
 	return (size-bytes_unsent);
 }

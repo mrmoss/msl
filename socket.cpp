@@ -1,6 +1,6 @@
 //Socket Source
 //	Created By:		Mike Moss
-//	Modified On:	05/19/2013
+//	Modified On:	05/20/2013
 
 //Required Libraries:
 //	wsock32 (windows only)
@@ -90,7 +90,7 @@ std::string msl::ipv4::str() const
 	return ostr.str();
 }
 
-//Socket Class Constructor(Default)
+//Constructor(Default)
 msl::socket::socket(const std::string& address):std::ostream(reinterpret_cast<std::streambuf*>(NULL)),_socket(SOCKET_ERROR),_hosting(false),_time_out(200)
 {
 	//Parsing Variables
@@ -129,12 +129,12 @@ msl::socket::socket(const std::string& address):std::ostream(reinterpret_cast<st
 	_address=msl::ipv4(ip,port);
 }
 
-//Socket Class Copy Constructor
+//Copy Constructor
 msl::socket::socket(const msl::socket& copy):std::ostream(reinterpret_cast<std::streambuf*>(NULL)),
 	_address(copy._address),_socket(copy._socket),_hosting(copy._hosting),_time_out(copy._time_out)
 {}
 
-//Socket Class Copy Assignment Operator
+//Copy Assignment Operator
 msl::socket& msl::socket::operator=(const msl::socket& copy)
 {
 	if(this!=&copy)
@@ -148,7 +148,7 @@ msl::socket& msl::socket::operator=(const msl::socket& copy)
 	return *this;
 }
 
-//Boolean Operator (Tests If Socket Is Good)
+//Boolean Operator (Tests if Socket is Good)
 msl::socket::operator bool() const
 {
 	return good();
@@ -160,7 +160,7 @@ bool msl::socket::operator!() const
 	return !static_cast<bool>(*this);
 }
 
-//Good Function (Tests If Socket Is Good)
+//Good Function (Tests if Socket is Good)
 bool msl::socket::good() const
 {
 	//Check for Errored Socket

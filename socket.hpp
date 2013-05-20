@@ -1,6 +1,6 @@
 //Socket Header
 //	Created By:		Mike Moss
-//	Modified On:	05/19/2013
+//	Modified On:	05/20/2013
 
 //Required Libraries:
 //	wsock32 (windows only)
@@ -84,13 +84,13 @@ namespace msl
 			//Copy Assignment Operator
 			socket& operator=(const msl::socket& copy);
 
-			//Boolean Operator (Tests If Socket Is Good)
+			//Boolean Operator (Tests if Socket is Good)
 			operator bool() const;
 
 			//Not Operator (For Boolean Operator)
 			bool operator!() const;
 
-			//Good Function (Tests If Socket Is Good)
+			//Good Function (Tests if Socket is Good)
 			bool good() const;
 
 			//Create Functions (Hosts a Socket Locally)
