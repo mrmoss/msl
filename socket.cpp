@@ -20,9 +20,6 @@
 //Time Utility Header
 #include "time_util.hpp"
 
-//End Line Variable(std::endl doesn't work)
-const char msl::endl='\n';
-
 //IPv4 Address Class Constructor(Default)
 msl::ipv4::ipv4(const unsigned char ip[4],const unsigned short port):_port(port)
 {
@@ -159,11 +156,11 @@ msl::socket::operator bool() const
 		return false;
 
 	//Check Reading Error
-	if(check()<0)
+	if(available()<0)
 		return false;
 
 	//Check Client Errors
-	if(!_hosting&&check()>0)
+	if(!_hosting&&available()>0)
 	{
 		char temp;
 
@@ -221,10 +218,16 @@ msl::socket msl::socket::accept()
 {
 	msl::socket ret;
 
-	if(check()>0)
+	if(available()>0)
 		ret._socket=socket_accept(_socket,ret._address);
 
 	return ret;
+}
+
+//Available Function (Checks if there are Bytes to be Read, -1 on Error)
+int msl::socket::available() const
+{
+	return socket_available(_socket,0);
 }
 
 //Read Function (Returns -1 on Error Else Returns Number of Bytes Read)
@@ -237,12 +240,6 @@ int msl::socket::read(void* buffer,const unsigned int size,const int flags) cons
 int msl::socket::write(void* buffer,const unsigned int size,const int flags) const
 {
 	return socket_write(_socket,buffer,size,_time_out,flags);
-}
-
-//Check Function (Checks How Many Bytes there are to be Read, -1 on Error)
-int msl::socket::check() const
-{
-	return socket_check_read(_socket);
 }
 
 //Connection Timeout Mutator
@@ -443,8 +440,8 @@ SOCKET socket_close(const SOCKET socket)
 	return SOCKET_ERROR;
 }
 
-//Socket Check Read Function (Checks How Many Bytes there are to be Read, -1 on Error)
-int socket_check_read(const SOCKET socket,const long time_out)
+//Socket Available Function (Checks if there are Bytes to be Read, -1 on Error)
+int socket_available(const SOCKET socket,const long time_out)
 {
 	//Check for Bad Socket
 	if(socket==static_cast<unsigned int>(SOCKET_ERROR))
@@ -453,14 +450,30 @@ int socket_check_read(const SOCKET socket,const long time_out)
 	//Initialize Sockets
 	socket_init();
 
+	//Return Variable
+	int return_value=-1;
+
 	//Reading Variables
 	timeval temp={0,0};
 	fd_set rfds;
 	FD_ZERO(&rfds);
 	FD_SET(socket,&rfds);
+	long time_start=msl::millis();
 
-	//Try to Read from Socket
-	return select(1+socket,&rfds,NULL,NULL,&temp);
+	//While Socket is Good
+	do
+	{
+		//Try to Read from Socket
+		return_value=select(1+socket,&rfds,NULL,NULL,&temp);
+
+		//If Bytes Break
+		if(return_value>0)
+			break;
+	}
+	while(msl::millis()-time_start<time_out);
+
+	//Return Bytes Waiting
+	return return_value;
 }
 
 //Socket Peek Function (Same as socket_read but Leaves Bytes in Socket Buffer)

@@ -40,9 +40,6 @@
 //MSL Namespace
 namespace msl
 {
-	//End Line Variable(std::endl doesn't work)
-	extern const char endl;
-
 	//Socket Class Pre-Declaration(For msl::ipv4)
 	class socket;
 
@@ -107,14 +104,14 @@ namespace msl
 			//Accept Function (Accepts a Remote Connection to a Local Socket)
 			msl::socket accept();
 
+			//Available Function (Checks if there are Bytes to be Read)
+			int available() const;
+
 			//Read Function (Returns Number of Bytes Read, -1 on Error)
 			int read(void* buffer,const unsigned int size,const int flags=0) const;
 
 			//Write Function (Returns Number of Bytes Sent, -1 on Error)
 			int write(void* buffer,const unsigned int size,const int flags=0) const;
-
-			//Check Function (Checks How Many Bytes there are to be Read, -1 on Error)
-			int check() const;
 
 			//Connection Timeout Mutator
 			void set_timeout(const long time_out);
@@ -168,8 +165,8 @@ SOCKET socket_accept(const SOCKET socket,msl::ipv4& client_ip,const long time_ou
 //Socket Close Function (Closes a Local Socket)
 SOCKET socket_close(const SOCKET socket);
 
-//Socket Check Read Function (Checks How Many Bytes there are to be Read, -1 on Error)
-int socket_check_read(const SOCKET socket,const long time_out=0);
+//Socket Available Function (Checks if there are Bytes to be Read, -1 on Error)
+int socket_available(const SOCKET socket,const long time_out=0);
 
 //Socket Peek Function (Same as socket_read but Leaves Bytes in Socket Buffer)
 int socket_peek(const SOCKET socket,void* buffer,const unsigned int size,const long time_out=200,const int flags=0);
@@ -253,7 +250,7 @@ int main()
 				char byte='\n';
 
 				//Get a Byte
-				if(clients[ii].check()>0&&clients[ii].read(&byte,1)==1)
+				if(clients[ii].available()>0&&clients[ii].read(&byte,1)==1)
 				{
 					//Add the Byte to Client Buffer
 					client_messages[ii]+=byte;
