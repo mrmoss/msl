@@ -1,12 +1,11 @@
 //2D Graphics Header
 //	Created By:		Mike Moss
-//	Modified On:	04/24/2013
+//	Modified On:	05/19/2013
 
 //Required Libraries:
 //	gl
 //	glew
 //	glu
-//	glui
 //	glut/freeglut
 //	soil
 
@@ -22,9 +21,6 @@
 
 //Glut Input Header
 #include "glut_input.hpp"
-
-//Glut UI Header
-#include "glut_ui.hpp"
 
 //Font Header
 #include "font.hpp"

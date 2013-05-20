@@ -1,6 +1,6 @@
 //2D Graphics Source
 //	Created By:		Mike Moss
-//	Modified On:	04/24/2013
+//	Modified On:	05/19/2013
 
 //Required Libraries:
 //	gl
@@ -17,11 +17,9 @@
 #ifndef __APPLE__
 	#include <GL/glew.h>
 	#include <GL/glut.h>
-	#include <GL/glui.h>
 #else
 	#include <GLUT/glew.h>
 	#include <GLUT/glut.h>
-	#include <GLUT/glui.h>
 #endif
 
 //Exception Header
@@ -104,9 +102,6 @@ static void idle()
 	if(glutGetWindow()!=glut_window)
 		glutSetWindow(glut_window);
 
-	//Update UI
-	msl::ui_idle();
-
 	//Get Time
 	double dt_end=glutGet(GLUT_ELAPSED_TIME);
 	double dt=dt_end-dt_start;
@@ -119,10 +114,6 @@ static void idle()
 
 	//Reset Pressed and Released Inputs
 	msl::input_reset();
-
-	//Reset Pressed and Released UI Inputs
-	if(msl::ui_in_use())
-		msl::ui_reset();
 
 	//Display
 	glutPostRedisplay();
@@ -163,9 +154,6 @@ void msl::start_2d(const std::string& window_title,const int view_width,const in
 	if(glewInit())
 		throw std::runtime_error("msl::start_2d - could not initialize glew!");
 
-	//Setup Glui
-	msl::ui_setup(glut_window);
-
 	//Setup Function
 	setup();
 
@@ -176,32 +164,15 @@ void msl::start_2d(const std::string& window_title,const int view_width,const in
 	//Glut Callbacks
 	msl::input_setup(window_scale);
 	glutDisplayFunc(display);
-
-	//Glui Idle Function
-	if(msl::ui_in_use())
-		GLUI_Master.set_glutIdleFunc(idle);
-	else
-		glutIdleFunc(idle);
+	glutIdleFunc(idle);
 
 	//Scale Reshape Function
 	if(window_scale)
-	{
-		//For Glui
-		if(msl::ui_in_use())
-			GLUI_Master.set_glutReshapeFunc(reshape_scale);
-		else
-			glutReshapeFunc(reshape_scale);
-	}
+		glutReshapeFunc(reshape_scale);
 
 	//Resize Reshape Function
 	else
-	{
-		//For Glui
-		if(msl::ui_in_use())
-			GLUI_Master.set_glutReshapeFunc(reshape);
-		else
-			glutReshapeFunc(reshape);
-	}
+		glutReshapeFunc(reshape);
 
 	//Get Time
 	dt_start=glutGet(GLUT_ELAPSED_TIME);
@@ -213,7 +184,6 @@ void msl::start_2d(const std::string& window_title,const int view_width,const in
 //2D Stop Function
 void msl::stop_2d()
 {
-	msl::ui_stop();
 	exit(0);
 }
 
