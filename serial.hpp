@@ -115,3 +115,48 @@ namespace msl
 
 //End Define Guards
 #endif
+
+//Example
+/*
+//Serial Testing Source
+//	Created By:		Mike Moss
+//	Modified On:	05/20/2013
+
+//IO Stream Header
+#include <iostream>
+
+//Serial Header
+#include "msl/serial.hpp"
+
+//String Header
+#include <string>
+
+//Main
+int main()
+{
+	//Connect to Serial Port
+	msl::serial port("com5",57600);
+
+	//Check Serial Port
+	if(port.good())
+		std::cout<<"=)"<<std::endl;
+	else
+		std::cout<<"=("<<std::endl;
+
+	//Write Test A
+	port<<"Hello ";
+
+	//Write Test B
+	std::string test1="World!\n";
+	port.write((void*)test1.c_str(),test1.size());
+
+	//Read Test
+	char buffer;
+
+	while(port.available()>0&&port.read(&buffer,1)==1)
+		std::cout<<buffer;
+
+	//All Done
+	return 0;
+}
+*/
