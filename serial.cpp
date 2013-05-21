@@ -138,8 +138,11 @@ SERIAL msl::serial_connect(const std::string& name,const unsigned int baud)
 	//Windows
 	#if(defined(_WIN32)&&!defined(__CYGWIN__))
 
+		//Add Full Path to Serial Port
+		std::string full_name="\\\\.\\"+name;
+
 		//Open Serial Port
-		SERIAL port=CreateFile(name.c_str(),GENERIC_READ|GENERIC_WRITE,0,0,CREATE_ALWAYS,0,0);
+		SERIAL port=CreateFile(full_name.c_str(),GENERIC_READ|GENERIC_WRITE,0,0,CREATE_ALWAYS,0,NULL);
 
 		//On Open Error
 		if(port==SERIAL_ERROR)
@@ -171,6 +174,10 @@ SERIAL msl::serial_connect(const std::string& name,const unsigned int baud)
 		if(!SetCommState(port,&options))
 			return serial_close(port);
 
+		//Clear DTR and RTS Signals
+		if(!EscapeCommFunction(port,CLRDTR|CLRRTS))
+			return serial_close(port);
+
 	//Unix
 	#else
 		//Open Serial Port
@@ -180,7 +187,7 @@ SERIAL msl::serial_connect(const std::string& name,const unsigned int baud)
 		if(port==SERIAL_ERROR)
 			return serial_close(port);
 
-		//Set Serial Port to Non-blocking ode
+		//Set Serial Port to Non-blocking Mode
 		if(fcntl(port,F_SETFL,FNDELAY)==-1)
 			return serial_close(port);
 
