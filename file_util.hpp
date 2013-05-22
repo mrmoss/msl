@@ -19,10 +19,10 @@ namespace msl
 	std::vector<std::string> list_directory(const std::string& directory=".");
 
 	//File to String Function (Loads a file from disk as a string, returns false on error)
-	bool file_to_string(const std::string& filename,std::string& data);
+	bool file_to_string(const std::string& filename,std::string& data,const bool binary=false);
 
 	//String to File Function (Saves a string to disk as a file, returns false on error)
-	bool string_to_file(const std::string& data,const std::string& filename);
+	bool string_to_file(const std::string& data,const std::string& filename,const bool binary=false);
 
 	//Remove File Function (Removes a file from disk, returns false on error)
 	bool remove_file(const std::string& filename);

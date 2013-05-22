@@ -56,13 +56,20 @@ std::vector<std::string> msl::list_directory(const std::string& directory)
 }
 
 //File to String Function (Loads a file from disk as a string, returns false on error)
-bool msl::file_to_string(const std::string& filename,std::string& data)
+bool msl::file_to_string(const std::string& filename,std::string& data,const bool binary)
 {
 	//Read In Variable
 	char buffer;
 
+	//Open Flag
+	std::ios_base::openmode flags=std::ios_base::in;
+
+	//Binary Flag
+	if(binary)
+		flags|=std::ios_base::binary;
+
 	//Open File
-	std::ifstream istr(filename.c_str());
+	std::ifstream istr(filename.c_str(),flags);
 
 	//Unset Skip White Space Flag
 	istr.unsetf(std::ios_base::skipws);
@@ -86,13 +93,20 @@ bool msl::file_to_string(const std::string& filename,std::string& data)
 }
 
 //String to File Function (Saves a string to disk as a file, returns false on error)
-bool msl::string_to_file(const std::string& data,const std::string& filename)
+bool msl::string_to_file(const std::string& data,const std::string& filename,const bool binary)
 {
 	//Saved Variable
 	bool saved=false;
 
+	//Open Flag
+	std::ios_base::openmode flags=std::ios_base::out;
+
+	//Binary Flag
+	if(binary)
+		flags|=std::ios_base::binary;
+
 	//Open File
-	std::ofstream ostr(filename.c_str());
+	std::ofstream ostr(filename.c_str(),flags);
 
 	//Write New File
 	saved=(ostr<<data);
