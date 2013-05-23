@@ -37,6 +37,12 @@ namespace msl
 			//Constructor (Default)
 			serial(const std::string& name="",const unsigned int baud=57600);
 
+			//Copy Constructor
+			serial(const serial& copy);
+
+			//Copy Assignment Operator
+			serial& operator=(const serial& copy);
+
 			//Boolean Operator (Tests if Port is Good)
 			operator bool() const;
 

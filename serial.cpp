@@ -66,6 +66,24 @@
 msl::serial::serial(const std::string& name,const unsigned int baud):_port(SERIAL_ERROR),_name(name),_baud(baud),_time_out(200)
 {}
 
+//Copy Constructor
+msl::serial::serial(const msl::serial& copy):_port(copy._port),_name(copy._name),_baud(copy._baud),_time_out(copy._time_out)
+{}
+
+//Copy Assignment Operator
+msl::serial& msl::serial::operator=(const msl::serial& copy)
+{
+	if(this!=&copy)
+	{
+		_port=copy._port;
+		_name=copy._name;
+		_baud=copy._baud;
+		_time_out=copy._time_out;
+	}
+
+	return *this;
+}
+
 //Boolean Operator (Tests if Port is Good)
 msl::serial::operator bool() const
 {
