@@ -209,10 +209,6 @@ SERIAL msl::serial_connect(const std::string& name,const unsigned int baud)
 		if(fcntl(port,F_SETFL,FNDELAY)==-1)
 			return serial_close(port);
 
-		//Get Exclusive Rights to Serial Port
-		if(ioctl(port,TIOCEXCL)==-1)
-			return serial_close(port);
-
 		//Check for Valid Baud Rate
 		speed_t baud_rate;
 
