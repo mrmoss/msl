@@ -12,7 +12,6 @@
 #if(defined(_WIN32)&&!defined(__CYGWIN__))
 	#include <stdint.h>
 	#include <time.h>
-	#include <windows.h>
 
 	//Define the Unix Epoch
 	#define DELTA_EPOCH_IN_MICROSECS 11644473600000000ULL
@@ -62,6 +61,13 @@
 		}
 
 		//Return Success
+		return 0;
+	}
+
+	//Micro Second Sleep Function (Used for relinquishing time slices)
+	int usleep(long useconds)
+	{
+		Sleep(useconds/1000);
 		return 0;
 	}
 

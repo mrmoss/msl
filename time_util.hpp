@@ -6,6 +6,15 @@
 #ifndef MSL_TIME_UTIL_H
 #define MSL_TIME_UTIL_H
 
+//Windows Dependices
+#if(defined(_WIN32)&&!defined(__CYGWIN__))
+	//Windows Header
+	#include <windows.h>
+
+	//Micro Second Sleep Function (Used for relinquishing time slices)
+	int usleep(long useconds);
+#endif
+
 //MSL Namespace
 namespace msl
 {
