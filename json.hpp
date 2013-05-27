@@ -48,7 +48,7 @@ std::ostream& operator<<(std::ostream& lhs,const msl::json& rhs)
 {
 	return (lhs<<rhs.str());
 }
-
+#include <iostream>
 //Constructor (Default)
 msl::json::json(const std::string& json_string)
 {
@@ -64,6 +64,8 @@ msl::json::json(const std::string& json_string)
 		//Parsing Variables
 		std::string variable_name="";
 		std::string variable_value="";
+		unsigned int bracket_count_start=0;
+		unsigned int bracket_count_end=0;
 
 		//Go Through String
 		for(unsigned int ii=0;ii<parse_string.size();++ii)
@@ -84,10 +86,6 @@ msl::json::json(const std::string& json_string)
 					variable_name.erase(0,1);
 					variable_name.erase(variable_name.size()-1,1);
 
-					//Bracket Counting Variables (Remember we removed the first bracket, so theres one less start bracket than there are end brackets)
-					unsigned int bracket_count_start=1;
-					unsigned int bracket_count_end=0;
-
 					//Go Through Rest of String
 					for(unsigned int jj=ii+1;jj<parse_string.size();++jj)
 					{
@@ -100,7 +98,7 @@ msl::json::json(const std::string& json_string)
 							++bracket_count_end;
 
 						//Look for Variable Value
-						if(parse_string[jj]!=','&&jj+1<parse_string.size()&&bracket_count_start!=bracket_count_end)
+						if((parse_string[jj]!=','||bracket_count_start!=bracket_count_end)&&jj+1<parse_string.size())
 						{
 							variable_value+=parse_string[jj];
 						}
