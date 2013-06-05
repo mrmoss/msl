@@ -101,7 +101,7 @@ bool msl::serial::good() const
 {
 	//Fix for Linux Errors
 	#if(!defined(_WIN32)||defined(__CYGWIN__))
-		if(_port>1024*1024)
+		if(_port>1024*1024||_port<0)
 			return false;
 	#endif
 
@@ -212,7 +212,7 @@ SERIAL msl::serial_connect(const std::string& name,const unsigned int baud)
 			return serial_close(port);
 
 		//Fix for Linux Errors
-		if(port>1024*1024)
+		if(port>1024*1024||port<0)
 			return -1;
 
 		//Set Serial Port to Non-blocking Mode
@@ -305,7 +305,7 @@ int msl::serial_available(const SERIAL port,const long time_out)
 
 	//Fix for Linux Errors
 	#if(!defined(_WIN32)||defined(__CYGWIN__))
-		if(port>1024*1024)
+		if(port>1024*1024||port<0)
 			return -1;
 	#endif
 
@@ -356,7 +356,7 @@ int msl::serial_read(const SERIAL port,void* buffer,const unsigned int size,cons
 
 	//Fix for Linux Errors
 	#if(!defined(_WIN32)||defined(__CYGWIN__))
-		if(port>1024*1024)
+		if(port>1024*1024||port<0)
 			return -1;
 	#endif
 
@@ -396,7 +396,7 @@ int msl::serial_write(const SERIAL port,void* buffer,const unsigned int size,con
 
 	//Fix for Linux Errors
 	#if(!defined(_WIN32)||defined(__CYGWIN__))
-		if(port>1024*1024)
+		if(port>1024*1024||port<0)
 			return -1;
 	#endif
 
