@@ -99,6 +99,12 @@ bool msl::serial::operator!() const
 //Good Function (Tests if Port is Good)
 bool msl::serial::good() const
 {
+	//Fix for Linux Errors
+	#if(!defined(_WIN32)||defined(__CYGWIN__))
+		if(_port>1024*1024)
+			return false;
+	#endif
+
 	return (_port!=SERIAL_ERROR&&available()>=0);
 }
 
@@ -205,6 +211,10 @@ SERIAL msl::serial_connect(const std::string& name,const unsigned int baud)
 		if(port==SERIAL_ERROR)
 			return serial_close(port);
 
+		//Fix for Linux Errors
+		if(port>1024*1024)
+			return -1;
+
 		//Set Serial Port to Non-blocking Mode
 		if(fcntl(port,F_SETFL,FNDELAY)==-1)
 			return serial_close(port);
@@ -274,22 +284,32 @@ SERIAL msl::serial_close(const SERIAL port)
 {
 	//Windows
 	#if(defined(_WIN32)&&!defined(__CYGWIN__))
-		CloseHandle(port);
+		if(port!=SERIAL_ERROR)
+			CloseHandle(port);
 
 	//Unix
 	#else
-		close(port);
+		if(port!=SERIAL_ERROR)
+			close(port);
 	#endif
 
 	return SERIAL_ERROR;
 }
-
+#include <iostream>
 //Serial Available Function (Checks if there are Bytes to be Read, -1 on Error)
 int msl::serial_available(const SERIAL port,const long time_out)
 {
 	//Check for Errored Port
 	if(port==SERIAL_ERROR)
-		return false;
+		return -1;
+
+	//Fix for Linux Errors
+	#if(!defined(_WIN32)||defined(__CYGWIN__))
+		if(port>1024*1024)
+			return -1;
+	#endif
+
+	std::cout<<"PORT NUMBER\t"<<port<<std::endl;
 
 	//Return Variable
 	int return_value=-1;
@@ -334,6 +354,12 @@ int msl::serial_read(const SERIAL port,void* buffer,const unsigned int size,cons
 	if(port==SERIAL_ERROR)
 		return -1;
 
+	//Fix for Linux Errors
+	#if(!defined(_WIN32)||defined(__CYGWIN__))
+		if(port>1024*1024)
+			return -1;
+	#endif
+
 	//Reading Variables
 	unsigned int bytes_unread=size;
 	long time_start=msl::millis();
@@ -367,6 +393,12 @@ int msl::serial_write(const SERIAL port,void* buffer,const unsigned int size,con
 	//Check for Bad Port
 	if(port==SERIAL_ERROR)
 		return -1;
+
+	//Fix for Linux Errors
+	#if(!defined(_WIN32)||defined(__CYGWIN__))
+		if(port>1024*1024)
+			return -1;
+	#endif
 
 	//Writing Variables
 	unsigned int bytes_unsent=size;
