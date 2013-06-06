@@ -295,7 +295,7 @@ SERIAL msl::serial_close(const SERIAL port)
 
 	return SERIAL_ERROR;
 }
-#include <iostream>
+
 //Serial Available Function (Checks if there are Bytes to be Read, -1 on Error)
 int msl::serial_available(const SERIAL port,const long time_out)
 {
@@ -308,8 +308,6 @@ int msl::serial_available(const SERIAL port,const long time_out)
 		if(port>1024*1024||port<0)
 			return -1;
 	#endif
-
-	std::cout<<"PORT NUMBER\t"<<port<<std::endl;
 
 	//Return Variable
 	int return_value=-1;
