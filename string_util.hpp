@@ -28,6 +28,9 @@ namespace msl
 		//Convert Variables
 		std::ostringstream ostr;
 
+		//Set Precision to 10 Digits
+		ostr.precision(10);
+
 		//Convert
 		ostr<<value;
 
