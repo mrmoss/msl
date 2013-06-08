@@ -207,6 +207,9 @@ int socket_write(const SOCKET socket,void* buffer,const unsigned int size,const 
 //String Utility Header
 #include "msl/string_util.hpp"
 
+//Time Utility Header
+#include "msl/time_util.hpp"
+
 //Vector Header
 #include <vector>
 
@@ -276,6 +279,9 @@ int main()
 				--ii;
 			}
 		}
+
+		//Give OS a Break
+		usleep(0);
 	}
 
 	//Call Me Plz T_T
