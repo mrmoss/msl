@@ -302,15 +302,12 @@ void service_client(msl::socket& client,const std::string& message)
 		istr>>request;
 		istr>>request;
 
-		//Remove Beginning "/"
-		request.erase(request.begin());
-
 		//Web Root Variable (Where your web files are)
 		std::string web_root="web";
 
 		//Check for Index
-		if(request=="")
-			request="index.html";
+		if(request=="/")
+			request="/index.html";
 
 		//Mime Type Variable (Default plain text)
 		std::string mime_type="text/plain";
@@ -343,8 +340,8 @@ void service_client(msl::socket& client,const std::string& message)
 		std::string file;
 
 		//Load File
-		if(msl::file_to_string(web_root+"/"+request,file))
-			client<<msl::http_pack_string(file,mime_type,true);
+		if(msl::file_to_string(web_root+request,file,true))
+			client<<msl::http_pack_string(file,mime_type,false);
 
 		//Bad File
 		else if(msl::file_to_string(web_root+"/not_found.html",file,true))
