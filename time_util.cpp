@@ -56,8 +56,8 @@
 		if(time_zone!=NULL)
 		{
 			_tzset();
-			(*time_zone).tz_minuteswest=_timezone/60;
-			(*time_zone).tz_dsttime=_daylight;
+			(*time_zone).tz_minuteswest=time_zone/60;
+			(*time_zone).tz_dsttime=0;
 		}
 
 		//Return Success
