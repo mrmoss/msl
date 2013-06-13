@@ -17,7 +17,7 @@
 
 //Windows Dependencies
 #if(defined(_WIN32)&&!defined(__CYGWIN__))
-	#include <winsock.h>
+	#include <winsock2.h>
 	#pragma comment(lib,"Ws2_32.lib")
 
 	#if(!defined(socklen_t))
