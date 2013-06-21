@@ -204,6 +204,9 @@ int socket_write(const SOCKET socket,void* buffer,const unsigned int size,const 
 //String Header
 #include <string>
 
+//String Stream Header
+#include <sstream>
+
 //String Utility Header
 #include "msl/string_util.hpp"
 
@@ -217,10 +220,17 @@ int socket_write(const SOCKET socket,void* buffer,const unsigned int size,const 
 void service_client(msl::socket& client,const std::string& message);
 
 //Main
-int main()
+int main(int argc,char* argv[])
 {
+	//Create Port
+	std::string server_port="8080";
+
+	//Get Command Line Port
+	if(argc>1)
+		server_port=argv[1];
+
 	//Create Server
-	msl::socket server("0.0.0.0:8080");
+	msl::socket server("0.0.0.0:"+server_port);
 	server.create_tcp();
 
 	//Check Server
