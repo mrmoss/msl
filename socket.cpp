@@ -168,21 +168,7 @@ bool msl::socket::good() const
 		return false;
 
 	//Check Reading Error
-	if(available()<0)
-		return false;
-
-	//Check Client Errors
-	if(!_hosting&&available()>0)
-	{
-		char temp;
-
-		//Try Reading
-		if(!socket_peek(_socket,&temp,1))
-			return false;
-	}
-
-	//Else Socket is Good
-	return true;
+	return (available()>=0);
 }
 
 //Create Function (Hosts a Socket Locally) (TCP)
