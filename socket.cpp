@@ -365,7 +365,7 @@ SOCKET socket_connect(const msl::ipv4 ip,const long time_out,const bool UDP)
 		ret=socket(AF_INET,type,0);
 
 		//Connect and Check for Good Socket
-		if(connect(ret,reinterpret_cast<sockaddr*>(&address),sizeof(address))!=SOCKET_ERROR)
+		if(connect(ret,reinterpret_cast<sockaddr*>(&address),sizeof(address))==0)
 			return ret;
 	}
 	while(msl::millis()-time_start<time_out);
