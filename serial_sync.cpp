@@ -93,14 +93,14 @@ void msl::serial_sync::update_rx()
 		}
 
 		//Parse Data
-		else if(_rx_counter>3&&_rx_counter<3+1+_rx_packet[3])
+		else if(_rx_counter>3&&_rx_counter<3+1+(uint32_t)_rx_packet[3])
 		{
 			//Increment Counter
 			++_rx_counter;
 		}
 
 		//Parse CRC
-		else if(_rx_counter==3+1+_rx_packet[3])
+		else if(_rx_counter==3+1+(uint32_t)_rx_packet[3])
 		{
 			//Check CRC
 			if(temp==calculate_crc(_rx_packet,_rx_counter))
