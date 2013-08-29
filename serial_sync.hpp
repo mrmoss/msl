@@ -64,8 +64,8 @@ namespace msl
 			msl::serial _serial;
 			int16_t _data[MSL_SERIALSYNC_VARIABLES];
 			uint8_t _flags[MSL_SERIALSYNC_VARIABLES];
-			uint8_t _tx_packet[3+1+MSL_SERIALSYNC_VARIABLES*2+1];
-			uint8_t _rx_packet[3+1+MSL_SERIALSYNC_VARIABLES*2+1];
+			uint8_t _tx_packet[3+1+MSL_SERIALSYNC_VARIABLES*3+1];
+			uint8_t _rx_packet[3+1+MSL_SERIALSYNC_VARIABLES*3+1];
 			uint32_t _rx_counter;
 	};
 }
