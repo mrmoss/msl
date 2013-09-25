@@ -68,14 +68,17 @@ void msl::webserver::update()
 	//Handle Clients
 	for(unsigned int ii=0;ii<_clients.size();++ii)
 	{
-		//Service Good Clients
-		if(_clients[ii].good())
+		//Dead Check Variable
+		bool dead=false;
+
+		//Get a Byte
+		while(_clients[ii].good()&&_clients[ii].available()>0)
 		{
 			//Temp
 			char byte='\n';
 
 			//Get a Byte
-			while(_clients[ii].available()>0&&_clients[ii].read(&byte,1)==1)
+			if(_clients[ii].read(&byte,1)==1)
 			{
 				//Add the Byte to Client Buffer
 				_client_messages[ii]+=byte;
@@ -87,10 +90,16 @@ void msl::webserver::update()
 					_client_messages[ii].clear();
 				}
 			}
+
+			//If There are Bytes to Read But None are Readable then Client is "dead"
+			else
+			{
+				dead=true;
+			}
 		}
 
 		//Disconnect Bad Clients
-		else
+		if(!_clients[ii].good()||dead)
 		{
 			_clients[ii].close();
 			_clients.erase(_clients.begin()+ii);
@@ -98,6 +107,7 @@ void msl::webserver::update()
 			--ii;
 		}
 	}
+
 
 	//Give OS a Break
 	usleep(0);
@@ -176,15 +186,15 @@ void msl::webserver::service_client(msl::socket& client,const std::string& messa
 			//Bad File
 			else if(msl::file_to_string(_web_directory+"/not_found.html",file,true))
 				client<<msl::http_pack_string(file);
-		}
 
-		//Close Connection
-		client.close();
+			else
+				client<<msl::http_pack_string("sorry...");
+		}
 	}
 
 	//Other Requests (Just kill connection...it's either hackers or idiots...)
 	else
 	{
-		client.close();
+			client.close();
 	}
 }
