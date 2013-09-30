@@ -167,7 +167,9 @@ bool msl::socket::good() const
 		return false;
 
 	//Check for Disconnected Socket (Magic Situation of Select=1 and RECV=0)
-	if(available()==1&&read(NULL,0)==0)
+	char temp;
+
+	if(available()>0&&socket_peek(_socket,&temp,1)==0)
 		return false;
 
 	//Check Reading Error
