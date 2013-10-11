@@ -23,7 +23,7 @@
 std::string msl::lookup_ip(const std::string& hostname)
 {
 	//Create Return IP String (Default is an invalid address)
-	std::string return_address="";
+	std::string return_address="169.254.57.249";
 
 	//Create IP Lookup Linked List
 	addrinfo* lookup;
