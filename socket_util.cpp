@@ -8,8 +8,13 @@
 //String Stream Header
 #include <sstream>
 
+//Windows Dependencies
+#if(defined(_WIN32)&&!defined(__CYGWIN__))
+	#include <winsock2.h>
+	#pragma comment(lib,"Ws2_32.lib")
+
 //Unix Dependencies
-#if(!defined(_WIN32)||defined(__CYGWIN__))
+#else
 	#include <netdb.h>
 	#include <arpa/inet.h>
 #endif
