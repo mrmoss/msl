@@ -1,6 +1,6 @@
 //Socket Utility Header
 //	Created By:		Mike Moss
-//	Modified On:	09/24/2013
+//	Modified On:	10/11/2013
 
 //Begin Define Guards
 #ifndef MSL_SOCKET_UTIL_H
@@ -12,7 +12,10 @@
 //MSL Namespace
 namespace msl
 {
-	//HTTP Create Header Function (Creates a header for sending
+	//IP Lookup Function (Returns the IP address of a hostname)
+	std::string lookup_ip(const std::string& hostname);
+
+	//HTTP Create Header Function (Creates a header for sending HTTP messages)
 	std::string http_create_header(const unsigned int message_size,const std::string& mime_type="text/html",const bool compressed=false);
 
 	//HTTP to ASCII Function (Converts a string with http symbols to ascii symbols)
@@ -34,6 +37,9 @@ using namespace msl;
 
 int main()
 {
+	std::cout<<"Get IP Address of google.com:"<<std::endl;
+	std::cout<<lookup_ip("google.com")<<std::endl<<std::endl;
+
 	std::cout<<"Create http header for a png with 3000 bytes of data:"<<std::endl;
 	std::cout<<"<------start------>"<<std::endl;
 	std::cout<<http_create_header(3000,"image/png");

@@ -1,6 +1,6 @@
 //Socket Source
 //	Created By:		Mike Moss
-//	Modified On:	09/24/2013
+//	Modified On:	10/11/2013
 
 //Required Libraries:
 //	wsock32 (windows only)
@@ -20,7 +20,7 @@
 //Time Utility Header
 #include "time_util.hpp"
 
-//IPv4 Address Class Constructor(Default)
+//IPv4 Address Class Constructor (Default)
 msl::ipv4::ipv4(const unsigned char ip[4],const unsigned short port):_port(port)
 {
 	//If There's Data
@@ -67,7 +67,7 @@ msl::ipv4& msl::ipv4::operator=(const msl::ipv4& copy)
 	return *this;
 }
 
-//IPv4 Address Class Build Function(Returns Raw Socket Address)
+//IPv4 Address Class Build Function (Returns Raw Socket Address)
 sockaddr_in msl::ipv4::build() const
 {
 	sockaddr_in ret;
@@ -78,7 +78,7 @@ sockaddr_in msl::ipv4::build() const
 	return ret;
 }
 
-//IPv4 Address Class String Accessor(X.X.X.X:PORT)
+//IPv4 Address Class String Accessor (X.X.X.X:PORT)
 std::string msl::ipv4::str() const
 {
 	std::ostringstream ostr;

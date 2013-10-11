@@ -1,6 +1,6 @@
 //Socket Utility Source
 //	Created By:		Mike Moss
-//	Modified On:	09/24/2013
+//	Modified On:	10/11/2013
 
 //Definitions for "socket_util.hpp"
 #include "socket_util.hpp"
@@ -8,7 +8,40 @@
 //String Stream Header
 #include <sstream>
 
-//HTTP Create Header Function
+//Unix Dependencies
+#if(!defined(_WIN32)||defined(__CYGWIN__))
+	#include <netdb.h>
+	#include <arpa/inet.h>
+#endif
+
+//IP Lookup Function (Returns the IP address of a hostname)
+std::string msl::lookup_ip(const std::string& hostname)
+{
+	//Create Return IP String (Default is an invalid address)
+	std::string return_address="";
+
+	//Create IP Lookup Linked List
+	addrinfo* lookup;
+
+	//Attempt IP Lookup
+	if(getaddrinfo(hostname.c_str(),NULL,NULL,&lookup)==0)
+	{
+		//Extract IP Address
+		in_addr ip_address;
+		ip_address.s_addr=((sockaddr_in*)(lookup->ai_addr))->sin_addr.s_addr;
+
+		//Set Return Value
+		return_address=std::string(inet_ntoa(ip_address));
+
+		//Free IP Lookup Linked List
+		freeaddrinfo(lookup);
+	}
+
+	//Return IP
+	return return_address;
+}
+
+//HTTP Create Header Function (Creates a header for sending HTTP messages)
 std::string msl::http_create_header(const unsigned int message_size,const std::string& mime_type,const bool compressed)
 {
 	//Create HTML Header
