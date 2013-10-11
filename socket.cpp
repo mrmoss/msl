@@ -254,8 +254,8 @@ SOCKET msl::socket::system_socket() const
 //Temporary Socket Variables
 static bool socket_inited=false;
 
-//Socket Initialize Function
-static void socket_init()
+//Socket Initialize Function (Sets up the use of sockets, operating system dependent...)
+void socket_init()
 {
 	//If Not Initialized
 	if(!socket_inited)

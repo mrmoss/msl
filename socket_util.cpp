@@ -5,12 +5,17 @@
 //Definitions for "socket_util.hpp"
 #include "socket_util.hpp"
 
+//Socket Header
+#include "socket.hpp"
+
 //String Stream Header
 #include <sstream>
 
 //Windows Dependencies
 #if(defined(_WIN32)&&!defined(__CYGWIN__))
+	#define _WIN32_WINNT 0x0501
 	#include <winsock2.h>
+	#include <ws2tcpip.h>
 	#pragma comment(lib,"Ws2_32.lib")
 
 //Unix Dependencies
@@ -22,6 +27,9 @@
 //IP Lookup Function (Returns the IP address of a hostname)
 std::string msl::lookup_ip(const std::string& hostname)
 {
+	//Initialize Sockets
+	socket_init();
+
 	//Create Return IP String (Default is an invalid address)
 	std::string return_address="169.254.57.249";
 

@@ -149,6 +149,9 @@ namespace msl
 	}
 }
 
+//Socket Initialize Function (Sets up the use of sockets, operating system dependent...)
+void socket_init();
+
 //Socket Create Function (Hosts a Socket Locally)
 SOCKET socket_create(const msl::ipv4 ip,const long time_out=0,const bool UDP=false,const unsigned int buffersize=200);
 
