@@ -105,16 +105,28 @@ bool msl::ends_with(const std::string& str,const std::string& end)
 	return false;
 }
 
+//To Lower Function (Returns a copy of a string that is all lower case)
 std::string msl::to_lower(const std::string& str)
 {
+	//Create Return String
 	std::string return_str=str;
-	std::transform(str.begin(),str.end(),return_str.begin(),::tolower);
+
+	//Convert to Lower Case
+	std::transform(str.begin(),str.end(),return_str.begin(),tolower);
+
+	//Return Lower Case String
 	return return_str;
 }
 
+//To Upper Function (Returns a copy of a string that is all upper case)
 std::string msl::to_upper(const std::string& str)
 {
+	//Create Return String
 	std::string return_str=str;
-	std::transform(str.begin(),str.end(),return_str.begin(),::toupper);
+
+	//Convert to Upper Case
+	std::transform(str.begin(),str.end(),return_str.begin(),toupper);
+
+	//Return Upper Case String
 	return return_str;
 }

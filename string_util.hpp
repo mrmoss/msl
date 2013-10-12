@@ -61,7 +61,10 @@ namespace msl
 	//Ends With Function (Checks if string ends with another string)
 	bool ends_with(const std::string& str,const std::string& end);
 
+	//To Lower Function (Returns a copy of a string that is all lower case)
 	std::string to_lower(const std::string& str);
+
+	//To Upper Function (Returns a copy of a string that is all upper case)
 	std::string to_upper(const std::string& str);
 }
 
@@ -105,8 +108,8 @@ int main()
 		std::cout<<"\tString ends with \"rld!\""<<std::endl<<std::endl;
 
 	std::string case_test="hElLo ThErE pArTnEr!";
-	std::cout<<msl::to_lower(case_test)<<std::endl;
-	std::cout<<msl::to_upper(case_test)<<std::endl;
+	std::cout<<to_lower(case_test)<<std::endl;
+	std::cout<<to_upper(case_test)<<std::endl;
 
 	return 0;
 }
