@@ -55,7 +55,8 @@ std::string msl::lookup_ip(const std::string& hostname)
 }
 
 //HTTP Create Header Function (Creates a header for sending HTTP messages)
-std::string msl::http_create_header(const unsigned int message_size,const std::string& mime_type,const bool compressed)
+std::string msl::http_create_header(const unsigned int message_size,const std::string& mime_type,
+	const bool compressed,const bool keepalive)
 {
 	//Create HTML Header
 	std::ostringstream header;
@@ -69,7 +70,10 @@ std::string msl::http_create_header(const unsigned int message_size,const std::s
 		header<<"Content-Encoding: gzip\n";
 
 	//Set Connection Type
-	header<<"Connection: close\n\n";
+	if(keepalive)
+		header<<"Connection: keep-alive\r\n\r\n";
+	else
+		header<<"Connection: close\r\n\r\n";
 
 	//Return HTML Header
 	return header.str();
@@ -131,7 +135,8 @@ std::string msl::http_to_ascii(std::string symbols)
 }
 
 //HTTP Pack String Function (Packages a string for http travel)
-std::string msl::http_pack_string(const std::string& message,const std::string& mime_type,const bool compressed)
+std::string msl::http_pack_string(const std::string& message,const std::string& mime_type,
+	const bool compressed,const bool keepalive)
 {
-	return msl::http_create_header(message.size(),mime_type,compressed)+message;
+	return msl::http_create_header(message.size(),mime_type,compressed,keepalive)+message;
 }

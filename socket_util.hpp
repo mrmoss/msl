@@ -16,13 +16,15 @@ namespace msl
 	std::string lookup_ip(const std::string& hostname);
 
 	//HTTP Create Header Function (Creates a header for sending HTTP messages)
-	std::string http_create_header(const unsigned int message_size,const std::string& mime_type="text/html",const bool compressed=false);
+	std::string http_create_header(const unsigned int message_size,const std::string& mime_type="text/html",
+		const bool compressed=false,const bool keepalive=true);
 
 	//HTTP to ASCII Function (Converts a string with http symbols to ascii symbols)
 	std::string http_to_ascii(std::string symbols);
 
 	//HTTP Pack String Function (Packages a string for http travel)
-	std::string http_pack_string(const std::string& message,const std::string& mime_type="text/html",const bool compressed=false);
+	std::string http_pack_string(const std::string& message,const std::string& mime_type="text/html",
+		const bool compressed=false,const bool keepalive=true);
 }
 
 //End Define Guards
