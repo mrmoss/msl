@@ -1,6 +1,6 @@
 //String Utility Header
 //	Created By:		Mike Moss
-//	Modified On:	03/12/2013
+//	Modified On:	10/12/2013
 
 //Begin Define Guards
 #ifndef MSL_STRING_UTIL_H
@@ -60,6 +60,9 @@ namespace msl
 
 	//Ends With Function (Checks if string ends with another string)
 	bool ends_with(const std::string& str,const std::string& end);
+
+	std::string to_lower(const std::string& str);
+	std::string to_upper(const std::string& str);
 }
 
 //End Define Guards
@@ -69,7 +72,7 @@ namespace msl
 /*
 #include <iostream>
 #include <string>
-#include "string_util.hpp"
+#include "msl/string_util.hpp"
 using namespace msl;
 
 int main()
@@ -99,7 +102,11 @@ int main()
 		std::cout<<"\tString starts with \"Hel\""<<std::endl;
 
 	if(ends_with(test,"world!"))
-		std::cout<<"\tString ends with \"rld!\""<<std::endl;
+		std::cout<<"\tString ends with \"rld!\""<<std::endl<<std::endl;
+
+	std::string case_test="hElLo ThErE pArTnEr!";
+	std::cout<<msl::to_lower(case_test)<<std::endl;
+	std::cout<<msl::to_upper(case_test)<<std::endl;
 
 	return 0;
 }

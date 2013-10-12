@@ -1,9 +1,12 @@
 //String Utility Source
 //	Created By:		Mike Moss
-//	Modified On:	03/12/2013
+//	Modified On:	10/12/2013
 
 //Definitions for "string_util.hpp"
 #include "string_util.hpp"
+
+//Algorithm Header
+#include <algorithm>
 
 //Convert To Boolean Function
 bool msl::to_bool(std::string value)
@@ -100,4 +103,18 @@ bool msl::ends_with(const std::string& str,const std::string& end)
 
 	//Default False
 	return false;
+}
+
+std::string msl::to_lower(const std::string& str)
+{
+	std::string return_str=str;
+	std::transform(str.begin(),str.end(),return_str.begin(),::tolower);
+	return return_str;
+}
+
+std::string msl::to_upper(const std::string& str)
+{
+	std::string return_str=str;
+	std::transform(str.begin(),str.end(),return_str.begin(),::toupper);
+	return return_str;
 }
