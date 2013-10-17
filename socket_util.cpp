@@ -1,6 +1,9 @@
 //Socket Utility Source
 //	Created By:		Mike Moss
-//	Modified On:	10/11/2013
+//	Modified On:	10/16/2013
+
+//Required Libraries:
+//	Ws2_32 (windows only)
 
 //Definitions for "socket_util.hpp"
 #include "socket_util.hpp"

@@ -1,6 +1,9 @@
 //Socket Utility Header
 //	Created By:		Mike Moss
-//	Modified On:	10/11/2013
+//	Modified On:	10/16/2013
+
+//Required Libraries:
+//	Ws2_32 (windows only)
 
 //Begin Define Guards
 #ifndef MSL_SOCKET_UTIL_H

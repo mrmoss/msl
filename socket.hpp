@@ -1,9 +1,9 @@
 //Socket Header
 //	Created By:		Mike Moss
-//	Modified On:	10/11/2013
+//	Modified On:	10/16/2013
 
 //Required Libraries:
-//	wsock32 (windows only)
+//	Ws2_32 (windows only)
 
 //Begin Define Guards
 #ifndef MSL_SOCKET_H
@@ -18,7 +18,6 @@
 //Windows Dependencies
 #if(defined(_WIN32)&&!defined(__CYGWIN__))
 	#include <winsock2.h>
-	#pragma comment(lib,"Ws2_32.lib")
 
 	#if(!defined(socklen_t))
 		typedef int socklen_t;
