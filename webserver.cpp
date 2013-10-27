@@ -133,15 +133,18 @@ void msl::webserver::service_client(msl::socket& client,const std::string& messa
 	if(msl::starts_with(message,"GET"))
 	{
 		//Create Parser
-		std::istringstream istr(msl::http_to_ascii(message));
+		std::istringstream istr(message);
 
 		//Parse the Request
 		std::string request;
 		istr>>request;
 		istr>>request;
 
+		//Translate Request
+		request=msl::http_to_ascii(request);
+
 		//If User Options Fail
-		if(_user_service_client==NULL||!_user_service_client(client,msl::http_to_ascii(message)))
+		if(_user_service_client==NULL||!_user_service_client(client,message))
 		{
 			//Check for Index
 			if(request=="/")

@@ -73,6 +73,9 @@ namespace msl
 //Socket Header
 #include "msl/socket.hpp"
 
+//Socket Utility Header
+#include "msl/socket_util.hpp"
+
 //String Stream Header
 #include <sstream>
 
@@ -126,6 +129,9 @@ bool service_client(msl::socket& client,const std::string& message)
 	std::string request;
 	istr>>request;
 	istr>>request;
+
+	//Translate Request
+	request=msl::http_to_ascii(request);
 
 	//Check For a Custom Request
 	if(request=="/custom_request")
