@@ -31,7 +31,8 @@ std::vector<std::string> msl::list_directory(const std::string& directory)
 {
 	//Temp Variables
 	std::vector<std::string> files;
-	std::string temp="";
+	std::string temp_str="";
+	char temp_char;
 
 	//Get File Listing
 	if(system((LS" "+directory+" > ._______msl_file_listing_______132584376582734651834.msl").c_str())==-1)
@@ -40,9 +41,22 @@ std::vector<std::string> msl::list_directory(const std::string& directory)
 	//Create Filestream
 	std::ifstream istr("._______msl_file_listing_______132584376582734651834.msl");
 
+	//Unset Skip White Space Flag
+	istr.unsetf(std::ios_base::skipws);
+
 	//Get Files
-	while(istr>>temp)
-		files.push_back(temp);
+	while(istr>>temp_char)
+	{
+		if(temp_char=='\n')
+		{
+			files.push_back(temp_str);
+			temp_str="";
+		}
+		else
+		{
+			temp_str+=temp_char;
+		}
+	}
 
 	//Close Filestream
 	istr.close();
