@@ -30,7 +30,7 @@ namespace msl
 	{
 		public:
 			//Constructor (Default)
-			webserver_threaded(const std::string& address="",bool(*user_service_client)(msl::socket& client,const std::string& message)=NULL,
+			webserver_threaded(const std::string& address,bool(*user_service_client)(msl::socket& client,const std::string& message)=NULL,
 				const std::string& web_directory="web");
 
 			//Boolean Operator (Tests if Server is Good)
