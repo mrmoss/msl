@@ -56,7 +56,7 @@ static unsigned int load_texture(const std::string& filename,unsigned int& width
 
 //Sprite Class Constructor (Default, Raw OpenGL Texture)
 msl::sprite::sprite(const unsigned int texture,const unsigned int number_of_frames)
-	:_texture(texture),_number_of_frames(number_of_frames)
+	:_texture(texture),_number_of_frames(number_of_frames),_origin_x(0.0),_origin_y(0.0)
 {
 	//Get Texture Size
 	glEnable(GL_TEXTURE_2D);
@@ -69,7 +69,8 @@ msl::sprite::sprite(const unsigned int texture,const unsigned int number_of_fram
 }
 
 //Sprite Class Constructor (String Filename)
-msl::sprite::sprite(const std::string& filename,const unsigned int number_of_frames):_texture(0),_number_of_frames(number_of_frames)
+msl::sprite::sprite(const std::string& filename,const unsigned int number_of_frames)
+	:_texture(0),_number_of_frames(number_of_frames),_origin_x(0.0),_origin_y(0.0)
 {
 	//Assign Members
 	unsigned int width=0;
@@ -97,10 +98,17 @@ unsigned int msl::sprite::width() const
 	return _width/_number_of_frames;
 }
 
-//Sprite Class Memeber Accessor
+//Sprite Class Height Member Accessor
 unsigned int msl::sprite::height() const
 {
 	return _height;
+}
+
+//Sprite Class Set Origin Mutator
+void msl::sprite::set_origin(const double x,const double y)
+{
+	_origin_x=x;
+	_origin_y=y;
 }
 
 //Sprite Class Draw Function
@@ -135,25 +143,30 @@ void msl::sprite::draw(const double x,const double y,const double rotation,const
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,filter);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,filter);
 
-	//Convert Degrees to Radians
-	double rotation_in_radians=-rotation*(M_PI/180.0);
+	//Limit Rotation
+	double rotation_limited=rotation;
+
+	while(rotation_limited>=360)
+		rotation_limited-=360;
+
+	while(rotation_limited<=0)
+		rotation_limited+=360;
 
 	//Draw Image Frame with Rotation and Alpha Value (0.001 and 0.999 are to Remove Bad Borders)
 	glPushMatrix();
+		glTranslated(x,y,0);
+		glRotated(rotation_limited+180,0,0,1);
+		glTranslated(_origin_x,_origin_y,0);
 		glBegin(GL_QUADS);
-			glColor4f(color.r,color.g,color.b,color.a);
-			glTexCoord2f(frame_to_draw_begin+0.001,0.999);
-			glVertex2d(x-frame_width_halfed*cos(rotation_in_radians)-frame_height_halfed*sin(rotation_in_radians),
-				y+frame_width_halfed*sin(rotation_in_radians)-frame_height_halfed*cos(rotation_in_radians));
-			glTexCoord2f(frame_to_draw_end-0.001,0.999);
-			glVertex2d(x+frame_width_halfed*cos(rotation_in_radians)-frame_height_halfed*sin(rotation_in_radians),
-				y-frame_width_halfed*sin(rotation_in_radians)-frame_height_halfed*cos(rotation_in_radians));
-			glTexCoord2f(frame_to_draw_end-0.001,0.001);
-			glVertex2d(x+frame_width_halfed*cos(rotation_in_radians)+frame_height_halfed*sin(rotation_in_radians),
-				y-frame_width_halfed*sin(rotation_in_radians)+frame_height_halfed*cos(rotation_in_radians));
-			glTexCoord2f(frame_to_draw_begin+0.001,0.001);
-			glVertex2d(x-frame_width_halfed*cos(rotation_in_radians)+frame_height_halfed*sin(rotation_in_radians),
-				y+frame_width_halfed*sin(rotation_in_radians)+frame_height_halfed*cos(rotation_in_radians));
+			glColor4d(color.r,color.g,color.b,color.a);
+			glTexCoord2d(frame_to_draw_begin+0.001,0.999);
+			glVertex2d(frame_width_halfed,frame_height_halfed);
+			glTexCoord2d(frame_to_draw_end-0.001,0.999);
+			glVertex2d(-frame_width_halfed,frame_height_halfed);
+			glTexCoord2d(frame_to_draw_end-0.001,0.001);
+			glVertex2d(-frame_width_halfed,-frame_height_halfed);
+			glTexCoord2d(frame_to_draw_begin+0.001,0.001);
+			glVertex2d(frame_width_halfed,-frame_height_halfed);
 			glColor4f(1,1,1,1);
 		glEnd();
 	glPopMatrix();

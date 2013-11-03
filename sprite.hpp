@@ -45,6 +45,9 @@ namespace msl
 			unsigned int width() const;
 			unsigned int height() const;
 
+			//Sprite Class Set Origin Mutator
+			void set_origin(const double x,const double y);
+
 			//Draw Function
 			void draw(const double x,const double y,const double rotation=0.0,const unsigned int frame=0,
 				const double scale_x=1,const double scale_y=1,
@@ -56,6 +59,8 @@ namespace msl
 			unsigned int _number_of_frames;
 			unsigned int _width;
 			unsigned int _height;
+			double _origin_x;
+			double _origin_y;
 	};
 }
 
