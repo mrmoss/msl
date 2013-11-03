@@ -54,16 +54,10 @@ static unsigned int load_texture(const std::string& filename,unsigned int& width
 	return return_texture;
 }
 
-//Sprite Class Static Variable Definitions
-std::map<unsigned int,int> msl::sprite::_texture_counts;
-
 //Sprite Class Constructor (Default, Raw OpenGL Texture)
 msl::sprite::sprite(const unsigned int texture,const unsigned int number_of_frames)
 	:_texture(texture),_number_of_frames(number_of_frames)
 {
-	//Track References to Textures
-	add_reference();
-
 	//Get Texture Size
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D,_texture);
@@ -77,9 +71,6 @@ msl::sprite::sprite(const unsigned int texture,const unsigned int number_of_fram
 //Sprite Class Constructor (String Filename)
 msl::sprite::sprite(const std::string& filename,const unsigned int number_of_frames):_texture(0),_number_of_frames(number_of_frames)
 {
-	//Track References to Textures
-	add_reference();
-
 	//Assign Members
 	unsigned int width=0;
 	unsigned int height=0;
@@ -87,42 +78,11 @@ msl::sprite::sprite(const std::string& filename,const unsigned int number_of_fra
 	_width=width;
 	_height=height;
 }
-
-//Copy Constructor
-msl::sprite::sprite(const msl::sprite& copy):_texture(copy._texture),_number_of_frames(copy._number_of_frames),_width(copy._width),_height(copy._height)
+//Release Texture Function (Releases OpenGL Memory)
+void msl::sprite::release()
 {
-	//Track References to Textures
-	add_reference();
-}
-
-//Destructor
-msl::sprite::~sprite()
-{
-	//Track References to Textures
-	remove_reference();
-}
-
-//Copy Assignment Operator
-msl::sprite& msl::sprite::operator=(const msl::sprite& copy)
-{
-	//Protect Against Self Assignment
-	if(this!=&copy)
-	{
-		//Track References to Textures
-		remove_reference();
-
-		//Assign Members
-		_texture=copy._texture;
-		_number_of_frames=copy._number_of_frames;
-		_width=copy._width;
-		_height=copy._height;
-
-		//Track References to Textures
-		add_reference();
-	}
-
-	//Return
-	return *this;
+	if(_texture!=0)
+		glDeleteTextures(1,&_texture);
 }
 
 //Sprite Class Number of Frames Accessor
@@ -203,26 +163,4 @@ void msl::sprite::draw(const double x,const double y,const double rotation,const
 
 	//Disable Transparency
 	glDisable(GL_BLEND);
-}
-
-//Sprite Class Add Reference Function
-void msl::sprite::add_reference()
-{
-	//Increment Reference
-	if(_texture!=0)
-		++msl::sprite::_texture_counts[_texture];
-}
-
-//Sprite Class Remove Reference Function
-void msl::sprite::remove_reference()
-{
-	//Decrement Reference
-	if(_texture!=0)
-	{
-		--msl::sprite::_texture_counts[_texture];
-
-		//If No More References Delete Texture
-		if(_texture_counts[_texture]<=0)
-			glDeleteTextures(1,&_texture);
-	}
 }

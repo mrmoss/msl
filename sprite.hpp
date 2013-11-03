@@ -35,14 +35,8 @@ namespace msl
 			//Constructor (String Filename)
 			sprite(const std::string& filename,const unsigned int number_of_frames=1);
 
-			//Copy Constructor
-			sprite(const sprite& copy);
-
-			//Destructor
-			~sprite();
-
-			//Copy Assignment Operator
-			sprite& operator=(const sprite& copy);
+			//Release Texture Function (Releases OpenGL Memory)
+			void release();
 
 			//Number of Frames Accessor
 			unsigned int number_of_frames() const;
@@ -57,15 +51,6 @@ namespace msl
 				const msl::color& color=msl::color(1,1,1,1),const bool smooth=true) const;
 
 		private:
-			//Add Reference Function
-			void add_reference();
-
-			//Remove Reference Function
-			void remove_reference();
-
-			//Static Variables
-			static std::map<unsigned int,int> _texture_counts;
-
 			//Member Variables
 			unsigned int _texture;
 			unsigned int _number_of_frames;
