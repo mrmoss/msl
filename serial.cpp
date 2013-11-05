@@ -215,10 +215,6 @@ SERIAL msl::serial_connect(const std::string& name,const unsigned int baud)
 		if(port>1024*1024||port<0)
 			return -1;
 
-		//Set Serial Port to Non-blocking Mode
-		if(fcntl(port,F_SETFL,FNDELAY)==-1)
-			return serial_close(port);
-
 		//Check for Valid Baud Rate
 		speed_t baud_rate;
 

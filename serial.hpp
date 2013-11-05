@@ -30,8 +30,8 @@
 //MSL Namespace
 namespace msl
 {
-	//Socket Class Declaration (NOT SURE IF BEING A STD::OSTREAM CHILD IS THE WAY TO GO HERE)
-	class serial:public std::ostream
+	//Serial Class Declaration
+	class serial
 	{
 		public:
 			//Constructor (Default)
@@ -86,22 +86,6 @@ namespace msl
 			unsigned int _baud;
 			long _time_out;
 	};
-
-	//Serial Class Stream Operator (Templated Function)
-	template <typename T> msl::serial& operator<<(msl::serial& lhs,const T& rhs)
-	{
-		//Create a String Stream
-		std::ostringstream ostr;
-
-		//Put in Data
-		ostr<<rhs;
-
-		//Write Data
-		lhs.write(reinterpret_cast<void*>(const_cast<char*>(ostr.str().c_str())),ostr.str().size());
-
-		//Return Stream
-		return lhs;
-	}
 
 	//Serial Connection Function (Connects to a Port)
 	SERIAL serial_connect(const std::string& name,const unsigned int baud);
