@@ -177,6 +177,23 @@ unsigned int msl::json::size() const
 	return _data.size();
 }
 
+//Set Operator (Sets a variable to a value) (JSON Version)
+void msl::json::set(const std::string& lhs,const msl::json& rhs)
+{
+	std::string escape_quotes=rhs.str();
+
+	for(unsigned int ii=0;ii<escape_quotes.size();++ii)
+	{
+		if(escape_quotes[ii]=='\"')
+		{
+			escape_quotes.insert(ii,"\\");
+			++ii;
+		}
+	}
+
+	_data[lhs]=escape_quotes;
+}
+
 //Get Operator (Returns variable from an index)
 std::string msl::json::get(const unsigned int index)
 {
@@ -204,6 +221,21 @@ std::string msl::json::get(const std::string& index)
 	return _data[index];
 }
 
+//Get Object Operator (Returns the value of a variable as an object)
+msl::json msl::json::get_object(const std::string& index)
+{
+	//Get Current Value as a String
+	std::string temp_str=get(index);
+
+	//Go Through String, Unescape Quotes
+	for(unsigned int jj=0;jj<temp_str.size();++jj)
+		if(temp_str[jj]=='\\'&&jj+1<temp_str.size()&&temp_str[jj+1]=='\"')
+			temp_str.erase(temp_str.begin()+jj);
+
+	//Return as Object
+	return msl::json(temp_str);
+}
+
 //String Function (Returns the JSON string)
 std::string msl::json::str() const
 {
@@ -216,13 +248,8 @@ std::string msl::json::str() const
 		//Add Variable to String
 		json_string+="\""+ii->first+"\":";
 
-		//Check for JSON Object Value
-		if(msl::starts_with(ii->second,"{")&&msl::ends_with(ii->second,"}"))
-			json_string+=ii->second;
-
-		//Other Data Value
-		else
-			json_string+="\""+ii->second+"\"";
+		//Add Value to String
+		json_string+="\""+ii->second+"\"";
 
 		//Get Next Variable
 		std::map<std::string,std::string>::const_iterator next=ii;
