@@ -62,10 +62,10 @@ namespace msl
 			int available() const;
 
 			//Read Function (Returns Number of Bytes Read, -1 on Error)
-			int read(void* buffer,const unsigned int size);
+			int read(void* buffer,const unsigned int size,const unsigned int time_out=0);
 
 			//Write Function (Returns Number of Bytes Sent, -1 on Error)
-			int write(void* buffer,const unsigned int size);
+			int write(void* buffer,const unsigned int size,const unsigned int time_out=0);
 
 			//Connection Timeout Mutator
 			void set_timeout(const long time_out);

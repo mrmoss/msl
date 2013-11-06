@@ -63,11 +63,11 @@
 #endif
 
 //Constructor(Default)
-msl::serial::serial(const std::string& name,const unsigned int baud):_port(SERIAL_ERROR),_name(name),_baud(baud),_time_out(200)
+msl::serial::serial(const std::string& name,const unsigned int baud):_port(SERIAL_ERROR),_name(name),_baud(baud)
 {}
 
 //Copy Constructor
-msl::serial::serial(const msl::serial& copy):_port(copy._port),_name(copy._name),_baud(copy._baud),_time_out(copy._time_out)
+msl::serial::serial(const msl::serial& copy):_port(copy._port),_name(copy._name),_baud(copy._baud)
 {}
 
 //Copy Assignment Operator
@@ -78,7 +78,6 @@ msl::serial& msl::serial::operator=(const msl::serial& copy)
 		_port=copy._port;
 		_name=copy._name;
 		_baud=copy._baud;
-		_time_out=copy._time_out;
 	}
 
 	return *this;
@@ -127,27 +126,15 @@ int msl::serial::available() const
 }
 
 //Read Function (Returns -1 on Error Else Returns Number of Bytes Read)
-int msl::serial::read(void* buffer,const unsigned int size)
+int msl::serial::read(void* buffer,const unsigned int size,const unsigned int time_out)
 {
-	return serial_read(_port,buffer,size,_time_out);
+	return serial_read(_port,buffer,size,time_out);
 }
 
 //Write Function (Returns -1 on Error Else Returns Number of Bytes Sent)
-int msl::serial::write(void* buffer,const unsigned int size)
+int msl::serial::write(void* buffer,const unsigned int size,const unsigned int time_out)
 {
-	return serial_write(_port,buffer,size,_time_out);
-}
-
-//Connection Timeout Mutator
-void msl::serial::set_timeout(const long time_out)
-{
-	_time_out=time_out;
-}
-
-//Connection Timeout Accessor
-long msl::serial::timeout() const
-{
-	return _time_out;
+	return serial_write(_port,buffer,size,time_out);
 }
 
 //System Port Accessor
