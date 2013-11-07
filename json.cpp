@@ -14,160 +14,150 @@ std::ostream& operator<<(std::ostream& lhs,const msl::json& rhs)
 //Constructor (Default)
 msl::json::json(const std::string& json_string)
 {
-	//States Enum for State Machine
-	enum state
+	//Error Variable
+	bool error=false;
+
+	//Get Data Between Brackets
+	std::string temp=msl::extract_between(json_string,'{','}',false);
+
+	//Parse Data
+	while(temp.size()>0)
 	{
-		bracket,
-		quote_a,
-		variable,
-		colon,
-		quote_b,
-		value,
-		comma,
-		done,
-		error
-	};
+		//Remove Whitespace
+		while(temp.size()>0&&isspace(temp[0]))
+			temp.erase(0,1);
 
-	//Parsing Variables
-	state parse_state=bracket;
-	std::string parse_variable="";
-	std::string parse_value="";
-	bool skip_whitespace=true;
+		//Get Variable Name
+		std::string var=msl::extract_between(temp,'\"','\"',true);
+		temp.erase(0,var.size());
+		var=msl::extract_between(var,'\"','\"',false);
 
-	//Go Through JSON Sting
-	for(unsigned int ii=0;ii<json_string.size();++ii)
-	{
-		//Skip Whitespace
-		if(skip_whitespace)
+		//Bad Variable Name
+		if(var=="")
 		{
-			while(ii<json_string.size()&&(json_string[ii]==' '||json_string[ii]=='\t'||json_string[ii]=='\r'||json_string[ii]=='\n'))
-				++ii;
-
-			skip_whitespace=false;
+			error=true;
+			break;
 		}
 
-		//Look For Opening Bracket
-		if(parse_state==bracket)
-		{
-			//Default Error
-			parse_state=error;
+		//Remove Whitespace
+		while(temp.size()>0&&isspace(temp[0]))
+			temp.erase(0,1);
 
-			//Found, Look For Opening Quote (Variable)
-			if(json_string[ii]=='{')
-			{
-				parse_state=quote_a;
-				skip_whitespace=true;
-			}
+		//Remove Colon
+		if(temp.size()>0&&temp[0]==':')
+		{
+			temp.erase(0,1);
 		}
 
-		//Look For Opening Quote (Variable)
-		else if(parse_state==quote_a)
+		//No Colon, Error
+		else
 		{
-			//Default Error
-			parse_state=error;
-
-			//Found, Look For Variable
-			if(json_string[ii]=='\"')
-			{
-				parse_state=variable;
-				parse_variable="";
-			}
+			error=true;
+			break;
 		}
 
+		//Remove Whitespace
+		while(temp.size()>0&&isspace(temp[0]))
+			temp.erase(0,1);
 
-		//Look For Variable
-		else if(parse_state==variable)
+		//Variable Value Variable
+		std::string val="";
+
+		//Check Size
+		if(temp.size()>0)
 		{
-			//Found End Quote Without a Trailing Slash, Look For Colon
-			if(json_string[ii]=='\"'&&ii>0&&json_string[ii-1]!='\\')
+			//Extract Object
+			if(temp[0]=='{')
 			{
-				parse_state=colon;
-				skip_whitespace=true;
+				//Get Object
+				val=msl::extract_between(temp,'{','}',true);
+				temp.erase(0,val.size());
 			}
 
-			//Else Add to Variable
+			//Extract String ("")
+			else if(temp[0]=='\"')
+			{
+				//Get String
+				val=msl::extract_until(temp,',',false);
+				temp.erase(0,val.size());
+
+				//Remove Whitespace At End of String
+				while(val.size()>0&&std::isspace(val[val.size()-1]))
+					val.erase(val.size()-1,1);
+
+				//Valid String, Remove Quotes
+				if(val.size()>=2&&val[0]=='\"'&&val[val.size()-1]=='\"')
+				{
+					val=val.substr(1,val.size()-2);
+				}
+				//Bad String
+				else
+				{
+					error=true;
+					break;
+				}
+			}
+
+			//Extract Number
 			else
 			{
-				parse_variable+=json_string[ii];
-			}
-		}
+				//Get Number
+				val=msl::extract_until(temp,',',false);
+				temp.erase(0,val.size());
 
-		//Look For Colon
-		else if(parse_state==colon)
-		{
-			//Default Error
-			parse_state=error;
+				//Remove Whitespace At End of Number
+				while(val.size()>0&&std::isspace(val[val.size()-1]))
+					val.erase(val.size()-1,1);
 
-			//Found Colon, Look For Opening Quote (Value)
-			if(json_string[ii]==':')
-			{
-				parse_state=quote_b;
-				skip_whitespace=true;
-			}
-		}
+				//Period Finder
+				bool found_period=false;
 
-		//Look For Opening Quote (Variable)
-		else if(parse_state==quote_b)
-		{
-			//Default Error
-			parse_state=error;
+				//Check for Valid Number
+				for(unsigned int ii=0;ii<val.size();++ii)
+				{
+					//Non-Number or Period or Mutiple Periods
+					if((!std::isdigit(val[ii])&&val[ii]!='.')||(val[ii]=='.'&&found_period))
+					{
+						error=true;
+						break;
+					}
 
-			//Found, Look For Value
-			if(json_string[ii]=='\"')
-			{
-				parse_state=value;
-				parse_value="";
-			}
-		}
-
-		//Look For Variable
-		else if(parse_state==value)
-		{
-			//Found End Quote Without a Trailing Slash, Look For Comma
-			if(json_string[ii]=='\"'&&ii>0&&json_string[ii-1]!='\\')
-			{
-				set(parse_variable,parse_value);
-				parse_state=comma;
-				skip_whitespace=true;
+					//Look for Multiple Periods
+					if(val[ii]=='.')
+						found_period=true;
+				}
 			}
 
-			//Else Add to Value
-			else
-			{
-				parse_value+=json_string[ii];
-			}
-		}
+			//Remove Whitespace
+			while(temp.size()>0&&isspace(temp[0]))
+				temp.erase(0,1);
 
-		//Look For Comma
-		else if(parse_state==comma)
-		{
-			//Default Error
-			parse_state=error;
-
-			//Found Comma, Look For Opening Quote (Variable)
-			if(json_string[ii]==',')
+			//Remove Comma
+			if(temp.size()>0&&temp[0]==',')
 			{
-				parse_state=quote_a;
-				skip_whitespace=true;
+				temp.erase(0,1);
 			}
 
-			//Else Found Closing Bracket, Exit
-			else if(json_string[ii]=='}')
+			//No Comma, Error
+			else if(temp.size()>0)
 			{
-				parse_state=done;
+				error=true;
 				break;
 			}
 		}
 
-		//Found Error, Break
+		//On Error
 		else
 		{
-			break;
+			error=true;
 		}
+
+		//Add Variable
+		set(var,val);
 	}
 
-	//If Error, Clear Variables
-	if(parse_state!=done)
+	//Errors Return Empty JSON Object
+	if(error)
 		_data.clear();
 }
 
@@ -175,23 +165,6 @@ msl::json::json(const std::string& json_string)
 unsigned int msl::json::size() const
 {
 	return _data.size();
-}
-
-//Set Operator (Sets a variable to a value) (JSON Version)
-void msl::json::set(const std::string& lhs,const msl::json& rhs)
-{
-	std::string escape_quotes=rhs.str();
-
-	for(unsigned int ii=0;ii<escape_quotes.size();++ii)
-	{
-		if(escape_quotes[ii]=='\"')
-		{
-			escape_quotes.insert(ii,"\\");
-			++ii;
-		}
-	}
-
-	_data[lhs]=escape_quotes;
 }
 
 //Get Operator (Returns variable from an index)
@@ -219,21 +192,6 @@ std::string msl::json::get(const unsigned int index)
 std::string msl::json::get(const std::string& index)
 {
 	return _data[index];
-}
-
-//Get Object Operator (Returns the value of a variable as an object)
-msl::json msl::json::get_object(const std::string& index)
-{
-	//Get Current Value as a String
-	std::string temp_str=get(index);
-
-	//Go Through String, Unescape Quotes
-	for(unsigned int jj=0;jj<temp_str.size();++jj)
-		if(temp_str[jj]=='\\'&&jj+1<temp_str.size()&&temp_str[jj+1]=='\"')
-			temp_str.erase(temp_str.begin()+jj);
-
-	//Return as Object
-	return msl::json(temp_str);
 }
 
 //String Function (Returns the JSON string)
