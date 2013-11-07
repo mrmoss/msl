@@ -66,6 +66,15 @@ namespace msl
 
 	//To Upper Function (Returns a copy of a string that is all upper case)
 	std::string to_upper(const std::string& str);
+
+	//Extract Until Function (Returns a string containing data from the start of the passed string until
+	//	the delimiter is reached).
+	std::string extract_until(const std::string& str,const char until,const bool include_delimiter=false);
+
+	//Extract Between Function (Returns a string containing data between open and close characters.
+	//	Supports different and same open/close characters.)
+	std::string extract_between(const std::string& str,const char open_char,const char close_char,
+		const bool include_delimiters=false);
 }
 
 //End Define Guards

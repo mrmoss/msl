@@ -130,3 +130,105 @@ std::string msl::to_upper(const std::string& str)
 	//Return Upper Case String
 	return return_str;
 }
+
+//Extract Until Function (Returns a string containing data from the start of the passed string until
+//	the delimiter is reached).
+std::string msl::extract_until(const std::string& str,const char until,const bool include_delimiter)
+{
+	//Return String Variable
+	std::string return_string="";
+
+	//Parse Passed String
+	for(unsigned int ii=0;ii<str.size();++ii)
+	{
+		//Look for Delimiter Character
+		if(str[ii]==until)
+		{
+			//Add Delimiter If Needed
+			if(include_delimiter)
+				return_string+=str[ii];
+
+			//Break;
+			break;
+		}
+
+		//Extract Data Until Delimiter
+		else
+		{
+			return_string+=str[ii];
+		}
+	}
+
+	//Return Extracted Data
+	return return_string;
+}
+
+//Extract Between Function (Returns a string containing data between open and close characters.
+//	Supports different and same open/close characters.)
+std::string msl::extract_between(const std::string& str,const char open_char,const char close_char,
+	const bool include_delimiters)
+{
+	//Variables for Counting Opens and Closes
+	unsigned int open=0;
+	unsigned int close=0;
+
+	//Variable to Determine Whether to Extract Data or Not
+	bool extract=false;
+
+	//Return String Variable
+	std::string return_string="";
+
+	//Swap Variable Used When Open and Close Delimiters are the Same Symbol
+	bool swap=false;
+
+	//Parse Passed String
+	for(unsigned int ii=0;ii<str.size();++ii)
+	{
+		//Look for Open Character
+		if(str[ii]==open_char&&(!swap||open_char!=close_char))
+		{
+			//Increment Count
+			++open;
+
+			//Start Look for End (When Open and Close Delimiters are the Same Symbol)
+			swap=true;
+		}
+
+		//Look for Close Character
+		else if(str[ii]==close_char&&(swap||open_char!=close_char))
+		{
+			//Increment Count
+			++close;
+
+			//Start Look for End (When Open and Close Delimiters are the Same Symbol)
+			swap=false;
+		}
+
+		//Check for Error (Reached end of passed string without finding last close character)
+		if(ii==str.size()-1&&open!=close)
+			return "";
+
+		//If Extracting Data
+		if(extract)
+		{
+			//Found Last Close, Break
+			if(open==close)
+				break;
+
+			//Extract Data Between Open and Close
+			else
+				return_string+=str[ii];
+		}
+
+		//If Open is Found, Start Extracting Data
+		if(open!=0)
+			extract=true;
+	}
+
+	//Add Delimiters If Needed
+	if(include_delimiters)
+		return_string=open_char+return_string+close_char;
+
+	//Return Extracted Data
+	return return_string;
+}
