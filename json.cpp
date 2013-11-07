@@ -11,13 +11,15 @@ std::ostream& operator<<(std::ostream& lhs,const msl::json& rhs)
 	return (lhs<<rhs.str());
 }
 
-//Constructor (Default, if error is found json contains only only entry, error.
-//	Error shows the position of the error in the passed string.)
+//Constructor (Default, if error is found json contains only only entry, "error".
+//	Error is an object containing "what", the error message, and "position",
+//	the position of the error in the passed string.)
 msl::json::json(const std::string& json_string)
 {
 	//Error Variables
 	bool error=false;
 	unsigned int error_position=1;
+	std::string error_what="";
 
 	//Get Data Between Brackets
 	std::string temp=msl::extract_between(json_string,'{','}',false);
@@ -43,6 +45,7 @@ msl::json::json(const std::string& json_string)
 		//Bad Variable Name
 		if(var=="")
 		{
+			error_what="bad variable name";
 			error=true;
 			break;
 		}
@@ -68,6 +71,7 @@ msl::json::json(const std::string& json_string)
 		//No Colon, Error
 		else
 		{
+			error_what="colon expected";
 			error=true;
 			break;
 		}
@@ -114,6 +118,7 @@ msl::json::json(const std::string& json_string)
 				//Bad String
 				else
 				{
+					error_what="invalid string";
 					error=true;
 					break;
 				}
@@ -142,6 +147,7 @@ msl::json::json(const std::string& json_string)
 					//Non-Number or Period or Mutiple Periods
 					if((!std::isdigit(val[ii])&&val[ii]!='.')||(val[ii]=='.'&&found_period))
 					{
+						error_what="invalid variable value";
 						error=true;
 						break;
 					}
@@ -175,6 +181,7 @@ msl::json::json(const std::string& json_string)
 			//No Comma, Error
 			else if(temp.size()>0)
 			{
+				error_what="comma expected";
 				error=true;
 				break;
 			}
@@ -183,6 +190,7 @@ msl::json::json(const std::string& json_string)
 		//On Error
 		else
 		{
+			error_what="unexpected end of object";
 			error=true;
 		}
 
@@ -190,11 +198,17 @@ msl::json::json(const std::string& json_string)
 		set(var,val);
 	}
 
-	//Errors Return Empty JSON Object
+	//On Errors
 	if(error)
 	{
+		//Clear Data
 		_data.clear();
-		set("error",error_position);
+
+		//Create and Set Error Object
+		msl::json error_object;
+		error_object.set("what",error_what);
+		error_object.set("position",error_position);
+		set("error",error_object);
 	}
 }
 
@@ -202,6 +216,12 @@ msl::json::json(const std::string& json_string)
 unsigned int msl::json::size() const
 {
 	return _data.size();
+}
+
+//Set Operator (Sets a variable to a value) (JSON Version)
+void msl::json::set(const std::string& lhs,const json& rhs)
+{
+	set(lhs,rhs.str());
 }
 
 //Get Operator (Returns variable from an index)
