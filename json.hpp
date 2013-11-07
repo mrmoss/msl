@@ -25,7 +25,8 @@ namespace msl
 	class json
 	{
 		public:
-			//Constructor (Default)
+			//Constructor (Default, if error is found json contains only only entry, error.
+			//	Error shows the position of the error in the passed string.)
 			json(const std::string& json_string="");
 
 			//Size Accessor (Returns number of variables)

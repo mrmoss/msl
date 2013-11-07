@@ -11,11 +11,13 @@ std::ostream& operator<<(std::ostream& lhs,const msl::json& rhs)
 	return (lhs<<rhs.str());
 }
 
-//Constructor (Default)
+//Constructor (Default, if error is found json contains only only entry, error.
+//	Error shows the position of the error in the passed string.)
 msl::json::json(const std::string& json_string)
 {
-	//Error Variable
+	//Error Variables
 	bool error=false;
+	unsigned int error_position=1;
 
 	//Get Data Between Brackets
 	std::string temp=msl::extract_between(json_string,'{','}',false);
@@ -25,12 +27,18 @@ msl::json::json(const std::string& json_string)
 	{
 		//Remove Whitespace
 		while(temp.size()>0&&isspace(temp[0]))
+		{
 			temp.erase(0,1);
+			++error_position;
+		}
 
 		//Get Variable Name
 		std::string var=msl::extract_between(temp,'\"','\"',true);
 		temp.erase(0,var.size());
 		var=msl::extract_between(var,'\"','\"',false);
+
+		//Update Error Postion
+		++error_position;
 
 		//Bad Variable Name
 		if(var=="")
@@ -39,14 +47,22 @@ msl::json::json(const std::string& json_string)
 			break;
 		}
 
+		//Update Error Position
+		error_position+=var.size();
+		++error_position;
+
 		//Remove Whitespace
 		while(temp.size()>0&&isspace(temp[0]))
+		{
 			temp.erase(0,1);
+			++error_position;
+		}
 
 		//Remove Colon
 		if(temp.size()>0&&temp[0]==':')
 		{
 			temp.erase(0,1);
+			++error_position;
 		}
 
 		//No Colon, Error
@@ -58,7 +74,10 @@ msl::json::json(const std::string& json_string)
 
 		//Remove Whitespace
 		while(temp.size()>0&&isspace(temp[0]))
+		{
 			temp.erase(0,1);
+			++error_position;
+		}
 
 		//Variable Value Variable
 		std::string val="";
@@ -72,6 +91,7 @@ msl::json::json(const std::string& json_string)
 				//Get Object
 				val=msl::extract_between(temp,'{','}',true);
 				temp.erase(0,val.size());
+				error_position+=val.size();
 			}
 
 			//Extract String ("")
@@ -80,6 +100,7 @@ msl::json::json(const std::string& json_string)
 				//Get String
 				val=msl::extract_until(temp,',',false);
 				temp.erase(0,val.size());
+				error_position+=val.size();
 
 				//Remove Whitespace At End of String
 				while(val.size()>0&&std::isspace(val[val.size()-1]))
@@ -105,6 +126,9 @@ msl::json::json(const std::string& json_string)
 				val=msl::extract_until(temp,',',false);
 				temp.erase(0,val.size());
 
+				//Keep Old Val Size, For Error Position Later On
+				unsigned int old_val_size=val.size();
+
 				//Remove Whitespace At End of Number
 				while(val.size()>0&&std::isspace(val[val.size()-1]))
 					val.erase(val.size()-1,1);
@@ -125,17 +149,27 @@ msl::json::json(const std::string& json_string)
 					//Look for Multiple Periods
 					if(val[ii]=='.')
 						found_period=true;
+
+					//Update Error Position
+					++error_position;
 				}
+
+				//Update Error Position
+				error_position+=old_val_size-val.size();
 			}
 
 			//Remove Whitespace
 			while(temp.size()>0&&isspace(temp[0]))
+			{
 				temp.erase(0,1);
+				++error_position;
+			}
 
 			//Remove Comma
 			if(temp.size()>0&&temp[0]==',')
 			{
 				temp.erase(0,1);
+				++error_position;
 			}
 
 			//No Comma, Error
@@ -158,7 +192,10 @@ msl::json::json(const std::string& json_string)
 
 	//Errors Return Empty JSON Object
 	if(error)
+	{
 		_data.clear();
+		set("error",error_position);
+	}
 }
 
 //Size Accessor (Returns number of variables)
