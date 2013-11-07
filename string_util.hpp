@@ -1,6 +1,6 @@
 //String Utility Header
 //	Created By:		Mike Moss
-//	Modified On:	10/12/2013
+//	Modified On:	11/07/2013
 
 //Begin Define Guards
 #ifndef MSL_STRING_UTIL_H
