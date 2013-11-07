@@ -207,7 +207,10 @@ std::string msl::json::str() const
 		json_string+="\""+ii->first+"\":";
 
 		//Add Value to String
-		json_string+="\""+ii->second+"\"";
+		if(ii->second.size()>0&&ii->second[0]=='{')
+			json_string+=ii->second;
+		else
+			json_string+="\""+ii->second+"\"";
 
 		//Get Next Variable
 		std::map<std::string,std::string>::const_iterator next=ii;
