@@ -1,10 +1,16 @@
 //File Utility Source
 //	Created By:		Mike Moss
-//	Modified On:	03/12/2013
+//	Modified On:	11/08/2013
+
+//Requires POSIX File System, if on Windows running Visual Studios, use:
+//	http://www.softagalleria.net/dirent.php
 
 //Begin Define Guards
 #ifndef MSL_FILE_UTIL_H
 #define MSL_FILE_UTIL_H
+
+//JSON Header
+#include "json.hpp"
 
 //String Header
 #include <string>
@@ -16,7 +22,16 @@
 namespace msl
 {
 	//List Directory Function (Lists files in directory as strings in a vector)
-	std::vector<std::string> list_directory(const std::string& directory=".");
+	std::vector<std::string> list_directory(const std::string& path_name=".");
+
+	//List Directory Files Function (Lists files in directory as strings in a vector)
+	std::vector<std::string> list_directory_files(const std::string& path_name=".");
+
+	//List Directory Folders Function (Lists folders in directory as strings in a vector)
+	std::vector<std::string> list_directory_folders(const std::string& path_name=".");
+
+	//List Directory JSON Function (Lists directories and files inside them recursively, returned as a JSON object)
+	msl::json list_directory_json(const std::string& path_name=".");
 
 	//File to String Function (Loads a file from disk as a string, returns false on error)
 	bool file_to_string(const std::string& filename,std::string& data,const bool binary=false);
@@ -30,8 +45,8 @@ namespace msl
 	//Remove Directory Function (Removes a directory from disk recursively, returns false on error)
 	bool remove_directory(const std::string& directory);
 
-	//File Exists Function (Checks if a file exists on disk)
-	bool file_exists(const std::string& filename);
+	//File Exists Function (Checks if a file exists in path)
+	bool file_exists(const std::string& filename,const std::string& path_name=".");
 }
 
 //End Define Guards
@@ -39,7 +54,7 @@ namespace msl
 
 //Example
 /*
-#include "file_util.hpp"
+#include "msl/file_util.hpp"
 #include <iostream>
 #include <string>
 #include <vector>
