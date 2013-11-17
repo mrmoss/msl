@@ -234,7 +234,7 @@ void msl::draw_line(const double x1,const double y1,const double x2,const double
 
 //Draw Triangle Function
 void msl::draw_triangle(const double x1,const double y1,const double x2,const double y2,const double x3,
-	const double y3,const msl::color& color)
+	const double y3,const bool fill,const msl::color& color)
 {
 	//Enable Transparency
 	glEnable(GL_BLEND);
@@ -247,7 +247,11 @@ void msl::draw_triangle(const double x1,const double y1,const double x2,const do
 	glColor4d(color.r,color.g,color.b,color.a);
 
 	//Draw Triangle
-	glBegin(GL_TRIANGLES);
+	if(fill)
+		glBegin(GL_TRIANGLES);
+	else
+		glBegin(GL_LINE_LOOP);
+
 		glVertex2d(x1,y1);
 		glVertex2d(x2,y2);
 		glVertex2d(x3,y3);
@@ -258,7 +262,7 @@ void msl::draw_triangle(const double x1,const double y1,const double x2,const do
 }
 
 //Draw Rectangle Function
-void msl::draw_rectangle(const double x,const double y,const double width,const double height,const msl::color& color)
+void msl::draw_rectangle(const double x,const double y,const double width,const double height,const bool fill,const msl::color& color)
 {
 	//Enable Transparency
 	glEnable(GL_BLEND);
@@ -271,7 +275,11 @@ void msl::draw_rectangle(const double x,const double y,const double width,const 
 	glColor4d(color.r,color.g,color.b,color.a);
 
 	//Draw Rectangle
-    glBegin(GL_QUADS);
+	if(fill)
+		glBegin(GL_QUADS);
+    else
+		glBegin(GL_LINE_LOOP);
+
 		glVertex2d(x-width/2.0,y+height/2.0);
 		glVertex2d(x+width/2.0,y+height/2.0);
 		glVertex2d(x+width/2.0,y-height/2.0);
