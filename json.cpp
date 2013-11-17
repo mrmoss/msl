@@ -34,10 +34,24 @@ msl::json::json(const std::string& json_string)
 			++error_position;
 		}
 
-		//Get Variable Name
-		std::string var=msl::extract_between(temp,'\"','\"',true);
-		temp.erase(0,var.size());
-		var=msl::extract_between(var,'\"','\"',false);
+		//Variable Name Variable
+		std::string var;
+
+		//Get Variable Name (With "")
+		if(temp[0]=='\"')
+		{
+			var=msl::extract_between(temp,'\"','\"',true);
+			temp.erase(0,var.size());
+			var=msl::extract_between(var,'\"','\"',false);
+		}
+
+		//Get Variable Name (With '')
+		else if(temp[0]=='\'')
+		{
+			var=msl::extract_between(temp,'\'','\'',true);
+			temp.erase(0,var.size());
+			var=msl::extract_between(var,'\'','\'',false);
+		}
 
 		//Update Error Postion
 		++error_position;
@@ -98,8 +112,8 @@ msl::json::json(const std::string& json_string)
 				error_position+=val.size();
 			}
 
-			//Extract String ("")
-			else if(temp[0]=='\"')
+			//Extract String ("" || '')
+			else if(temp[0]=='\"'||temp[0]=='\'')
 			{
 				//Get String
 				val=msl::extract_until(temp,',',false);
@@ -111,7 +125,7 @@ msl::json::json(const std::string& json_string)
 					val.erase(val.size()-1,1);
 
 				//Valid String, Remove Quotes
-				if(val.size()>=2&&val[0]=='\"'&&val[val.size()-1]=='\"')
+				if((val.size()>=2&&val[0]=='\"'&&val[val.size()-1]=='\"')||(val.size()>=2&&val[0]=='\''&&val[val.size()-1]=='\''))
 				{
 					val=val.substr(1,val.size()-2);
 				}
@@ -121,6 +135,35 @@ msl::json::json(const std::string& json_string)
 					error_what="invalid string";
 					error=true;
 					break;
+				}
+			}
+
+			//Extract Boolean
+			else if(msl::starts_with(msl::to_lower(temp),"true")||msl::starts_with(msl::to_lower(temp),"false"))
+			{
+				//Get Boolean
+				val=msl::to_lower(msl::extract_until(temp,',',false));
+				temp.erase(0,val.size());
+
+				//Keep Old Val Size, For Error Position Later On
+				unsigned int old_val_size=val.size();
+
+				//Remove Whitespace At End of Boolean
+				while(val.size()>0&&std::isspace(val[val.size()-1]))
+					val.erase(val.size()-1,1);
+
+				//Check for Good Boolean
+				if(val=="true"||val=="false")
+				{
+					//Update Error Position
+					error_position+=old_val_size-val.size();
+				}
+
+				//Error
+				else
+				{
+					error_what="invalid variable value";
+					error=true;
 				}
 			}
 
