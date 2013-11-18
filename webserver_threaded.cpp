@@ -28,6 +28,7 @@ class client_thread_arg
 		msl::socket socket;
 		std::string web_directory;
 		bool(*user_service_client)(msl::socket& client,const std::string& message);
+		unsigned int max_upload_size;
 };
 
 //Static Global Service Client Function
@@ -142,7 +143,7 @@ static void* client_thread(void* args)
 				message+=byte;
 
 				//Check for an End Byte
-				if(msl::ends_with(message,"\r\n\r\n"))
+				if(msl::ends_with(message,"\r\n\r\n")||message.size()>=client_data->max_upload_size)
 				{
 					service_client(client_data->socket,message,client_data->web_directory,
 						client_data->user_service_client);
@@ -168,7 +169,8 @@ static void* client_thread(void* args)
 
 //Constructor (Default)
 msl::webserver_threaded::webserver_threaded(const std::string& address,bool(*user_service_client)(msl::socket& client,const std::string& message),
-	const std::string& web_directory):_user_service_client(user_service_client),_socket(address),_web_directory(web_directory)
+	const std::string& web_directory):_user_service_client(user_service_client),_socket(address),_web_directory(web_directory),
+	_max_upload_size(2*1000000)
 {}
 
 //Boolean Operator (Tests if Server is Good)
@@ -212,6 +214,7 @@ void msl::webserver_threaded::update()
 		new_client_data->socket=client;
 		new_client_data->web_directory=_web_directory;
 		new_client_data->user_service_client=_user_service_client;
+		new_client_data->max_upload_size=get_max_upload_size();
 
 		//Create Thread
 		if(pthread_create(&new_client_thread,NULL,&client_thread,(void*)new_client_data)==0)
@@ -230,4 +233,16 @@ void msl::webserver_threaded::update()
 void msl::webserver_threaded::close()
 {
 	_socket.close();
+}
+
+//Max Size Accessor (Accesses max upload size, in bytes.  Default is 200 MB.)
+unsigned int msl::webserver_threaded::get_max_upload_size() const
+{
+	return _max_upload_size;
+}
+
+//Max Size Mutator (Changes max upload size, in bytes.  Default is 200 MB.)
+void msl::webserver_threaded::set_max_upload_size(const unsigned int size)
+{
+	_max_upload_size=size;
 }
