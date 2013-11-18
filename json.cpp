@@ -117,7 +117,45 @@ msl::json::json(const std::string& json_string)
 			{
 				//Get String
 				val=msl::extract_until(temp,',',false);
+
+				//Check for Commas in Strings
+				while(true)
+				{
+					//Temp Copy of Val
+					std::string check_for_comma_in_string=val;
+
+					//Remove Whitespace At End of String
+					while(check_for_comma_in_string.size()>0&&std::isspace(val[check_for_comma_in_string.size()-1]))
+						check_for_comma_in_string.erase(check_for_comma_in_string.size()-1,1);
+
+					//If Comma Found
+					if(check_for_comma_in_string.size()>0&&check_for_comma_in_string[check_for_comma_in_string.size()-1]!=temp[0])
+					{
+						//Add Comma
+						val+=',';
+
+						//Get Rest of String
+						std::string val_add=msl::extract_until(temp.substr(val.size(),temp.size()-val.size()),',',false);
+
+						//Nothing Found, Break
+						if(val_add.size()==0)
+							break;
+
+						//Add Rest of Value to Value String
+						val+=val_add;
+					}
+
+					//If No Comma, Break
+					else
+					{
+						break;
+					}
+				}
+
+				//Remove Extracted Data
 				temp.erase(0,val.size());
+
+				//Update Error Position
 				error_position+=val.size();
 
 				//Remove Whitespace At End of String
