@@ -188,7 +188,8 @@ msl::json::json(const std::string& json_string)
 				for(unsigned int ii=0;ii<val.size();++ii)
 				{
 					//Non-Number or Period or Mutiple Periods
-					if((!std::isdigit(val[ii])&&val[ii]!='.')||(val[ii]=='.'&&found_period))
+					if((!std::isdigit(val[ii])&&val[ii]!='.'&&val[ii]!='-')||
+						(val[ii]=='.'&&found_period)||((val[ii]=='-'&&ii!=0)))
 					{
 						error_what="invalid variable value";
 						error=true;
