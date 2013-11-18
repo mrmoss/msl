@@ -1,6 +1,6 @@
 //String Utility Header
 //	Created By:		Mike Moss
-//	Modified On:	11/07/2013
+//	Modified On:	11/17/2013
 
 //Begin Define Guards
 #ifndef MSL_STRING_UTIL_H
@@ -16,7 +16,7 @@
 namespace msl
 {
 	//String Convert Functions
-	bool to_bool(std::string value);
+	bool to_bool(const std::string& value);
 	double to_double(const std::string& value);
 	int to_int(const std::string& value);
 	char to_char(const std::string& value);

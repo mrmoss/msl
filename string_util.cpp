@@ -1,6 +1,6 @@
 //String Utility Source
 //	Created By:		Mike Moss
-//	Modified On:	11/07/2013
+//	Modified On:	11/17/2013
 
 //Definitions for "string_util.hpp"
 #include "string_util.hpp"
@@ -9,13 +9,12 @@
 #include <algorithm>
 
 //Convert To Boolean Function
-bool msl::to_bool(std::string value)
+bool msl::to_bool(const std::string& value)
 {
-	for(unsigned int ii=0;ii<value.size();++ii)
-		if(value[ii]>='A'&&value[ii]<='Z')
-			value[ii]+=32;
+	if(msl::to_lower(value)=="false"||(value.size()==1&&value=="0")||value.size()==0)
+		return false;
 
-	return !(value=="false"||(value.size()==1&&value=="0"));
+	return true;
 }
 
 //Convert To Double Function
