@@ -42,28 +42,20 @@ static void keyboard_down_2d(unsigned char key,int x,int y)
 		keyboard_pressed_2d[key]=true;
 
 		if(keyboard_pressed_2d[key]&&key>=97&&key<=122)
-		{
 			keyboard_pressed_2d[key-32]=true;
-		}
 
 		if(keyboard_pressed_2d[key]&&key>=65&&key<=90)
-		{
 			keyboard_pressed_2d[key+32]=true;
-		}
 	}
 
 	//Down
 	keyboard_2d[key]=true;
 
 	if(keyboard_2d[key]&&key>=97&&key<=122)
-	{
 		keyboard_2d[key-32]=true;
-	}
 
 	if(keyboard_2d[key]&&key>=65&&key<=90)
-	{
 		keyboard_2d[key+32]=true;
-	}
 }
 
 //Glut Keyboard Up Callback
@@ -73,14 +65,10 @@ static void keyboard_up_2d(unsigned char key,int x,int y)
 	keyboard_2d[key]=false;
 
 	if(!keyboard_2d[key]&&key>=97&&key<=122)
-	{
 		keyboard_2d[key-32]=false;
-	}
 
 	if(!keyboard_2d[key]&&key>=65&&key<=90)
-	{
 		keyboard_2d[key+32]=false;
-	}
 
 	//Released
 	keyboard_released_2d[key]=true;
@@ -104,10 +92,8 @@ static void keyboard_up_2d(unsigned char key,int x,int y)
 static void special_down_2d(int key,int x,int y)
 {
 	//Pressed
-	if (!special_2d[key])
-	{
+	if(!special_2d[key])
 		special_pressed_2d[key]=true;
-	}
 
 	//Down
 	special_2d[key]=true;
@@ -128,9 +114,7 @@ static void mouse_2d(int button,int state,int x,int y)
 {
 	//Pressed
 	if(!mouse_down_2d[button]&&!state)
-	{
 		mouse_pressed_2d[button]=true;
-	}
 
 	//Down/Up
 	mouse_down_2d[button]=!state;
@@ -182,31 +166,21 @@ bool msl::input_check(const int key)
 {
 	//Escape Key
 	if(key==0x501B)
-	{
 		return keyboard_2d[27];
-	}
 
 	//Mouse
 	else if(key>=0x2000)
-	{
 		return mouse_down_2d[key-0x2000];
-	}
 
 	//Keyboard
 	else if(key>=0x1061&&key<=0x107A)
-	{
 		return keyboard_2d[key-0x1000]+keyboard_2d[key-0x1020];
-	}
 	else if(key>0x1000)
-	{
 		return keyboard_2d[key-0x1000];
-	}
 
 	//Special
 	else if(key<0x1000)
-	{
 		return special_2d[key];
-	}
 
 	//Other
 	return false;
@@ -217,31 +191,21 @@ bool msl::input_check_pressed(const int key)
 {
 	//Escape Key
 	if(key==0x501B)
-	{
 		return keyboard_pressed_2d[27];
-	}
 
 	//Mouse
 	else if(key>=0x2000)
-	{
 		return mouse_pressed_2d[key-0x2000];
-	}
 
 	//Keyboard
 	else if(key>=0x1061&&key<=0x107A)
-	{
 		return keyboard_pressed_2d[key-0x1000]+keyboard_pressed_2d[key-0x1020];
-	}
 	else if(key>0x1000)
-	{
 		return keyboard_pressed_2d[key-0x1000];
-	}
 
 	//Special
 	else if(key<0x1000)
-	{
 		return special_pressed_2d[key];
-	}
 
 	//Other
 	return false;
@@ -252,25 +216,17 @@ bool msl::input_check_released(const int key)
 {
 	//Mouse
 	if(key>=0x2000)
-	{
 		return mouse_released_2d[key-0x2000];
-	}
 
 	//Keyboard
 	else if(key>=0x1061&&key<=0x107A)
-	{
 		return keyboard_released_2d[key-0x1000]+keyboard_released_2d[key-0x1020];
-	}
 	else if(key>0x1000)
-	{
 		return keyboard_released_2d[key-0x1000];
-	}
 
 	//Special
 	else if(key<0x1000)
-	{
 		return special_released_2d[key];
-	}
 
 	//Other
 	return false;
@@ -302,6 +258,10 @@ void msl::input_setup(const bool scaled_window)
 		glutMotionFunc(mouse_motion_2d);
 		glutPassiveMotionFunc(mouse_motion_2d);
 	}
+
+	//Set  Mouse Coordinates
+	msl::mouse_x=-9999999;
+	msl::mouse_y=-9999999;
 }
 
 //Input Released and Pressed Keys Reset Function (Call at end of timer function)
