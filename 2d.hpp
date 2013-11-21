@@ -61,6 +61,11 @@ namespace msl
 	void draw_triangle(const double x1,const double y1,const double x2,const double y2,const double x3,const double y3,
 		const bool fill,const msl::color& color=msl::color(1,1,1,1));
 	void draw_rectangle(const double x,const double y,const double width,const double height,const bool fill,const msl::color& color=msl::color(1,1,1,1));
+	void draw_rectangle_gradient(const double x,const double y,const double width,const double height,const bool fill,
+		const msl::color& color_top_left=msl::color(1,1,1,1),
+		const msl::color& color_top_right=msl::color(1,1,1,1),
+		const msl::color& color_bottom_right=msl::color(1,1,1,1),
+		const msl::color& color_bottom_left=msl::color(1,1,1,1));
 	void draw_circle(const double x,const double y,const double radius,const msl::color& color=msl::color(1,1,1,1));
 
 	//Text Drawing Function
