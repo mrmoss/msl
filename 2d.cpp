@@ -22,11 +22,17 @@
 	#include <GLUT/glut.h>
 #endif
 
+//Algorithm Header
+#include <algorithm>
+
 //Exception Header
 #include <stdexcept>
 
 //Math Header
 #include <math.h>
+
+//Vector Header
+#include <vector>
 
 //Global Variables
 double msl::view_width=640;
@@ -359,6 +365,54 @@ void msl::draw_circle(const double x,const double y,const double radius,const ms
 	glDisable(GL_BLEND);
 }
 
+//Text Width Function (Returns width of text in pixels)
+double msl::text_width(const std::string& text)
+{
+	//Length Variables
+	std::vector<double> lengths;
+	double current_length=0;
+
+	//Draw String
+	for(unsigned int ii=0;ii<text.size();++ii)
+	{
+		//Newlines
+		if(text[ii]=='\n')
+		{
+			lengths.push_back(current_length);
+			current_length=0;
+		}
+
+		//Tabs
+		else if(text[ii]=='\t')
+		{
+			//Get Current Line Width
+			unsigned int line_width=0;
+
+			for(int jj=ii-1;jj>=0&&text[jj]!='\t'&&text[jj]!='\n';--jj)
+				++line_width;
+
+			//Add Indents
+			for(unsigned int jj=line_width%4;jj<4;++jj)
+				current_length+=glutBitmapWidth(GLUT_BITMAP_HELVETICA_10,' ');
+		}
+
+		//Characters
+		else
+		{
+			current_length+=glutBitmapWidth(GLUT_BITMAP_HELVETICA_10,text[ii]);
+		}
+	}
+
+	//Add Last Length
+	lengths.push_back(current_length);
+
+	//Return Max Length
+	std::sort(lengths.begin(),lengths.end());
+
+	//Return Longest Length
+	return lengths[0];
+}
+
 //Text Drawing Function
 void msl::draw_text(const double x,const double y,const std::string& text,const msl::color& color)
 {
@@ -408,13 +462,13 @@ void msl::draw_text(const double x,const double y,const std::string& text,const 
 
 			//Add Indents
 			for(unsigned int jj=line_width%4;jj<4;++jj)
-				glutBitmapCharacter(GLUT_BITMAP_8_BY_13,' ');
+				glutBitmapCharacter(GLUT_BITMAP_HELVETICA_10,' ');
 		}
 
 		//Characters
 		else
 		{
-			glutBitmapCharacter(GLUT_BITMAP_8_BY_13,text[ii]);
+			glutBitmapCharacter(GLUT_BITMAP_HELVETICA_10,text[ii]);
 		}
 	}
 

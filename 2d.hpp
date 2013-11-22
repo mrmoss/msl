@@ -68,6 +68,9 @@ namespace msl
 		const msl::color& color_bottom_left=msl::color(1,1,1,1));
 	void draw_circle(const double x,const double y,const double radius,const msl::color& color=msl::color(1,1,1,1));
 
+	//Text Width Function (Returns width of text in pixels)
+	double text_width(const std::string& text);
+
 	//Text Drawing Function
 	void draw_text(const double x,const double y,const std::string& text,const msl::color& color=msl::color(1,1,1,1));
 }
