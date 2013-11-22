@@ -1,6 +1,6 @@
 //2D Graphics Header
 //	Created By:		Mike Moss
-//	Modified On:	05/19/2013
+//	Modified On:	11/21/2013
 
 //Required Libraries:
 //	gl
