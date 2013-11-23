@@ -250,3 +250,79 @@ void msl::slider::update_button(const double dt)
 
 	button_.loop(dt);
 }
+
+msl::textbox::textbox(const std::string& value,const double x,const double y):widget(x,y,-1,-1),value(value)
+{}
+
+void msl::textbox::loop(const double dt)
+{
+	if(visible)
+	{
+		if(!disabled)
+		{
+			bool new_hover=(msl::mouse_x>=x-width/2.0&&msl::mouse_x<=x+width/2.0&&
+				msl::mouse_y>=y-height/2.0&&msl::mouse_y<=y+height/2.0);
+
+			if(hover&!new_hover)
+				glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
+
+			if(!hover&new_hover)
+				glutSetCursor(GLUT_CURSOR_TEXT);
+
+			hover=new_hover;
+
+			down=hover&&msl::input_check(mb_left);
+			pressed=hover&&msl::input_check_released(mb_left);
+
+			if(hover)
+			{
+				for(unsigned int ii=32;ii<=127;++ii)
+					if(msl::input_check_pressed(ii))
+						value+=ii;
+
+				if(msl::input_check_pressed(kb_enter))
+					value+='\n';
+
+				if(msl::input_check_pressed(kb_backspace)&&value.size()>0)
+					value=value.substr(0,value.size()-1);
+			}
+		}
+		else
+		{
+			hover=false;
+			down=false;
+			pressed=false;
+		}
+
+		if(width<0)
+			width=msl::text_width(value+"--");
+
+		if(height<0)
+			height=1.5*14;
+	}
+}
+
+void msl::textbox::draw()
+{
+	if(visible)
+	{
+		msl::color but_col=msl::color(1,1,1,1);
+		msl::color out_col=outline_color;
+		msl::color tex_col=text_color;
+
+		if(hover)
+			out_col=outline_color_hover;
+
+		if(disabled)
+		{
+			out_col=outline_color_disabled;
+			tex_col=text_color_disabled;
+		}
+
+		double text_width=msl::text_width(value);
+
+		msl::draw_rectangle(x,y,width,height,true,but_col);
+		msl::draw_rectangle(x,y,width,height,false,out_col);
+		msl::draw_text(x-text_width/2.0,y+14/2.0,value,tex_col);
+	}
+}

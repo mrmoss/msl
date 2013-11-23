@@ -110,6 +110,17 @@ namespace msl
 			button button_;
 			bool drag_;
 	};
+
+	class textbox:public widget
+	{
+		public:
+			textbox(const std::string& value="",const double x=0,const double y=0);
+
+			void loop(const double dt);
+			void draw();
+
+			std::string value;
+	};
 }
 
 #endif

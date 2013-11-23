@@ -32,30 +32,16 @@ static bool special_released_2d[256];
 static bool mouse_down_2d[3];
 static bool mouse_pressed_2d[3];
 static bool mouse_released_2d[3];
-
+#include <iostream>
 //Glut Keyboard Down Callback
 static void keyboard_down_2d(unsigned char key,int x,int y)
 {
 	//Pressed
 	if(!keyboard_2d[key])
-	{
 		keyboard_pressed_2d[key]=true;
-
-		if(keyboard_pressed_2d[key]&&key>=97&&key<=122)
-			keyboard_pressed_2d[key-32]=true;
-
-		if(keyboard_pressed_2d[key]&&key>=65&&key<=90)
-			keyboard_pressed_2d[key+32]=true;
-	}
 
 	//Down
 	keyboard_2d[key]=true;
-
-	if(keyboard_2d[key]&&key>=97&&key<=122)
-		keyboard_2d[key-32]=true;
-
-	if(keyboard_2d[key]&&key>=65&&key<=90)
-		keyboard_2d[key+32]=true;
 }
 
 //Glut Keyboard Up Callback
@@ -64,28 +50,8 @@ static void keyboard_up_2d(unsigned char key,int x,int y)
 	//Up
 	keyboard_2d[key]=false;
 
-	if(!keyboard_2d[key]&&key>=97&&key<=122)
-		keyboard_2d[key-32]=false;
-
-	if(!keyboard_2d[key]&&key>=65&&key<=90)
-		keyboard_2d[key+32]=false;
-
 	//Released
 	keyboard_released_2d[key]=true;
-
-	if(keyboard_released_2d[key]&&key>=97&&key<=122)
-	{
-		keyboard_released_2d[key-32]=true;
-		keyboard_2d[key-32]=false;
-		keyboard_pressed_2d[key-32]=false;
-	}
-
-	if(keyboard_released_2d[key]&&key>=65&&key<=90)
-	{
-		keyboard_released_2d[key+32]=true;
-		keyboard_2d[key+32]=false;
-		keyboard_pressed_2d[key+32]=false;
-	}
 }
 
 //Glut Special Down Callback
@@ -164,23 +130,17 @@ static void mouse_motion_2d(int x,int y)
 //Input Check Function
 bool msl::input_check(const int key)
 {
-	//Escape Key
-	if(key==0x501B)
-		return keyboard_2d[27];
+	//Mouse Buttons
+	if(key>=800)
+		return mouse_down_2d[key-800];
 
-	//Mouse
-	else if(key>=0x2000)
-		return mouse_down_2d[key-0x2000];
+	//Special Keys
+	else if(key>=500)
+		return special_2d[key-500];
 
-	//Keyboard
-	else if(key>=0x1061&&key<=0x107A)
-		return keyboard_2d[key-0x1000]+keyboard_2d[key-0x1020];
-	else if(key>0x1000)
-		return keyboard_2d[key-0x1000];
-
-	//Special
-	else if(key<0x1000)
-		return special_2d[key];
+	//Regular Keys
+	else if(key==8||key==9||key==13||key==27||(key>=32&&key<=127))
+		return keyboard_2d[key];
 
 	//Other
 	return false;
@@ -189,23 +149,17 @@ bool msl::input_check(const int key)
 //Input Check Pressed Function
 bool msl::input_check_pressed(const int key)
 {
-	//Escape Key
-	if(key==0x501B)
-		return keyboard_pressed_2d[27];
+	//Mouse Buttons
+	if(key>=800)
+		return mouse_pressed_2d[key-800];
 
-	//Mouse
-	else if(key>=0x2000)
-		return mouse_pressed_2d[key-0x2000];
+	//Special Keys
+	else if(key>=500)
+		return special_pressed_2d[key-500];
 
-	//Keyboard
-	else if(key>=0x1061&&key<=0x107A)
-		return keyboard_pressed_2d[key-0x1000]+keyboard_pressed_2d[key-0x1020];
-	else if(key>0x1000)
-		return keyboard_pressed_2d[key-0x1000];
-
-	//Special
-	else if(key<0x1000)
-		return special_pressed_2d[key];
+	//Regular Keys
+	else if(key==8||key==9||key==13||key==27||(key>=32&&key<=127))
+		return keyboard_pressed_2d[key];
 
 	//Other
 	return false;
@@ -214,19 +168,17 @@ bool msl::input_check_pressed(const int key)
 //Input Check Released Function
 bool msl::input_check_released(const int key)
 {
-	//Mouse
-	if(key>=0x2000)
-		return mouse_released_2d[key-0x2000];
+	//Mouse Buttons
+	if(key>=800)
+		return mouse_released_2d[key-800];
 
-	//Keyboard
-	else if(key>=0x1061&&key<=0x107A)
-		return keyboard_released_2d[key-0x1000]+keyboard_released_2d[key-0x1020];
-	else if(key>0x1000)
-		return keyboard_released_2d[key-0x1000];
+	//Special Keys
+	else if(key>=500)
+		return special_released_2d[key-500];
 
-	//Special
-	else if(key<0x1000)
-		return special_released_2d[key];
+	//Regular Keys
+	else if(key==8||key==9||key==13||key==27||(key>=32&&key<=127))
+		return keyboard_released_2d[key];
 
 	//Other
 	return false;
