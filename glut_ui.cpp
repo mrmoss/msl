@@ -283,6 +283,9 @@ void msl::textbox::loop(const double dt)
 				if(msl::input_check_pressed(kb_enter))
 					value+='\n';
 
+				if(msl::input_check_pressed(kb_tab))
+					value+='\t';
+
 				if(msl::input_check_pressed(kb_backspace)&&value.size()>0)
 					value=value.substr(0,value.size()-1);
 			}
