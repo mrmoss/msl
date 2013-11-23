@@ -1,6 +1,6 @@
 //Glut User Interface Source
 //	Created By:		Mike Moss
-//	Modified On:	11/21/2013
+//	Modified On:	11/22/2013
 
 //Required Libraries:
 //	gl
@@ -11,8 +11,14 @@
 //Definitions for "glut_ui.hpp"
 #include "glut_ui.hpp"
 
-//Algorithm Header
-#include <algorithm>
+//OpenGL Headers
+#ifndef __APPLE__
+	#include <GL/glew.h>
+	#include <GL/glut.h>
+#else
+	#include <GLEW/glew.h>
+	#include <GLUT/glut.h>
+#endif
 
 msl::widget::widget(const double x,const double y,const double width,const double height,
 	const bool hover,const bool down,const bool pressed,const bool disabled,
@@ -26,12 +32,6 @@ msl::widget::widget(const double x,const double y,const double width,const doubl
 		text_color(text_color),text_color_disabled(text_color_disabled)
 {}
 
-
-
-
-
-
-
 msl::button::button(const std::string& value,const double x,const double y):widget(x,y),value(value)
 {}
 
@@ -41,8 +41,17 @@ void msl::button::loop(const double dt)
 	{
 		if(!disabled)
 		{
-			hover=(msl::mouse_x>=x-width/2.0&&msl::mouse_x<=x+width/2.0&&
+			bool new_hover=(msl::mouse_x>=x-width/2.0&&msl::mouse_x<=x+width/2.0&&
 				msl::mouse_y>=y-height/2.0&&msl::mouse_y<=y+height/2.0);
+
+			if(hover&!new_hover)
+				glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
+
+			if(!hover&new_hover)
+				glutSetCursor(GLUT_CURSOR_INFO);
+
+			hover=new_hover;
+
 			down=hover&&msl::input_check(mb_left);
 			pressed=hover&&msl::input_check_released(mb_left);
 		}
@@ -91,25 +100,12 @@ void msl::button::draw()
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 msl::checkbox::checkbox(const bool value,const double x,const double y):widget(x,y,12,12),value(value),button_("",x,y)
 {}
 
 void msl::checkbox::loop(const double dt)
 {
-	update_button_(dt);
+	update_button(dt);
 
 	if(button_.pressed&&!disabled)
 		value=!value;
@@ -140,9 +136,8 @@ void msl::checkbox::draw()
 	}
 }
 
-void msl::checkbox::update_button_(const double dt)
+void msl::checkbox::update_button(const double dt)
 {
-	button_.hover=hover;
 	button_.down=down;
 	button_.pressed=pressed;
 	button_.disabled=disabled;
@@ -158,36 +153,13 @@ void msl::checkbox::update_button_(const double dt)
 	button_.text_color_disabled=text_color_disabled;
 
 	button_.loop(dt);
-
-	hover=button_.hover;
-	down=button_.down;
-	pressed=button_.pressed;
-	disabled=button_.disabled;
-	visible=button_.visible;
-	width=button_.width;
-	height=button_.height;
-	background_color_from=button_.background_color_from;
-	background_color_to=button_.background_color_to;
-	outline_color=button_.outline_color;
-	outline_color_hover=button_.outline_color_hover;
-	outline_color_disabled=button_.outline_color_disabled;
-	text_color=button_.text_color;
-	text_color_disabled=button_.text_color_disabled;
-	x=button_.x;
-	y=button_.y;
 }
 
-
-
-
-
-
-
-msl::slider::slider(const double value,const double min,const double max,const bool vertical,const double length,
-	const double x,const double y):
+msl::slider::slider(const double value,const double min,const double max,const double x,const double y,
+	const bool vertical,const double length):
 		widget(x,y,12,16),value(value),min(min),max(max),vertical(vertical),length(length),
 		track_color(msl::color(0.3,0.3,0.3,1)),track_color_disabled(msl::color(0.4,0.4,0.4,1)),
-		button_("",x,y)
+		button_("",x,y),drag_(false)
 {
 	if(vertical)
 		std::swap(width,height);
@@ -197,9 +169,9 @@ void msl::slider::loop(const double dt)
 {
 	if(visible)
 	{
-		update_button_(dt);
+		update_button(dt);
 
-		if(down)
+		if(button_.down)
 			drag_=true;
 
 		if(msl::input_check_released(mb_left))
@@ -257,9 +229,8 @@ void msl::slider::draw()
 	}
 }
 
-void msl::slider::update_button_(const double dt)
+void msl::slider::update_button(const double dt)
 {
-	button_.hover=hover;
 	button_.down=down;
 	button_.pressed=pressed;
 	button_.disabled=disabled;
@@ -275,19 +246,4 @@ void msl::slider::update_button_(const double dt)
 	button_.text_color_disabled=text_color_disabled;
 
 	button_.loop(dt);
-
-	hover=button_.hover;
-	down=button_.down;
-	pressed=button_.pressed;
-	disabled=button_.disabled;
-	visible=button_.visible;
-	width=button_.width;
-	height=button_.height;
-	background_color_from=button_.background_color_from;
-	background_color_to=button_.background_color_to;
-	outline_color=button_.outline_color;
-	outline_color_hover=button_.outline_color_hover;
-	outline_color_disabled=button_.outline_color_disabled;
-	text_color=button_.text_color;
-	text_color_disabled=button_.text_color_disabled;
 }

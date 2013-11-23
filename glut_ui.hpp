@@ -1,6 +1,6 @@
 //Glut User Interface Header
 //	Created By:		Mike Moss
-//	Modified On:	11/21/2013
+//	Modified On:	11/22/2013
 
 //Required Libraries:
 //	gl
@@ -19,12 +19,14 @@
 //String Header
 #include <string>
 
-
 //MSL Namespace
 namespace msl
 {
 	class widget
 	{
+		friend void ui_loop(const double dt);
+		friend void ui_draw();
+
 		public:
 			widget(const double x,const double y,const double width=-1,const double height=-1,
 				const bool hover=false,const bool down=false,const bool pressed=false,const bool disabled=false,
@@ -61,7 +63,7 @@ namespace msl
 	class button:public widget
 	{
 		public:
-			button(const std::string& value,const double x,const double y);
+			button(const std::string& value="",const double x=0,const double y=0);
 
 			void loop(const double dt);
 			void draw();
@@ -72,7 +74,7 @@ namespace msl
 	class checkbox:public widget
 	{
 		public:
-			checkbox(const bool value,const double x,const double y);
+			checkbox(const bool value=false,const double x=0,const double y=0);
 
 			void loop(const double dt);
 			void draw();
@@ -80,15 +82,16 @@ namespace msl
 			bool value;
 
 		private:
+			void update_button(const double dt);
+
 			button button_;
-			void update_button_(const double dt);
 	};
 
 	class slider:public widget
 	{
+
 		public:
-			slider(const double value,const double min,const double max,const bool vertical=false,const double length=100,
-				const double x=0,const double y=0);
+			slider(const double value,const double min,const double max,const double x,const double y,const bool vertical=false,const double length=100);
 
 			void loop(const double dt);
 			void draw();
@@ -102,15 +105,11 @@ namespace msl
 			msl::color track_color_disabled;
 
 		private:
+			void update_button(const double dt);
+
 			button button_;
 			bool drag_;
-			void update_button_(const double dt);
 	};
 }
 
-//End Define Guards
 #endif
-
-//Example
-/*
-*/
