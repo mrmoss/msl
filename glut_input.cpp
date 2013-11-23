@@ -1,6 +1,6 @@
 //Glut Input Source
 //	Created By:		Mike Moss
-//	Modified On:	11/22/2013
+//	Modified On:	11/23/2013
 
 //Required Libraries:
 //	gl
@@ -32,7 +32,7 @@ static bool special_released_2d[256];
 static bool mouse_down_2d[3];
 static bool mouse_pressed_2d[3];
 static bool mouse_released_2d[3];
-#include <iostream>
+
 //Glut Keyboard Down Callback
 static void keyboard_down_2d(unsigned char key,int x,int y)
 {

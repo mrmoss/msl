@@ -1,6 +1,6 @@
 //Glut Input Header
 //	Created By:		Mike Moss
-//	Modified On:	11/22/2013
+//	Modified On:	11/23/2013
 
 //Required Libraries:
 //	gl
@@ -12,7 +12,6 @@
 //Begin Define Guards
 #ifndef MSL_GLUT_INPUT_H
 #define MSL_GLUT_INPUT_H
-
 
 //Regular Keyboard Bindings
 #define kb_bang					'!'
