@@ -11,6 +11,9 @@
 //Definitions for "glut_ui.hpp"
 #include "glut_ui.hpp"
 
+//Glut Input Header
+#include "glut_input.hpp"
+
 //OpenGL Headers
 #ifndef __APPLE__
 	#include <GL/glew.h>

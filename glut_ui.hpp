@@ -13,8 +13,8 @@
 #ifndef MSL_GLUT_UI_H
 #define MSL_GLUT_UI_H
 
-//2D Header
-#include "2d.hpp"
+//2D Utility Header
+#include "2d_util.hpp"
 
 //String Header
 #include <string>
