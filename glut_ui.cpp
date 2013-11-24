@@ -167,10 +167,7 @@ msl::slider::slider(const double value,const double min,const double max,const d
 		widget(x,y,12,16),value(value),min(min),max(max),vertical(vertical),length(length),
 		track_color(msl::color(0.3,0.3,0.3,1)),track_color_disabled(msl::color(0.4,0.4,0.4,1)),
 		button_("",x,y),drag_(false)
-{
-	if(vertical)
-		std::swap(width,height);
-}
+{}
 
 void msl::slider::loop(const double dt)
 {
@@ -242,8 +239,18 @@ void msl::slider::update_button(const double dt)
 	button_.pressed=pressed;
 	button_.disabled=disabled;
 	button_.visible=visible;
-	button_.width=width;
-	button_.height=height;
+
+	if(vertical)
+	{
+		button_.width=height;
+		button_.height=width;
+	}
+	else
+	{
+		button_.width=width;
+		button_.height=height;
+	}
+
 	button_.background_color_from=background_color_from;
 	button_.background_color_to=background_color_to;
 	button_.outline_color=outline_color;
@@ -256,7 +263,8 @@ void msl::slider::update_button(const double dt)
 }
 
 msl::textbox::textbox(const std::string& value,const double x,const double y):widget(x,y,104,-1),
-	value(value),cursor(0),focus(false),padding_(4),blink_timer_(msl::millis()),blink_show_(false),
+	value(value),cursor(0),focus(false),background_color(1,1,1,1),background_color_disabled(0.8,0.8,0.8,1),
+	padding_(4),blink_timer_(msl::millis()),blink_show_(false),
 	view_start(cursor),view_end(value.size())
 {}
 
@@ -291,13 +299,14 @@ void msl::textbox::update_cursor()
 		view_end_update_from_start();
 	}
 
-	if(cursor>view_end-1)
+	if(cursor>view_end)
 	{
 		view_end=cursor;
 		view_start_update_from_end();
 	}
 
-	constrain_cursor();
+	type(' ');
+	backspace();
 }
 
 void msl::textbox::view_end_update_from_start()
@@ -451,7 +460,7 @@ void msl::textbox::draw()
 {
 	if(visible)
 	{
-		msl::color but_col=msl::color(1,1,1,1);
+		msl::color bg_col=background_color;
 		msl::color out_col=outline_color;
 		msl::color tex_col=text_color;
 
@@ -460,11 +469,12 @@ void msl::textbox::draw()
 
 		if(disabled)
 		{
+			bg_col=background_color_disabled;
 			out_col=outline_color_disabled;
 			tex_col=text_color_disabled;
 		}
 
-		msl::draw_rectangle(x,y,width,height,true,but_col);
+		msl::draw_rectangle(x,y,width,height,true,bg_col);
 		msl::draw_rectangle(x,y,width,height,false,out_col);
 
 		msl::draw_text(x-width/2.0+padding_,y+14/2.0,value.substr(view_start,view_end-view_start),tex_col);

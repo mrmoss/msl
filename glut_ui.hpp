@@ -122,6 +122,8 @@ namespace msl
 			std::string value;
 			int cursor;
 			bool focus;
+			msl::color background_color;
+			msl::color background_color_disabled;
 
 		private:
 			void constrain_cursor();
