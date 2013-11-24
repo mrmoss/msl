@@ -118,7 +118,6 @@
 #define kb_insert				108
 #define kb_numlock				109
 #define kb_delete				127
-#define kb_delete2				111
 
 //Special Keyboard Bindings
 #define kb_BASE					500
