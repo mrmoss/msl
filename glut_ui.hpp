@@ -124,9 +124,13 @@ namespace msl
 			bool focus;
 
 		private:
+			void constrain_cursor();
 			void update_cursor();
 			void view_end_update_from_start();
 			void view_start_update_from_end();
+			void backspace();
+			void del();
+			void type(const char key);
 
 			double padding_;
 			long blink_timer_;

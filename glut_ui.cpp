@@ -255,12 +255,12 @@ void msl::slider::update_button(const double dt)
 	button_.loop(dt);
 }
 
-msl::textbox::textbox(const std::string& value,const double x,const double y):widget(x,y,100,-1),
+msl::textbox::textbox(const std::string& value,const double x,const double y):widget(x,y,104,-1),
 	value(value),cursor(0),focus(false),padding_(4),blink_timer_(msl::millis()),blink_show_(false),
 	view_start(cursor),view_end(value.size())
 {}
 
-void msl::textbox::update_cursor()
+void msl::textbox::constrain_cursor()
 {
 	if(cursor<0)
 		cursor=0;
@@ -279,6 +279,11 @@ void msl::textbox::update_cursor()
 
 	if(view_start>view_end)
 		view_start=view_end;
+}
+
+void msl::textbox::update_cursor()
+{
+	constrain_cursor();
 
 	if(cursor<view_start)
 	{
@@ -291,30 +296,51 @@ void msl::textbox::update_cursor()
 		view_end=cursor;
 		view_start_update_from_end();
 	}
+
+	constrain_cursor();
 }
 
 void msl::textbox::view_end_update_from_start()
 {
-	for(unsigned int ii=0;ii<value.size()-view_start;++ii)
-	{
-		if(msl::text_width(value.substr(view_start,ii))>=width-14)
-		{
-			view_end=view_start+ii;
-			break;
-		}
-	}
+	view_end=view_start;
+	double textbox_max_width=width-padding_*2;
+
+	while((unsigned int)view_end<value.size()&&msl::text_width(value.substr(view_start,view_end-view_start))<
+		textbox_max_width)
+		++view_end;
 }
 
 void msl::textbox::view_start_update_from_end()
 {
-	for(int ii=0;ii<view_end;++ii)
+	view_start=view_end;
+	double textbox_max_width=width-padding_*2;
+
+	while(view_start>0&&msl::text_width(value.substr(view_start,view_end-view_start))<textbox_max_width)
+		--view_start;
+}
+
+void msl::textbox::backspace()
+{
+	if(value.size()>0&&cursor-1>=0)
 	{
-		if(msl::text_width(value.substr(view_end-ii,ii))>=width-14)
-		{
-			view_start=view_end-ii;
-			break;
-		}
+		--cursor;
+		value.erase(cursor,1);
 	}
+}
+
+void msl::textbox::del()
+{
+	if(value.size()>0&&(unsigned int)(cursor+1)<=value.size())
+		value.erase(cursor,1);
+}
+
+void msl::textbox::type(const char key)
+{
+	std::string temp;
+	temp+=(char)key;
+	value.insert(cursor,temp);
+	++cursor;
+	view_end_update_from_start();
 }
 
 void msl::textbox::loop(const double dt)
@@ -371,11 +397,6 @@ void msl::textbox::loop(const double dt)
 
 			if(focus)
 			{
-				if(cursor<0)
-					cursor=0;
-
-				if((unsigned int)cursor>value.size())
-					cursor=value.size();
 
 				if(msl::millis()>blink_timer_)
 				{
@@ -383,53 +404,30 @@ void msl::textbox::loop(const double dt)
 					blink_show_=!blink_show_;
 				}
 
-				if(msl::input_check_pressed(kb_left))
-					--cursor;
-
-				if(msl::input_check_pressed(kb_right))
-					++cursor;
-
 				if(msl::input_check_pressed(kb_home))
 					cursor=0;
 
 				if(msl::input_check_pressed(kb_end))
 					cursor=value.size();
 
+				if(msl::input_check_pressed(kb_left))
+				--cursor;
+
+				if(msl::input_check_pressed(kb_right))
+					++cursor;
+
 				for(int ii=32;ii<=126;++ii)
-				{
 					if(msl::input_check_pressed(ii))
-					{
-						std::string temp;
-						temp+=(char)ii;
-						value.insert(cursor,temp);
-						++cursor;
-						++view_end;
-						view_start_update_from_end();
-						view_end_update_from_start();
-					}
-				}
+						type(ii);
 
 				if(msl::input_check_pressed(kb_tab))
-				{
-					value.insert(cursor,"\t");
-					++cursor;
-					++view_end;
-					view_start_update_from_end();
-					view_end_update_from_start();
-				}
+					type('\t');
 
-				if(msl::input_check_pressed(kb_backspace)&&value.size()>0&&cursor-1>=0)
-				{
-					--cursor;
-					--view_start;
-					value.erase(cursor,1);
-				}
+				if(msl::input_check_pressed(kb_backspace))
+					backspace();
 
-				if((msl::input_check_pressed(kb_delete))
-					&&value.size()>0&&(unsigned int)(cursor+1)<=value.size())
-				{
-					value.erase(cursor,1);
-				}
+				if(msl::input_check_pressed(kb_delete))
+					del();
 			}
 		}
 		else
@@ -476,7 +474,5 @@ void msl::textbox::draw()
 			double cursor_x=msl::text_width(value.substr(view_start,cursor-view_start));
 			msl::draw_rectangle(x-width/2.0+padding_+cursor_x,y,1,14,true,tex_col);
 		}
-
-		msl::draw_text(x,y-50,msl::to_string(view_start)+"\t"+msl::to_string(cursor)+"\t"+msl::to_string(view_end));
 	}
 }
