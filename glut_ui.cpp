@@ -1,6 +1,6 @@
 //Glut User Interface Source
 //	Created By:		Mike Moss
-//	Modified On:	11/22/2013
+//	Modified On:	11/23/2013
 
 //Required Libraries:
 //	gl
@@ -13,6 +13,10 @@
 
 //Glut Input Header
 #include "glut_input.hpp"
+
+#include "string_util.hpp"
+
+#include "time_util.hpp"
 
 //OpenGL Headers
 #ifndef __APPLE__
@@ -251,13 +255,18 @@ void msl::slider::update_button(const double dt)
 	button_.loop(dt);
 }
 
-msl::textbox::textbox(const std::string& value,const double x,const double y):widget(x,y,-1,-1),value(value)
+msl::textbox::textbox(const std::string& value,const double x,const double y):widget(x,y,100,-1),
+	value(value),cursor(0),focus(false),blink_timer_(msl::millis()),blink_show_(false),padding_(4)
 {}
-
+#include <iostream>
 void msl::textbox::loop(const double dt)
 {
 	if(visible)
 	{
+		for(unsigned int ii=0;ii<value.size();++ii)
+			if(value[ii]=='\n')
+				value.erase(ii,1);
+
 		if(!disabled)
 		{
 			bool new_hover=(msl::mouse_x>=x-width/2.0&&msl::mouse_x<=x+width/2.0&&
@@ -274,20 +283,95 @@ void msl::textbox::loop(const double dt)
 			down=hover&&msl::input_check(mb_left);
 			pressed=hover&&msl::input_check_released(mb_left);
 
-			if(hover)
-			{
-				for(unsigned int ii=32;ii<=127;++ii)
-					if(msl::input_check_pressed(ii))
-						value+=ii;
+			if(cursor<0)
+				cursor=0;
 
-				if(msl::input_check_pressed(kb_enter))
-					value+='\n';
+			if((unsigned int)cursor>value.size())
+				cursor=value.size();
+
+			if(msl::input_check_pressed(mb_left))
+			{
+				focus=hover;
+
+				if(focus)
+				{
+					double start_x=x-width/2.0+padding_;
+					double test=mouse_x-start_x;
+
+					cursor=-1;
+
+					for(unsigned int ii=0;ii<value.size();++ii)
+					{
+						if(test-msl::text_width(value.substr(0,ii))<=0)
+						{
+							cursor=ii;
+							break;
+						}
+					}
+
+					if(cursor<0)
+						cursor=value.size();
+				}
+			}
+
+			if(!hover&&(msl::input_check_pressed(mb_right)||msl::input_check_pressed(mb_middle)))
+				focus=false;
+
+			if(focus)
+			{
+				if(msl::millis()>blink_timer_)
+				{
+					blink_timer_=msl::millis()+500;
+					blink_show_=!blink_show_;
+				}
+
+				if(msl::input_check_pressed(kb_left))
+					--cursor;
+
+				if(msl::input_check_pressed(kb_right))
+					++cursor;
+
+				if(msl::input_check_pressed(kb_home))
+					cursor=0;
+
+				if(msl::input_check_pressed(kb_end))
+					cursor=value.size();
+
+				if(cursor<0)
+					cursor=0;
+
+				if((unsigned int)cursor>value.size())
+					cursor=value.size();
+
+				for(int ii=32;ii<=127;++ii)
+				{
+					if(msl::input_check_pressed(ii))
+					{
+						std::string temp;
+						temp+=(char)ii;
+						value.insert(cursor,temp);
+						++cursor;
+					}
+				}
 
 				if(msl::input_check_pressed(kb_tab))
-					value+='\t';
+				{
+					value.insert(cursor,"\t");
+					++cursor;
+				}
 
-				if(msl::input_check_pressed(kb_backspace)&&value.size()>0)
-					value=value.substr(0,value.size()-1);
+				if(msl::input_check_pressed(kb_backspace)&&value.size()>0&&cursor-1>=0)
+				{
+					--cursor;
+					value.erase(cursor,1);
+				}
+
+				if((msl::input_check_pressed(kb_delete))
+					&&value.size()>0&&cursor-1>=0&&(unsigned int)(cursor)<=value.size())
+				{
+					--cursor;
+					value.erase(cursor,2);
+				}
 			}
 		}
 		else
@@ -322,10 +406,18 @@ void msl::textbox::draw()
 			tex_col=text_color_disabled;
 		}
 
-		double text_width=msl::text_width(value);
+		//double text_width=msl::text_width(value);
 
 		msl::draw_rectangle(x,y,width,height,true,but_col);
 		msl::draw_rectangle(x,y,width,height,false,out_col);
-		msl::draw_text(x-text_width/2.0,y+14/2.0,value,tex_col);
+		msl::draw_text(x-width/2.0+padding_,y+14/2.0,value,tex_col);
+
+		if(focus&&blink_show_)
+		{
+			double cursor_x=msl::text_width(value.substr(0,cursor));
+			msl::draw_rectangle(x-width/2.0+padding_+cursor_x,y,1,14,true,tex_col);
+		}
+
+		msl::draw_text(x,y-50,msl::to_string(cursor)+"\t"+msl::to_string(value.size()));
 	}
 }

@@ -1,6 +1,6 @@
 //Glut User Interface Header
 //	Created By:		Mike Moss
-//	Modified On:	11/22/2013
+//	Modified On:	11/23/2013
 
 //Required Libraries:
 //	gl
@@ -120,6 +120,13 @@ namespace msl
 			void draw();
 
 			std::string value;
+			int cursor;
+			bool focus;
+
+		private:
+			long blink_timer_;
+			bool blink_show_;
+			double padding_;
 	};
 }
 
