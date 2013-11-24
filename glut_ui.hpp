@@ -122,6 +122,7 @@ namespace msl
 			std::string value;
 			int cursor;
 			bool focus;
+			bool readonly;
 			msl::color background_color;
 			msl::color background_color_disabled;
 

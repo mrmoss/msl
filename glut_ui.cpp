@@ -262,10 +262,10 @@ void msl::slider::update_button(const double dt)
 	button_.loop(dt);
 }
 
-msl::textbox::textbox(const std::string& value,const double x,const double y):widget(x,y,104,-1),
-	value(value),cursor(0),focus(false),background_color(1,1,1,1),background_color_disabled(0.8,0.8,0.8,1),
-	padding_(4),blink_timer_(msl::millis()),blink_show_(false),
-	view_start(cursor),view_end(value.size())
+msl::textbox::textbox(const std::string& value,const double x,const double y):widget(x,y,32,-1),
+	value(value),cursor(0),focus(false),readonly(false),background_color(1,1,1,1),
+	background_color_disabled(0.8,0.8,0.8,1),padding_(4),blink_timer_(msl::millis()),
+	blink_show_(false),view_start(cursor),view_end(value.size())
 {}
 
 void msl::textbox::constrain_cursor()
@@ -360,7 +360,7 @@ void msl::textbox::loop(const double dt)
 			if(value[ii]=='\n')
 				value.erase(ii,1);
 
-		if(!disabled)
+		if(!disabled&&!readonly)
 		{
 			bool new_hover=(msl::mouse_x>=x-width/2.0&&msl::mouse_x<=x+width/2.0&&
 				msl::mouse_y>=y-height/2.0&&msl::mouse_y<=y+height/2.0);
