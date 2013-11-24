@@ -124,9 +124,15 @@ namespace msl
 			bool focus;
 
 		private:
+			void update_cursor();
+			void view_end_update_from_start();
+			void view_start_update_from_end();
+
+			double padding_;
 			long blink_timer_;
 			bool blink_show_;
-			double padding_;
+			int view_start;
+			int view_end;
 	};
 }
 

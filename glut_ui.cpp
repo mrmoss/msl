@@ -26,7 +26,7 @@
 	#include <GLEW/glew.h>
 	#include <GLUT/glut.h>
 #endif
-
+#include <iostream>
 msl::widget::widget(const double x,const double y,const double width,const double height,
 	const bool hover,const bool down,const bool pressed,const bool disabled,
 	const bool visible,const msl::color& background_color_from,const msl::color& background_color_to,
@@ -256,9 +256,67 @@ void msl::slider::update_button(const double dt)
 }
 
 msl::textbox::textbox(const std::string& value,const double x,const double y):widget(x,y,100,-1),
-	value(value),cursor(0),focus(false),blink_timer_(msl::millis()),blink_show_(false),padding_(4)
+	value(value),cursor(0),focus(false),padding_(4),blink_timer_(msl::millis()),blink_show_(false),
+	view_start(cursor),view_end(value.size())
 {}
-#include <iostream>
+
+void msl::textbox::update_cursor()
+{
+	if(cursor<0)
+		cursor=0;
+
+	if((unsigned int)cursor>value.size())
+		cursor=value.size();
+
+	if(view_end<0)
+		view_end=0;
+
+	if((unsigned int)view_end>value.size())
+		view_end=value.size();
+
+	if(view_start<0)
+		view_start=0;
+
+	if(view_start>view_end)
+		view_start=view_end;
+
+	if(cursor<view_start)
+	{
+		view_start=cursor;
+		view_end_update_from_start();
+	}
+
+	if(cursor>view_end-1)
+	{
+		view_end=cursor;
+		view_start_update_from_end();
+	}
+}
+
+void msl::textbox::view_end_update_from_start()
+{
+	for(unsigned int ii=0;ii<value.size()-view_start;++ii)
+	{
+		if(msl::text_width(value.substr(view_start,ii))>=width-14)
+		{
+			view_end=view_start+ii;
+			break;
+		}
+	}
+}
+
+void msl::textbox::view_start_update_from_end()
+{
+	for(int ii=0;ii<view_end;++ii)
+	{
+		if(msl::text_width(value.substr(view_end-ii,ii))>=width-14)
+		{
+			view_start=view_end-ii;
+			break;
+		}
+	}
+}
+
 void msl::textbox::loop(const double dt)
 {
 	if(visible)
@@ -283,12 +341,6 @@ void msl::textbox::loop(const double dt)
 			down=hover&&msl::input_check(mb_left);
 			pressed=hover&&msl::input_check_released(mb_left);
 
-			if(cursor<0)
-				cursor=0;
-
-			if((unsigned int)cursor>value.size())
-				cursor=value.size();
-
 			if(msl::input_check_pressed(mb_left))
 			{
 				focus=hover;
@@ -300,17 +352,17 @@ void msl::textbox::loop(const double dt)
 
 					cursor=-1;
 
-					for(unsigned int ii=0;ii<value.size();++ii)
+					for(int ii=0;ii<view_end-view_start;++ii)
 					{
-						if(test-msl::text_width(value.substr(0,ii))<=0)
+						if(msl::text_width(value.substr(view_start,ii))>=test)
 						{
-							cursor=ii;
+							cursor=view_start+ii;
 							break;
 						}
 					}
 
 					if(cursor<0)
-						cursor=value.size();
+						cursor=view_end;
 				}
 			}
 
@@ -319,6 +371,12 @@ void msl::textbox::loop(const double dt)
 
 			if(focus)
 			{
+				if(cursor<0)
+					cursor=0;
+
+				if((unsigned int)cursor>value.size())
+					cursor=value.size();
+
 				if(msl::millis()>blink_timer_)
 				{
 					blink_timer_=msl::millis()+500;
@@ -337,13 +395,7 @@ void msl::textbox::loop(const double dt)
 				if(msl::input_check_pressed(kb_end))
 					cursor=value.size();
 
-				if(cursor<0)
-					cursor=0;
-
-				if((unsigned int)cursor>value.size())
-					cursor=value.size();
-
-				for(int ii=32;ii<=127;++ii)
+				for(int ii=32;ii<=126;++ii)
 				{
 					if(msl::input_check_pressed(ii))
 					{
@@ -351,6 +403,9 @@ void msl::textbox::loop(const double dt)
 						temp+=(char)ii;
 						value.insert(cursor,temp);
 						++cursor;
+						++view_end;
+						view_start_update_from_end();
+						view_end_update_from_start();
 					}
 				}
 
@@ -358,19 +413,22 @@ void msl::textbox::loop(const double dt)
 				{
 					value.insert(cursor,"\t");
 					++cursor;
+					++view_end;
+					view_start_update_from_end();
+					view_end_update_from_start();
 				}
 
 				if(msl::input_check_pressed(kb_backspace)&&value.size()>0&&cursor-1>=0)
 				{
 					--cursor;
+					--view_start;
 					value.erase(cursor,1);
 				}
 
 				if((msl::input_check_pressed(kb_delete))
-					&&value.size()>0&&cursor-1>=0&&(unsigned int)(cursor)<=value.size())
+					&&value.size()>0&&(unsigned int)(cursor+1)<=value.size())
 				{
-					--cursor;
-					value.erase(cursor,2);
+					value.erase(cursor,1);
 				}
 			}
 		}
@@ -387,6 +445,8 @@ void msl::textbox::loop(const double dt)
 		if(height<0)
 			height=1.5*14;
 	}
+
+	update_cursor();
 }
 
 void msl::textbox::draw()
@@ -406,18 +466,17 @@ void msl::textbox::draw()
 			tex_col=text_color_disabled;
 		}
 
-		//double text_width=msl::text_width(value);
-
 		msl::draw_rectangle(x,y,width,height,true,but_col);
 		msl::draw_rectangle(x,y,width,height,false,out_col);
-		msl::draw_text(x-width/2.0+padding_,y+14/2.0,value,tex_col);
+
+		msl::draw_text(x-width/2.0+padding_,y+14/2.0,value.substr(view_start,view_end-view_start),tex_col);
 
 		if(focus&&blink_show_)
 		{
-			double cursor_x=msl::text_width(value.substr(0,cursor));
+			double cursor_x=msl::text_width(value.substr(view_start,cursor-view_start));
 			msl::draw_rectangle(x-width/2.0+padding_+cursor_x,y,1,14,true,tex_col);
 		}
 
-		msl::draw_text(x,y-50,msl::to_string(cursor)+"\t"+msl::to_string(value.size()));
+		msl::draw_text(x,y-50,msl::to_string(view_start)+"\t"+msl::to_string(cursor)+"\t"+msl::to_string(view_end));
 	}
 }
