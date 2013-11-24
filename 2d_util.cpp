@@ -295,7 +295,7 @@ void msl::draw_text(const double x,const double y,const std::string& text,const 
 	double offset=offset_increment;
 
 	//Move Text Drawing Position
-	glRasterPos2d(x+1,y-offset+1);
+	glRasterPos2d(x,y-offset+1);
 
 	//Draw String
 	for(unsigned int ii=0;ii<text.size();++ii)
@@ -304,7 +304,7 @@ void msl::draw_text(const double x,const double y,const std::string& text,const 
 		if(text[ii]=='\n')
 		{
 			offset+=offset_increment;
-			glRasterPos2d(x+1,y-offset+1);
+			glRasterPos2d(x,y-offset+1);
 		}
 
 		//Tabs
