@@ -19,6 +19,9 @@
 //String Header
 #include <string>
 
+//Vector Header
+#include <vector>
+
 //MSL Namespace
 namespace msl
 {
@@ -46,6 +49,8 @@ namespace msl
 			double y;
 			double width;
 			double height;
+			double display_width;
+			double display_height;
 			bool hover;
 			bool down;
 			bool pressed;
@@ -69,6 +74,7 @@ namespace msl
 			void draw();
 
 			std::string value;
+			double padding_;
 	};
 
 	class checkbox:public widget
@@ -85,6 +91,25 @@ namespace msl
 			void update_button(const double dt);
 
 			button button_;
+	};
+
+	class dropdown:public widget
+	{
+		public:
+			dropdown(const double x=0,const double y=0);
+
+			void loop(const double dt);
+			void draw();
+
+			unsigned int value;
+			std::vector<std::string> options;
+
+		private:
+			void update_button(const double dt);
+
+			button button_;
+			bool selected;
+			double padding_;
 	};
 
 	class slider:public widget
@@ -137,6 +162,7 @@ namespace msl
 			void type(const char key);
 			void repeat_check(const int key);
 			void repeat_update();
+			void update_display_dimensions();
 
 			double padding_;
 			int view_start_;
