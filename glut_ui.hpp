@@ -111,6 +111,7 @@ namespace msl
 			bool drag_;
 	};
 
+	//needs selection editing
 	class textbox:public widget
 	{
 		public:
@@ -134,12 +135,18 @@ namespace msl
 			void backspace();
 			void del();
 			void type(const char key);
+			void repeat_check(const int key);
+			void repeat_update();
 
 			double padding_;
+			int view_start_;
+			int view_end_;
 			long blink_timer_;
 			bool blink_show_;
-			int view_start;
-			int view_end;
+			long repeat_timer_;
+			int repeat_wait_;
+			int repeat_key_;
+			bool repeat_;
 	};
 }
 
