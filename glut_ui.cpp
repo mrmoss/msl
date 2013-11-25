@@ -206,9 +206,9 @@ void msl::dropdown::loop(const double dt)
 
 	for(unsigned int ii=0;ii<options.size();++ii)
 		if(msl::text_width(options[ii])>max_width)
-			max_width=msl::text_width(options[ii]+"      ");
+			max_width=msl::text_width(options[ii]);
 
-	button_.width=max_width+padding_*2;
+	button_.width=max_width+padding_*5;
 
 	if(visible)
 	{
