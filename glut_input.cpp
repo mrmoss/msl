@@ -32,6 +32,7 @@ static bool special_released_2d[256];
 static bool mouse_down_2d[3];
 static bool mouse_pressed_2d[3];
 static bool mouse_released_2d[3];
+static int shifted_keys[256];
 
 //Glut Keyboard Down Callback
 static void keyboard_down_2d(unsigned char key,int x,int y)
@@ -52,6 +53,16 @@ static void keyboard_up_2d(unsigned char key,int x,int y)
 
 	//Released
 	keyboard_released_2d[key]=true;
+
+	//Incase of Shifts
+	if(shifted_keys[key]!=-1)
+	{
+		//Up
+		keyboard_2d[shifted_keys[key]]=false;
+
+		//Released
+		keyboard_released_2d[shifted_keys[key]]=true;
+	}
 }
 
 //Glut Special Down Callback
@@ -214,6 +225,60 @@ void msl::input_setup(const bool scaled_window)
 	//Set  Mouse Coordinates
 	msl::mouse_x=-9999999;
 	msl::mouse_y=-9999999;
+
+	//Initialize List of Shifted Keys to -1
+	for(int ii=0;ii<256;++ii)
+		shifted_keys[ii]=-1;
+
+	//Add Alphabetical Characters to Shifted Keys
+	for(int ii=97;ii<=122;++ii)
+		shifted_keys[ii]=ii-32;
+	for(int ii=65;ii<=90;++ii)
+		shifted_keys[ii]=ii+32;
+
+	//Add Other Characters to Shifted Keys
+	shifted_keys['`']='~';
+	shifted_keys['1']='!';
+	shifted_keys['2']='@';
+	shifted_keys['3']='#';
+	shifted_keys['4']='$';
+	shifted_keys['5']='%';
+	shifted_keys['6']='^';
+	shifted_keys['7']='&';
+	shifted_keys['8']='*';
+	shifted_keys['9']='(';
+	shifted_keys['0']=')';
+	shifted_keys['-']='_';
+	shifted_keys['=']='+';
+	shifted_keys['[']='{';
+	shifted_keys[']']='}';
+	shifted_keys['\\']='|';
+	shifted_keys[';']=':';
+	shifted_keys['\'']='\"';
+	shifted_keys[',']='<';
+	shifted_keys['.']='>';
+	shifted_keys['/']='?';
+	shifted_keys['~']='`';
+	shifted_keys['!']='1';
+	shifted_keys['@']='2';
+	shifted_keys['#']='3';
+	shifted_keys['$']='4';
+	shifted_keys['%']='5';
+	shifted_keys['^']='6';
+	shifted_keys['&']='7';
+	shifted_keys['*']='8';
+	shifted_keys['(']='9';
+	shifted_keys[')']='0';
+	shifted_keys['_']='-';
+	shifted_keys['+']='=';
+	shifted_keys['{']='[';
+	shifted_keys['}']=']';
+	shifted_keys['|']='\\';
+	shifted_keys[':']=';';
+	shifted_keys['\"']='\'';
+	shifted_keys['<']=',';
+	shifted_keys['>']='.';
+	shifted_keys['?']='/';
 }
 
 //Input Released and Pressed Keys Reset Function (Call at end of timer function)
