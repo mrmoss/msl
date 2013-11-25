@@ -26,7 +26,7 @@
 	#include <GLEW/glew.h>
 	#include <GLUT/glut.h>
 #endif
-#include <iostream>
+
 msl::widget::widget(const double x,const double y,const double width,const double height,
 	const bool hover,const bool down,const bool pressed,const bool disabled,
 	const bool visible,const msl::color& background_color_from,const msl::color& background_color_to,
@@ -595,8 +595,6 @@ void msl::textbox::draw()
 			double cursor_x=msl::text_width(value.substr(view_start_,cursor-view_start_));
 			msl::draw_rectangle(x-display_width/2.0+padding_+cursor_x,y,1,14,true,tex_col);
 		}
-
-		msl::draw_text(x,-100,msl::to_string(repeat_)+"\t"+msl::to_string(repeat_key_)+"\t"+msl::to_string(msl::input_check(repeat_key_)));
 	}
 }
 
