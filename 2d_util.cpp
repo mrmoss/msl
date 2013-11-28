@@ -249,13 +249,13 @@ double msl::text_width(const std::string& text)
 
 			//Add Indents
 			for(unsigned int jj=line_width%4;jj<4;++jj)
-				current_length+=glutBitmapWidth(GLUT_BITMAP_HELVETICA_10,' ');
+				current_length+=glutBitmapWidth(GLUT_BITMAP_HELVETICA_12,' ');
 		}
 
 		//Characters
 		else
 		{
-			current_length+=glutBitmapWidth(GLUT_BITMAP_HELVETICA_10,text[ii]);
+			current_length+=glutBitmapWidth(GLUT_BITMAP_HELVETICA_12,text[ii]);
 		}
 	}
 
@@ -318,13 +318,13 @@ void msl::draw_text(const double x,const double y,const std::string& text,const 
 
 			//Add Indents
 			for(unsigned int jj=line_width%4;jj<4;++jj)
-				glutBitmapCharacter(GLUT_BITMAP_HELVETICA_10,' ');
+				glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12,' ');
 		}
 
 		//Characters
 		else
 		{
-			glutBitmapCharacter(GLUT_BITMAP_HELVETICA_10,text[ii]);
+			glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12,text[ii]);
 		}
 	}
 

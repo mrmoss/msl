@@ -440,7 +440,7 @@ msl::textbox::textbox(const std::string& value,const double x,const double y):wi
 	value(value),cursor(0),max_length(-1),focus(false),readonly(false),background_color(1,1,1,1),
 	background_color_disabled(0.8,0.8,0.8,1),padding_(4),view_start_(cursor),view_end_(value.size()),
 	blink_timer_(msl::millis()),blink_show_(false),repeat_timer_(msl::millis()),repeat_wait_(0),
-	repeat_max_(10),repeat_min_(150),repeat_inc_(50),repeat_key_(0),repeat_(false)
+	repeat_max_(20),repeat_min_(250),repeat_key_(0),repeat_(false)
 {}
 
 void msl::textbox::loop(const double dt)
@@ -725,11 +725,7 @@ void msl::textbox::repeat_update()
 {
 	if(repeat_&&msl::millis()>repeat_timer_)
 	{
-		repeat_wait_-=repeat_inc_;
-
-		if(repeat_wait_<repeat_max_)
-			repeat_wait_=repeat_max_;
-
+		repeat_wait_=repeat_max_;
 		repeat_timer_=msl::millis()+repeat_wait_;
 	}
 
