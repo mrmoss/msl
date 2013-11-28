@@ -437,7 +437,7 @@ void msl::slider::update_button(const double dt)
 }
 
 msl::textbox::textbox(const std::string& value,const double x,const double y):widget(x,y,-1,-1),
-	value(value),cursor(0),focus(false),readonly(false),background_color(1,1,1,1),
+	value(value),cursor(0),max_length(-1),focus(false),readonly(false),background_color(1,1,1,1),
 	background_color_disabled(0.8,0.8,0.8,1),padding_(4),view_start_(cursor),view_end_(value.size()),
 	blink_timer_(msl::millis()),blink_show_(false),repeat_timer_(msl::millis()),repeat_wait_(150),
 	repeat_key_(0),repeat_(false)
@@ -445,6 +445,9 @@ msl::textbox::textbox(const std::string& value,const double x,const double y):wi
 
 void msl::textbox::loop(const double dt)
 {
+	if(max_length>=0&&value.size()>(unsigned int)max_length)
+		value.resize(max_length);
+
 	update_display_dimensions();
 
 	if(visible)
@@ -499,7 +502,6 @@ void msl::textbox::loop(const double dt)
 
 			if(focus)
 			{
-
 				if(msl::millis()>blink_timer_)
 				{
 					blink_timer_=msl::millis()+500;
@@ -553,12 +555,19 @@ void msl::textbox::loop(const double dt)
 
 				repeat_update();
 			}
+			else
+			{
+				cursor=0;
+				view_end_update_from_start();
+			}
 		}
 		else
 		{
 			hover=false;
 			down=false;
 			pressed=false;
+			cursor=0;
+			view_end_update_from_start();
 		}
 	}
 
@@ -635,8 +644,11 @@ void msl::textbox::update_cursor()
 		view_start_update_from_end();
 	}
 
-	type(' ');
-	backspace();
+	if((max_length>=0&&value.size()+1<=(unsigned int)max_length)||max_length<0)
+	{
+		type(' ');
+		backspace();
+	}
 }
 
 void msl::textbox::view_end_update_from_start()
@@ -644,7 +656,7 @@ void msl::textbox::view_end_update_from_start()
 	update_display_dimensions();
 
 	view_end_=view_start_;
-	double textbox_max_width=display_width-padding_*2;
+	double textbox_max_width=display_width-padding_*3;
 
 	while((unsigned int)view_end_<value.size()&&msl::text_width(value.substr(view_start_,view_end_-view_start_))<
 		textbox_max_width)
@@ -656,7 +668,7 @@ void msl::textbox::view_start_update_from_end()
 	update_display_dimensions();
 
 	view_start_=view_end_;
-	double textbox_max_width=display_width-padding_*2;
+	double textbox_max_width=display_width-padding_*3;
 
 	while(view_start_>0&&msl::text_width(value.substr(view_start_,view_end_-view_start_))<textbox_max_width)
 		--view_start_;
@@ -679,11 +691,16 @@ void msl::textbox::del()
 
 void msl::textbox::type(const char key)
 {
-	std::string temp;
-	temp+=(char)key;
-	value.insert(cursor,temp);
-	++cursor;
-	view_end_update_from_start();
+	constrain_cursor();
+
+	if((max_length>=0&&value.size()+1<=(unsigned int)max_length)||max_length<0)
+	{
+		std::string temp;
+		temp+=(char)key;
+		value.insert((unsigned int)cursor,temp);
+		++cursor;
+		view_end_update_from_start();
+	}
 }
 
 void msl::textbox::repeat_check(const int key)

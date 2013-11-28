@@ -27,9 +27,6 @@ namespace msl
 {
 	class widget
 	{
-		friend void ui_loop(const double dt);
-		friend void ui_draw();
-
 		public:
 			widget(const double x,const double y,const double width=-1,const double height=-1,
 				const bool hover=false,const bool down=false,const bool pressed=false,const bool disabled=false,
@@ -147,6 +144,7 @@ namespace msl
 
 			std::string value;
 			int cursor;
+			int max_length;
 			bool focus;
 			bool readonly;
 			msl::color background_color;
