@@ -169,6 +169,9 @@ namespace msl
 			bool blink_show_;
 			long repeat_timer_;
 			int repeat_wait_;
+			int repeat_max_;
+			int repeat_min_;
+			int repeat_inc_;
 			int repeat_key_;
 			bool repeat_;
 	};
