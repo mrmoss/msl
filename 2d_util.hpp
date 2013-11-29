@@ -1,8 +1,10 @@
 //2D Utilities Header
 //	Created By:		Mike Moss
-//	Modified On:	11/22/2013
+//	Modified On:	11/29/2013
 
 //Required Libraries:
+//	ftgl
+//	freetype
 //	gl
 //	glew
 //	glu
@@ -55,8 +57,17 @@ namespace msl
 		const msl::color& color_bottom_left=msl::color(1,1,1,1));
 	void draw_circle(const double x,const double y,const double radius,const msl::color& color=msl::color(1,1,1,1));
 
+	//Text Set Font Function (Loads TrueType style fonts)
+	void set_text_font(const std::string& font);
+
+	//Text Set Size Function (In standard font sizes)
+	void set_text_size(const double size);
+
 	//Text Width Function (Returns width of text in pixels)
 	double text_width(const std::string& text);
+
+	//Text Height Function (Returns height of text in pixels)
+	double text_height(const std::string& text);
 
 	//Text Drawing Function
 	void draw_text(const double x,const double y,const std::string& text,const msl::color& color=msl::color(1,1,1,1));

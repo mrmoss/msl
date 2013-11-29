@@ -1,8 +1,10 @@
 //2D Utilities Source
 //	Created By:		Mike Moss
-//	Modified On:	11/22/2013
+//	Modified On:	11/29/2013
 
 //Required Libraries:
+//	ftgl
+//	freetype
 //	gl
 //	glew
 //	glu
@@ -14,6 +16,12 @@
 
 //Algorithm Header
 #include <algorithm>
+
+//Exception Header
+#include <stdexcept>
+
+//FTGL Header
+#include <FTGL/ftgl.h>
 
 //Math Header
 #include <math.h>
@@ -32,6 +40,9 @@
 
 //Vector Header
 #include <vector>
+
+//Static Font Object
+static FTGLPixmapFont* msl_text_font=new FTGLPixmapFont("");
 
 //Color Class Constructor (Default)
 msl::color::color(const float red,const float green,const float blue,const float alpha):r(red),g(green),b(blue),a(alpha)
@@ -221,119 +232,56 @@ void msl::draw_circle(const double x,const double y,const double radius,const ms
 	glDisable(GL_BLEND);
 }
 
-//Text Width Function (Returns width of text in pixels)
-double msl::text_width(const std::string& text)
+//Text Set Font Function (Loads TrueType style fonts)
+void msl::set_text_font(const std::string& font)
 {
-	//Length Variables
-	std::vector<double> lengths;
-	double current_length=0;
+	FTGLPixmapFont* temp_font=new FTGLPixmapFont(font.c_str());
 
-	//Draw String
-	for(unsigned int ii=0;ii<text.size();++ii)
-	{
-		//Newlines
-		if(text[ii]=='\n')
-		{
-			lengths.push_back(current_length);
-			current_length=0;
-		}
+	if(temp_font->Error())
+		throw std::runtime_error("msl::set_text_font() - Font not found!");
 
-		//Tabs
-		else if(text[ii]=='\t')
-		{
-			//Get Current Line Width
-			unsigned int line_width=0;
+	delete msl_text_font;
+	msl_text_font=temp_font;
 
-			for(int jj=ii-1;jj>=0&&text[jj]!='\t'&&text[jj]!='\n';--jj)
-				++line_width;
+}
 
-			//Add Indents
-			for(unsigned int jj=line_width%4;jj<4;++jj)
-				current_length+=glutBitmapWidth(GLUT_BITMAP_HELVETICA_12,' ');
-		}
+//Text Set Size Function (In standard font sizes)
+void msl::set_text_size(const double size)
+{
+	if(msl_text_font->Error())
+		throw std::runtime_error("msl::set_text_size() - Font not found!");
 
-		//Characters
-		else
-		{
-			current_length+=glutBitmapWidth(GLUT_BITMAP_HELVETICA_12,text[ii]);
-		}
-	}
+	msl_text_font->FaceSize(size);
+}
 
-	//Add Last Length
-	lengths.push_back(current_length);
+//Text Width Function (Returns height of text in pixels)
+double msl::text_width(const std::string& str)
+{
+	if(msl_text_font->Error())
+		throw std::runtime_error("msl::text_width() - Font not found!");
 
-	//Return Max Length
-	std::sort(lengths.begin(),lengths.end());
+	FTBBox box=msl_text_font->BBox(str.c_str());
+	return box.Upper().X()-box.Lower().X();
+}
 
-	//Return Longest Length
-	return lengths[0];
+//Text Height Function (Returns height of text in pixels)
+double msl::text_height(const std::string& str)
+{
+	if(msl_text_font->Error())
+		throw std::runtime_error("msl::text_height() - Font not found!");
+
+	FTBBox box=msl_text_font->BBox(str.c_str());
+	return box.Upper().Y()-box.Lower().Y();
 }
 
 //Text Drawing Function
-void msl::draw_text(const double x,const double y,const std::string& text,const msl::color& color)
+void msl::draw_text(const double x,const double y,const std::string& str,const msl::color& col)
 {
-	//Disable Texture
-	glDisable(GL_TEXTURE_2D);
+	if(msl_text_font->Error())
+		throw std::runtime_error("msl::draw_text() - Font not found!");
 
-	//Go To Project Mode
-	glMatrixMode(GL_PROJECTION);
-
-	//Save Current Matrix
-	glPushMatrix();
-
-	//Clear New Matrix
-	glLoadIdentity();
-
-	//Setup Drawing View
-	glOrtho(-glutGet(GLUT_WINDOW_WIDTH)/2,glutGet(GLUT_WINDOW_WIDTH)/2,-glutGet(GLUT_WINDOW_HEIGHT)/2,glutGet(GLUT_WINDOW_HEIGHT)/2,0,1);
-
-	//Set Color
-	glColor4d(color.r,color.g,color.b,color.a);
-
-	//Vertical Offset Variable
-	double offset_increment=13;
-	double offset=offset_increment;
-
-	//Move Text Drawing Position
-	glRasterPos2d(x,y-offset+1);
-
-	//Draw String
-	for(unsigned int ii=0;ii<text.size();++ii)
-	{
-		//Newlines
-		if(text[ii]=='\n')
-		{
-			offset+=offset_increment;
-			glRasterPos2d(x,y-offset+1);
-		}
-
-		//Tabs
-		else if(text[ii]=='\t')
-		{
-			//Get Current Line Width
-			unsigned int line_width=0;
-
-			for(int jj=ii-1;jj>=0&&text[jj]!='\t'&&text[jj]!='\n';--jj)
-				++line_width;
-
-			//Add Indents
-			for(unsigned int jj=line_width%4;jj<4;++jj)
-				glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12,' ');
-		}
-
-		//Characters
-		else
-		{
-			glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12,text[ii]);
-		}
-	}
-
-	//Reset Color
-	glColor4d(1,1,1,1);
-
-	//Load Old Matrix
-	glPopMatrix();
-
-	//Return To Matrix Mode
-	glMatrixMode(GL_MODELVIEW);
+	glPixelTransferf(GL_RED_BIAS,col.r-1);
+	glPixelTransferf(GL_GREEN_BIAS,col.g-1);
+	glPixelTransferf(GL_BLUE_BIAS,col.b-1);
+	msl_text_font->Render(str.c_str(),-1,FTPoint(glutGet(GLUT_WINDOW_WIDTH)/2.0+x,glutGet(GLUT_WINDOW_HEIGHT)/2.0+y));
 }
