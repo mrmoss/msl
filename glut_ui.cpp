@@ -104,10 +104,11 @@ void msl::button::draw()
 		}
 
 		double text_width=msl::text_width(value);
+		double text_height=msl::text_height(value);
 
 		msl::draw_rectangle_gradient(x,y,display_width,display_height,true,but_col_from,but_col_from,but_col_to,but_col_to);
 		msl::draw_rectangle(x,y,display_width,display_height,false,out_col);
-		msl::draw_text(x-text_width/2.0,y+14/2.0,value,tex_col);
+		msl::draw_text(x-text_width/2.0,y-text_height/2.0,value,tex_col);
 	}
 }
 
@@ -281,9 +282,13 @@ void msl::dropdown::draw()
 			y+padding_/2.0,x+button_.display_width/2.0-padding_*3,y+padding_/2.0,true,tex_col);
 
 		if(value>=0&&value<options.size())
-			msl::draw_text(x-button_.display_width/2.0+padding_,y+14/2.0,options[value],tex_col);
+		{
+			double text_height=msl::text_height(options[value]);
+			msl::draw_text(x-button_.display_width/2.0+padding_,y-text_height/2.0,options[value],tex_col);
+		}
 
-		msl::draw_text(x,y-100,msl::to_string(value));
+		double text_height=msl::text_height(msl::to_string(value));
+		msl::draw_text(x,y-100-text_height/2.0,msl::to_string(value));
 	}
 }
 
@@ -597,7 +602,9 @@ void msl::textbox::draw()
 		msl::draw_rectangle(x,y,display_width,display_height,true,bg_col);
 		msl::draw_rectangle(x,y,display_width,display_height,false,out_col);
 
-		msl::draw_text(x-display_width/2.0+padding_,y+14/2.0,value.substr(view_start_,view_end_-view_start_),tex_col);
+		std::string text_display=value.substr(view_start_,view_end_-view_start_);
+		double text_height=msl::text_height(text_display);
+		msl::draw_text(x-display_width/2.0+padding_,y-text_height/2.0,text_display,tex_col);
 
 		if(focus&&blink_show_)
 		{
@@ -743,5 +750,5 @@ void msl::textbox::update_display_dimensions()
 	display_height=height;
 
 	if(height<0)
-		display_height=1.5*14;
+		display_height=padding_*2+msl::text_height("test");
 }
