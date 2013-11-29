@@ -52,7 +52,7 @@ void msl::button::loop(const double dt)
 	display_height=height;
 
 	if(height<0)
-		display_height=1.5*14;
+		display_height=padding_*2+msl::text_height("test");
 
 	if(visible)
 	{
@@ -244,14 +244,16 @@ void msl::dropdown::draw()
 
 		button_.draw();
 
+		double text_height=msl::text_height("test");
+
 		if(selected)
 		{
-			double drop_menu_height=options.size()*14*1.5;
+			double drop_menu_height=options.size()*text_height;
 
 			msl::draw_rectangle(x,y-button_.display_height/2.0-drop_menu_height/2.0,button_.display_width,drop_menu_height,true);
 
 			double diff=mouse_y-(y-button_.display_height/2.0-drop_menu_height);
-			unsigned int index=options.size()-diff/(14*1.5);
+			unsigned int index=options.size()-diff/(text_height);
 
 			if(msl::mouse_x<x-button_.display_width/2.0||msl::mouse_x>x+button_.display_width/2.0)
 				index=-1;
@@ -262,11 +264,11 @@ void msl::dropdown::draw()
 
 				if(ii==index)
 				{
-					msl::draw_rectangle(x,y-button_.display_height/2.0-(ii+0.5)*14*1.5,button_.display_width,14*1.5,true,msl::color(0.2,0.4,1,1));
+					msl::draw_rectangle(x,y-button_.display_height/2.0-(ii+0.5)*text_height,button_.display_width,text_height,true,msl::color(0.2,0.4,1,1));
 					new_tex_col=msl::color(1,1,1,1);
 				}
 
-				msl::draw_text(x-button_.display_width/2.0+padding_,y-(button_.display_height+padding_)/2.0-ii*14*1.5,options[ii],new_tex_col);
+				msl::draw_text(x-button_.display_width/2.0+padding_,y-(button_.display_height+padding_)/2.0-ii*text_height-text_height/2.0,options[ii],new_tex_col);
 			}
 
 			msl::draw_rectangle(x,y-button_.display_height/2.0-drop_menu_height/2.0,button_.display_width,drop_menu_height,false,out_col);
@@ -283,11 +285,9 @@ void msl::dropdown::draw()
 
 		if(value>=0&&value<options.size())
 		{
-			double text_height=msl::text_height(options[value]);
 			msl::draw_text(x-button_.display_width/2.0+padding_,y-text_height/2.0,options[value],tex_col);
 		}
 
-		double text_height=msl::text_height(msl::to_string(value));
 		msl::draw_text(x,y-100-text_height/2.0,msl::to_string(value));
 	}
 }
