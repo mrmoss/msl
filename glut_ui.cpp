@@ -1,12 +1,12 @@
 //Glut User Interface Source
-//	Created By:		Mike Moss
-//	Modified On:	11/23/2013
+//        Created By:                Mike Moss
+//        Modified On:        11/23/2013
 
 //Required Libraries:
-//	gl
-//	glew
-//	glu
-//	glut/freeglut
+//        gl
+//        glew
+//        glu
+//        glut/freeglut
 
 //Definitions for "glut_ui.hpp"
 #include "glut_ui.hpp"
@@ -39,7 +39,7 @@ msl::widget::widget(const double x,const double y,const double width,const doubl
 		text_color(text_color),text_color_disabled(text_color_disabled)
 {}
 
-msl::button::button(const std::string& value,const double x,const double y):widget(x,y),value(value),padding_(4)
+msl::button::button(const std::string& value,const double x,const double y):widget(x,y),value(value),padding(4)
 {}
 
 void msl::button::loop(const double dt)
@@ -47,12 +47,12 @@ void msl::button::loop(const double dt)
 	display_width=width;
 
 	if(width<0)
-		display_width=msl::text_width(value)+padding_*2;
+		display_width=msl::text_width(value)+padding*2;
 
 	display_height=height;
 
 	if(height<0)
-		display_height=padding_*2+msl::text_height("test");
+		display_height=padding*2+msl::text_height("test");
 
 	if(visible)
 	{
@@ -198,7 +198,7 @@ void msl::checkbox::update_button(const double dt)
 
 
 msl::dropdown::dropdown(const double x,const double y):widget(x,y,-1,-1),value(-1),button_("",x,y),
-	selected(false),padding_(4)
+	selected(false),padding(4)
 {}
 
 void msl::dropdown::loop(const double dt)
@@ -209,7 +209,7 @@ void msl::dropdown::loop(const double dt)
 		if(msl::text_width(options[ii])>max_width)
 			max_width=msl::text_width(options[ii]);
 
-	button_.width=max_width+padding_*5;
+	button_.width=max_width+padding*5;
 
 	if(visible)
 	{
@@ -268,7 +268,7 @@ void msl::dropdown::draw()
 					new_tex_col=msl::color(1,1,1,1);
 				}
 
-				msl::draw_text(x-button_.display_width/2.0+padding_,y-(button_.display_height+padding_)/2.0-ii*text_height-text_height/2.0,options[ii],new_tex_col);
+				msl::draw_text(x-button_.display_width/2.0+padding,y-(button_.display_height+padding)/2.0-ii*text_height-text_height/2.0,options[ii],new_tex_col);
 			}
 
 			msl::draw_rectangle(x,y-button_.display_height/2.0-drop_menu_height/2.0,button_.display_width,drop_menu_height,false,out_col);
@@ -280,12 +280,12 @@ void msl::dropdown::draw()
 			}
 		}
 
-		msl::draw_triangle(x+button_.display_width/2.0-padding_*2,y-padding_/2.0,x+button_.display_width/2.0-padding_*1,
-			y+padding_/2.0,x+button_.display_width/2.0-padding_*3,y+padding_/2.0,true,tex_col);
+		msl::draw_triangle(x+button_.display_width/2.0-padding*2,y-padding/2.0,x+button_.display_width/2.0-padding*1,
+			y+padding/2.0,x+button_.display_width/2.0-padding*3,y+padding/2.0,true,tex_col);
 
 		if(value>=0&&value<options.size())
 		{
-			msl::draw_text(x-button_.display_width/2.0+padding_,y-text_height/2.0,options[value],tex_col);
+			msl::draw_text(x-button_.display_width/2.0+padding,y-text_height/2.0,options[value],tex_col);
 		}
 
 		msl::draw_text(x,y-100-text_height/2.0,msl::to_string(value));
@@ -443,7 +443,7 @@ void msl::slider::update_button(const double dt)
 
 msl::textbox::textbox(const std::string& value,const double x,const double y):widget(x,y,-1,-1),
 	value(value),cursor(0),max_length(-1),focus(false),readonly(false),background_color(1,1,1,1),
-	background_color_disabled(0.8,0.8,0.8,1),padding_(4),view_start_(cursor),view_end_(value.size()),
+	background_color_disabled(0.8,0.8,0.8,1),padding(4),view_start(cursor),view_end(value.size()),
 	blink_timer_(msl::millis()),blink_show_(false),repeat_timer_(msl::millis()),repeat_wait_(0),
 	repeat_max_(20),repeat_min_(250),repeat_key_(0),repeat_(false)
 {}
@@ -466,10 +466,10 @@ void msl::textbox::loop(const double dt)
 			bool new_hover=(msl::mouse_x>=x-display_width/2.0&&msl::mouse_x<=x+display_width/2.0&&
 				msl::mouse_y>=y-display_height/2.0&&msl::mouse_y<=y+display_height/2.0);
 
-			if(hover&&!new_hover)
+			if(hover&!new_hover)
 				glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
 
-			if(!hover&&new_hover)
+			if(!hover&new_hover)
 				glutSetCursor(GLUT_CURSOR_TEXT);
 
 			hover=new_hover;
@@ -483,22 +483,22 @@ void msl::textbox::loop(const double dt)
 
 				if(focus)
 				{
-					double start_x=x-display_width/2.0+padding_;
+					double start_x=x-display_width/2.0+padding;
 					double test=mouse_x-start_x;
 
 					cursor=-1;
 
-					for(int ii=0;ii<view_end_-view_start_;++ii)
+					for(int ii=0;ii<view_end-view_start;++ii)
 					{
-						if(msl::text_width(value.substr(view_start_,ii))>=test)
+						if(msl::text_width(value.substr(view_start,ii))>=test)
 						{
-							cursor=view_start_+ii;
+							cursor=view_start+ii;
 							break;
 						}
 					}
 
 					if(cursor<0)
-						cursor=view_end_;
+						cursor=view_end;
 				}
 			}
 
@@ -563,7 +563,7 @@ void msl::textbox::loop(const double dt)
 			else
 			{
 				cursor=0;
-				view_end_update_from_start();
+				view_endupdate_from_start();
 			}
 		}
 		else
@@ -572,7 +572,7 @@ void msl::textbox::loop(const double dt)
 			down=false;
 			pressed=false;
 			cursor=0;
-			view_end_update_from_start();
+			view_endupdate_from_start();
 		}
 	}
 
@@ -602,26 +602,23 @@ void msl::textbox::draw()
 		msl::draw_rectangle(x,y,display_width,display_height,true,bg_col);
 		msl::draw_rectangle(x,y,display_width,display_height,false,out_col);
 
-		std::string text=value.substr(view_start_,view_end_-view_start_);
-
-		msl::draw_text(x-(display_width-padding_*2)/2.0,y-msl::text_height(text)/2.0,text,tex_col);
+		std::string text_display=value.substr(view_start,view_end-view_start);
+		double text_height=msl::text_height(text_display);
+		msl::draw_text(x-display_width/2.0+padding,y-text_height/2.0,text_display,tex_col);
 
 		if(focus&&blink_show_)
 		{
-			std::string cursor_text=text.substr(0,cursor-view_start_);
+			std::string cursor_text=value.substr(view_start,cursor-view_start);
 			double cursor_x=msl::text_width(cursor_text);
 
 			if(cursor_text.size()>0&&cursor_text[cursor_text.size()-1]==' ')
 				cursor_x=msl::text_width(cursor_text+"b")-msl::text_width("b");
 
-			if(cursor_x<0)
-				cursor_x=0;
+			if(cursor_x>display_width)
+				cursor_x=display_width;
 
-			if(cursor_x>display_width-padding_*2)
-				cursor_x=display_width-padding_*2;
-
-			msl::draw_line(x-(display_width-padding_*2)/2.0+cursor_x,y+(display_height-padding_*2)/2.0,
-				x-(display_width-padding_*2)/2.0+cursor_x,y-(display_height-padding_*2)/2.0,tex_col);
+			double cursor_draw_x=x-display_width/2.0+padding+cursor_x;
+			msl::draw_line(cursor_draw_x,y+display_height/2.0,cursor_draw_x,y-display_height/2.0,tex_col);
 		}
 	}
 }
@@ -634,33 +631,33 @@ void msl::textbox::constrain_cursor()
 	if((unsigned int)cursor>value.size())
 		cursor=value.size();
 
-	if(view_end_<0)
-		view_end_=0;
+	if(view_end<0)
+		view_end=0;
 
-	if((unsigned int)view_end_>value.size())
-		view_end_=value.size();
+	if((unsigned int)view_end>value.size())
+		view_end=value.size();
 
-	if(view_start_<0)
-		view_start_=0;
+	if(view_start<0)
+		view_start=0;
 
-	if(view_start_>view_end_)
-		view_start_=view_end_;
+	if(view_start>view_end)
+		view_start=view_end;
 }
 
 void msl::textbox::update_cursor()
 {
 	constrain_cursor();
 
-	if(cursor<view_start_)
+	if(cursor<view_start)
 	{
-		view_start_=cursor;
-		view_end_update_from_start();
+		view_start=cursor;
+		view_endupdate_from_start();
 	}
 
-	if(cursor>view_end_)
+	if(cursor>view_end)
 	{
-		view_end_=cursor;
-		view_start_update_from_end();
+		view_end=cursor;
+		view_startupdate_from_end();
 	}
 
 	if((max_length>=0&&value.size()+1<=(unsigned int)max_length)||max_length<0)
@@ -670,33 +667,27 @@ void msl::textbox::update_cursor()
 	}
 }
 
-void msl::textbox::view_end_update_from_start()
+void msl::textbox::view_endupdate_from_start()
 {
 	update_display_dimensions();
 
-	view_end_=view_start_;
-	double textbox_max_width=display_width-padding_*2;
+	view_end=view_start;
+	double textbox_max_width=display_width-padding*3;
 
-	while((unsigned int)view_end_<value.size()&&msl::text_width(value.substr(view_start_,view_end_-view_start_))<
+	while((unsigned int)view_end<value.size()&&msl::text_width(value.substr(view_start,view_end-view_start))<
 		textbox_max_width)
-		++view_end_;
-
-	if(view_end_>0)
-		--view_end_;
+		++view_end;
 }
 
-void msl::textbox::view_start_update_from_end()
+void msl::textbox::view_startupdate_from_end()
 {
 	update_display_dimensions();
 
-	view_start_=view_end_;
-	double textbox_max_width=display_width-padding_*2;
+	view_start=view_end;
+	double textbox_max_width=display_width-padding*3;
 
-	while(view_start_>0&&msl::text_width(value.substr(view_start_,view_end_-view_start_))<textbox_max_width)
-		--view_start_;
-
-	if((unsigned int)view_start_<value.size())
-		++view_start_;
+	while(view_start>0&&msl::text_width(value.substr(view_start,view_end-view_start))<textbox_max_width)
+		--view_start;
 }
 
 void msl::textbox::backspace()
@@ -724,7 +715,7 @@ void msl::textbox::type(const char key)
 		temp+=(char)key;
 		value.insert((unsigned int)cursor,temp);
 		++cursor;
-		view_end_update_from_start();
+		view_endupdate_from_start();
 	}
 }
 
@@ -756,13 +747,13 @@ void msl::textbox::repeat_update()
 
 void msl::textbox::update_display_dimensions()
 {
+	display_width=width+padding*2;
+
 	if(width<0)
-		display_width=msl::text_width(value)+padding_*2;
-	else
-		display_width=width;
+		display_width=msl::text_width(value)+padding*2;
+
+	display_height=height+padding*2;
 
 	if(height<0)
-		display_height=msl::text_height(value)+padding_*2;
-	else
-		display_height=height;
+		display_height=padding*2+msl::text_height("test");
 }

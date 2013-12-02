@@ -71,7 +71,7 @@ namespace msl
 			void draw();
 
 			std::string value;
-			double padding_;
+			double padding;
 	};
 
 	class checkbox:public widget
@@ -106,7 +106,7 @@ namespace msl
 
 			button button_;
 			bool selected;
-			double padding_;
+			double padding;
 	};
 
 	class slider:public widget
@@ -149,12 +149,15 @@ namespace msl
 			bool readonly;
 			msl::color background_color;
 			msl::color background_color_disabled;
+			double padding;
+			int view_start;
+			int view_end;
 
 		private:
 			void constrain_cursor();
 			void update_cursor();
-			void view_end_update_from_start();
-			void view_start_update_from_end();
+			void view_endupdate_from_start();
+			void view_startupdate_from_end();
 			void backspace();
 			void del();
 			void type(const char key);
@@ -162,9 +165,6 @@ namespace msl
 			void repeat_update();
 			void update_display_dimensions();
 
-			double padding_;
-			int view_start_;
-			int view_end_;
 			long blink_timer_;
 			bool blink_show_;
 			long repeat_timer_;
