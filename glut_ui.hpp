@@ -100,13 +100,15 @@ namespace msl
 
 			unsigned int value;
 			std::vector<std::string> options;
+			double padding;
+			msl::color highlighted_background_color;
+			msl::color highlighted_text_color;
 
 		private:
 			void update_button(const double dt);
 
 			button button_;
 			bool selected;
-			double padding;
 	};
 
 	class slider:public widget
@@ -156,8 +158,8 @@ namespace msl
 		private:
 			void constrain_cursor();
 			void update_cursor();
-			void view_endupdate_from_start();
-			void view_startupdate_from_end();
+			void view_end_update_from_start();
+			void view_start_update_from_end();
 			void backspace();
 			void del();
 			void type(const char key);

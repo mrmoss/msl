@@ -197,37 +197,47 @@ void msl::checkbox::update_button(const double dt)
 
 
 
-msl::dropdown::dropdown(const double x,const double y):widget(x,y,-1,-1),value(-1),button_("",x,y),
-	selected(false),padding(4)
+msl::dropdown::dropdown(const double x,const double y):widget(x,y,-1,-1),value(-1),padding(4),
+	highlighted_background_color(0.2,0.3,1,1),highlighted_text_color(1,1,1,1),button_("",x,y),
+	selected(false)
 {}
 
 void msl::dropdown::loop(const double dt)
 {
+	//Figure Out Max Width
 	double max_width=0;
 
 	for(unsigned int ii=0;ii<options.size();++ii)
 		if(msl::text_width(options[ii])>max_width)
 			max_width=msl::text_width(options[ii]);
 
+	//Set Max Width (With padding between text and triangle)
 	button_.width=max_width+padding*5;
 
+	//Update if Visible
 	if(visible)
 	{
+		//Update Button
 		update_button(dt);
 
+		//If Pressed, Toggle Selected
 		if(pressed)
 			selected=!selected;
 
+		//If Selected, Button Stays Down
 		if(selected)
+			//Button is Down
 			button_.down=true;
 
-		if(!hover&&(msl::input_check(mb_left)||msl::input_check(mb_middle)||msl::input_check(mb_right)))
+		//Check If Click Outside
+		if(!hover&&(msl::input_check_released(mb_left)||msl::input_check_released(mb_middle)||msl::input_check_released(mb_right)))
 			selected=false;
 	}
 }
 
 void msl::dropdown::draw()
 {
+	//To draw or not to draw...
 	if(visible)
 	{
 		//Figure Out Colors
@@ -247,58 +257,69 @@ void msl::dropdown::draw()
 		button_.draw();
 
 		//Draw Triangle
-		double triangle_draw_x=x+button_.display_width/2.0-padding*2;
+		double triangle_draw_x=x+display_width/2.0-padding*2;
 		msl::draw_triangle(triangle_draw_x,y-padding/2.0,triangle_draw_x+padding,y+padding/2.0,triangle_draw_x-padding,y+padding/2.0,true,tex_col);
 
 		//Setup Text Drawing Coordinates
 		double text_height=msl::text_height(options[selected])+padding*2;
-		double text_draw_x=x-button_.display_width/2.0+padding;
+		double text_draw_x=x-display_width/2.0+padding;
 		double text_draw_y=y-text_height/2.0+padding;
 
 		//Draw Selected Option Text
 		if(value>=0&&value<options.size())
 			msl::draw_text(text_draw_x,text_draw_y,options[value],tex_col);
 
+		//Draw Menu
 		if(selected)
 		{
-			double drop_menu_width=button_.display_width;
+			//Figure Out Draw Coordinates and Dimensions
+			double drop_menu_width=display_width;
 			double drop_menu_height=options.size()*text_height;
-			double drop_menu_y=y-(button_.display_height+drop_menu_height)/2.0;
+			double drop_menu_y=y-(display_height+drop_menu_height)/2.0;
 
+			//Draw Menu Background
 			msl::draw_rectangle(x,drop_menu_y,drop_menu_width,drop_menu_height,true,msl::color(0.7,0.7,0.7,1));
-			msl::draw_rectangle(x,drop_menu_y,drop_menu_width,drop_menu_height,false,msl::color(0,0,0,1));
 
-			/*msl::draw_rectangle(x,y-button_.display_height/2.0-drop_menu_height/2.0,button_.display_width,drop_menu_height,true);
+			//Figure Out Highlight Index
+			double diff=(drop_menu_y+drop_menu_height/2.0)-mouse_y;
+			int index=diff/text_height;
 
-			double diff=mouse_y-(y-button_.display_height/2.0-drop_menu_height);
-			unsigned int index=options.size()-diff/(text_height);
-
-			if(msl::mouse_x<x-button_.display_width/2.0||msl::mouse_x>x+button_.display_width/2.0)
-				index=-1;
-
-			for(unsigned int ii=0;ii<options.size();++ii)
+			if((unsigned int)index>=options.size()||mouse_x<x-display_width/2.0||mouse_x>x+display_width/2.0)
 			{
-				msl::color new_tex_col=tex_col;
-
-				if(ii==index)
-				{
-					msl::draw_rectangle(x,y-button_.display_height/2.0-(ii+0.5)*text_height,button_.display_width,text_height,true,msl::color(0.2,0.4,1,1));
-					new_tex_col=msl::color(1,1,1,1);
-				}
-
-				msl::draw_text(x-button_.display_width/2.0+padding,y-(button_.display_height+padding)/2.0-ii*text_height-text_height/2.0,options[ii],new_tex_col);
+				index=-1;
+				hover=false;
 			}
 
-			msl::draw_rectangle(x,y-button_.display_height/2.0-drop_menu_height/2.0,button_.display_width,drop_menu_height,false,out_col);
-
-			if(msl::input_check_pressed(mb_left)&&index>=0&&index<options.size())
+			//Draw Options
+			for(unsigned int ii=0;ii<options.size();++ii)
 			{
-				value=index;
-				selected=false;
-			}*/
-		}
+				//Text Color
+				msl::color option_col=tex_col;
 
-		//msl::draw_text(x,y-100-text_height/2.0,msl::to_string(value));
+				//If Selected
+				if(ii==(unsigned int)index)
+				{
+					//Change Text Color
+					option_col=highlighted_text_color;
+
+					//Figure Out Selection Rectangle Y
+					double selection_y=text_draw_y-padding-text_height*(ii+1)+text_height/2.0;
+
+					//Draw Selection Background
+					msl::draw_rectangle(x,selection_y,display_width,text_height,true,highlighted_background_color);
+				}
+
+				//Draw Option Text
+				msl::draw_text(text_draw_x,text_draw_y-text_height*(ii+1),options[ii],option_col);
+			}
+
+			//Choose selected option...breaks rules of graphics...I can live with it though...
+			if(index!=-1&&msl::input_check_released(mb_left))
+				value=index;
+
+			//Draw Menu Border
+			msl::draw_rectangle(x,drop_menu_y,drop_menu_width,drop_menu_height,false,msl::color(0,0,0,1));
+		}
 	}
 }
 
@@ -309,6 +330,10 @@ void msl::dropdown::update_button(const double dt)
 	pressed=button_.pressed;
 	button_.disabled=disabled;
 	button_.visible=visible;
+	width=button_.width;
+	height=button_.height;
+	display_width=button_.display_width;
+	display_height=button_.display_height;
 	button_.background_color_from=background_color_from;
 	button_.background_color_to=background_color_to;
 	button_.outline_color=outline_color;
@@ -512,7 +537,7 @@ void msl::textbox::loop(const double dt)
 				}
 			}
 
-			if(!hover&&(msl::input_check_pressed(mb_right)||msl::input_check_pressed(mb_middle)))
+			if(!hover&&(msl::input_check_released(mb_left)||msl::input_check_released(mb_middle)||msl::input_check_released(mb_right)))
 				focus=false;
 
 			if(focus)
@@ -573,7 +598,7 @@ void msl::textbox::loop(const double dt)
 			else
 			{
 				cursor=0;
-				view_endupdate_from_start();
+				view_end_update_from_start();
 			}
 		}
 		else
@@ -582,7 +607,7 @@ void msl::textbox::loop(const double dt)
 			down=false;
 			pressed=false;
 			cursor=0;
-			view_endupdate_from_start();
+			view_end_update_from_start();
 		}
 	}
 
@@ -612,7 +637,7 @@ void msl::textbox::draw()
 		msl::draw_rectangle(x,y,display_width,display_height,true,bg_col);
 		msl::draw_rectangle(x,y,display_width,display_height,false,out_col);
 
-		std::string text_display=value.substr(view_start,view_end-view_start);
+		std::string text_display=value.substr(view_start,view_end-view_start+1);
 		double text_height=msl::text_height(value);
 		msl::draw_text(x-display_width/2.0+padding,y-text_height/2.0,text_display,tex_col);
 
@@ -644,8 +669,8 @@ void msl::textbox::constrain_cursor()
 	if(view_end<0)
 		view_end=0;
 
-	if((unsigned int)view_end>value.size())
-		view_end=value.size();
+	if(view_end>cursor)
+		view_end=cursor;
 
 	if(view_start<0)
 		view_start=0;
@@ -661,13 +686,13 @@ void msl::textbox::update_cursor()
 	if(cursor<view_start)
 	{
 		view_start=cursor;
-		view_endupdate_from_start();
+		view_end_update_from_start();
 	}
 
 	if(cursor>view_end)
 	{
 		view_end=cursor;
-		view_startupdate_from_end();
+		view_start_update_from_end();
 	}
 
 	if((max_length>=0&&value.size()+1<=(unsigned int)max_length)||max_length<0)
@@ -677,19 +702,18 @@ void msl::textbox::update_cursor()
 	}
 }
 
-void msl::textbox::view_endupdate_from_start()
+void msl::textbox::view_end_update_from_start()
 {
 	update_display_dimensions();
 
 	view_end=view_start;
 	double textbox_max_width=display_width-padding*3;
 
-	while((unsigned int)view_end<value.size()&&msl::text_width(value.substr(view_start,view_end-view_start))<
-		textbox_max_width)
+	while((unsigned int)view_end<value.size()&&msl::text_width(value.substr(view_start,view_end-view_start))<textbox_max_width)
 		++view_end;
 }
 
-void msl::textbox::view_startupdate_from_end()
+void msl::textbox::view_start_update_from_end()
 {
 	update_display_dimensions();
 
@@ -725,7 +749,7 @@ void msl::textbox::type(const char key)
 		temp+=(char)key;
 		value.insert((unsigned int)cursor,temp);
 		++cursor;
-		view_endupdate_from_start();
+		view_end_update_from_start();
 	}
 }
 
