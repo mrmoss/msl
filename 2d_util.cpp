@@ -270,8 +270,15 @@ double msl::text_height(const std::string& str)
 	if(msl_text_font->Error())
 		throw std::runtime_error("msl::text_height() - Font not found!");
 
-	FTBBox box=msl_text_font->BBox(str.c_str());
-	return box.Upper().Y()-box.Lower().Y();
+	FTBBox box=msl_text_font->BBox("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890`~!@#$%^&*()_+\"\\|]}[{\':;.>,</?");
+
+	int lines=1;
+
+	for(unsigned int ii=0;ii<str.size();++ii)
+		if(str[ii]=='\n')
+			++lines;
+
+	return (box.Upper().Y()-box.Lower().Y())*lines;
 }
 
 //Text Drawing Function

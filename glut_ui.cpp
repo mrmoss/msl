@@ -221,7 +221,7 @@ void msl::dropdown::loop(const double dt)
 		if(selected)
 			button_.down=true;
 
-		if(msl::input_check(mb_left)&&!hover)
+		if(!hover&&(msl::input_check(mb_left)||msl::input_check(mb_middle)||msl::input_check(mb_right)))
 			selected=false;
 	}
 }
@@ -230,6 +230,7 @@ void msl::dropdown::draw()
 {
 	if(visible)
 	{
+		//Figure Out Colors
 		msl::color out_col=outline_color;
 		msl::color tex_col=text_color;
 
@@ -242,15 +243,32 @@ void msl::dropdown::draw()
 			tex_col=text_color_disabled;
 		}
 
+		//Draw Button
 		button_.draw();
 
-		double text_height=msl::text_height("test");
+		//Draw Triangle
+		double triangle_draw_x=x+button_.display_width/2.0-padding*2;
+		msl::draw_triangle(triangle_draw_x,y-padding/2.0,triangle_draw_x+padding,y+padding/2.0,triangle_draw_x-padding,y+padding/2.0,true,tex_col);
+
+		//Setup Text Drawing Coordinates
+		double text_height=msl::text_height(options[selected])+padding*2;
+		double text_draw_x=x-button_.display_width/2.0+padding;
+		double text_draw_y=y-text_height/2.0+padding;
+
+		//Draw Selected Option Text
+		if(value>=0&&value<options.size())
+			msl::draw_text(text_draw_x,text_draw_y,options[value],tex_col);
 
 		if(selected)
 		{
+			double drop_menu_width=button_.display_width;
 			double drop_menu_height=options.size()*text_height;
+			double drop_menu_y=y-(button_.display_height+drop_menu_height)/2.0;
 
-			msl::draw_rectangle(x,y-button_.display_height/2.0-drop_menu_height/2.0,button_.display_width,drop_menu_height,true);
+			msl::draw_rectangle(x,drop_menu_y,drop_menu_width,drop_menu_height,true,msl::color(0.7,0.7,0.7,1));
+			msl::draw_rectangle(x,drop_menu_y,drop_menu_width,drop_menu_height,false,msl::color(0,0,0,1));
+
+			/*msl::draw_rectangle(x,y-button_.display_height/2.0-drop_menu_height/2.0,button_.display_width,drop_menu_height,true);
 
 			double diff=mouse_y-(y-button_.display_height/2.0-drop_menu_height);
 			unsigned int index=options.size()-diff/(text_height);
@@ -277,18 +295,10 @@ void msl::dropdown::draw()
 			{
 				value=index;
 				selected=false;
-			}
+			}*/
 		}
 
-		msl::draw_triangle(x+button_.display_width/2.0-padding*2,y-padding/2.0,x+button_.display_width/2.0-padding*1,
-			y+padding/2.0,x+button_.display_width/2.0-padding*3,y+padding/2.0,true,tex_col);
-
-		if(value>=0&&value<options.size())
-		{
-			msl::draw_text(x-button_.display_width/2.0+padding,y-text_height/2.0,options[value],tex_col);
-		}
-
-		msl::draw_text(x,y-100-text_height/2.0,msl::to_string(value));
+		//msl::draw_text(x,y-100-text_height/2.0,msl::to_string(value));
 	}
 }
 
@@ -603,7 +613,7 @@ void msl::textbox::draw()
 		msl::draw_rectangle(x,y,display_width,display_height,false,out_col);
 
 		std::string text_display=value.substr(view_start,view_end-view_start);
-		double text_height=msl::text_height(text_display);
+		double text_height=msl::text_height(value);
 		msl::draw_text(x-display_width/2.0+padding,y-text_height/2.0,text_display,tex_col);
 
 		if(focus&&blink_show_)
@@ -755,5 +765,5 @@ void msl::textbox::update_display_dimensions()
 	display_height=height+padding*2;
 
 	if(height<0)
-		display_height=padding*2+msl::text_height("test");
+		display_height=msl::text_height(value)+padding*2;
 }
