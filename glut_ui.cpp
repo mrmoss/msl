@@ -466,10 +466,10 @@ void msl::textbox::loop(const double dt)
 			bool new_hover=(msl::mouse_x>=x-display_width/2.0&&msl::mouse_x<=x+display_width/2.0&&
 				msl::mouse_y>=y-display_height/2.0&&msl::mouse_y<=y+display_height/2.0);
 
-			if(hover&!new_hover)
+			if(hover&&!new_hover)
 				glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
 
-			if(!hover&new_hover)
+			if(!hover&&new_hover)
 				glutSetCursor(GLUT_CURSOR_TEXT);
 
 			hover=new_hover;
@@ -602,18 +602,26 @@ void msl::textbox::draw()
 		msl::draw_rectangle(x,y,display_width,display_height,true,bg_col);
 		msl::draw_rectangle(x,y,display_width,display_height,false,out_col);
 
-		std::string text_display=value.substr(view_start_,view_end_-view_start_);
-		double text_height=msl::text_height(text_display);
-		msl::draw_text(x-display_width/2.0+padding_,y-text_height/2.0,text_display,tex_col);
+		std::string text=value.substr(view_start_,view_end_-view_start_);
+
+		msl::draw_text(x-(display_width-padding_*2)/2.0,y-msl::text_height(text)/2.0,text,tex_col);
 
 		if(focus&&blink_show_)
 		{
-			double cursor_x=msl::text_width(value.substr(view_start_,cursor-view_start_));
+			std::string cursor_text=text.substr(0,cursor-view_start_);
+			double cursor_x=msl::text_width(cursor_text);
 
-			if(cursor_x>display_width)
-				cursor_x=display_width;
+			if(cursor_text.size()>0&&cursor_text[cursor_text.size()-1]==' ')
+				cursor_x=msl::text_width(cursor_text+"b")-msl::text_width("b");
 
-			msl::draw_rectangle(x-display_width/2.0+padding_+cursor_x,y,1,14,true,tex_col);
+			if(cursor_x<0)
+				cursor_x=0;
+
+			if(cursor_x>display_width-padding_*2)
+				cursor_x=display_width-padding_*2;
+
+			msl::draw_line(x-(display_width-padding_*2)/2.0+cursor_x,y+(display_height-padding_*2)/2.0,
+				x-(display_width-padding_*2)/2.0+cursor_x,y-(display_height-padding_*2)/2.0,tex_col);
 		}
 	}
 }
@@ -667,11 +675,14 @@ void msl::textbox::view_end_update_from_start()
 	update_display_dimensions();
 
 	view_end_=view_start_;
-	double textbox_max_width=display_width-padding_*3;
+	double textbox_max_width=display_width-padding_*2;
 
 	while((unsigned int)view_end_<value.size()&&msl::text_width(value.substr(view_start_,view_end_-view_start_))<
 		textbox_max_width)
 		++view_end_;
+
+	if(view_end_>0)
+		--view_end_;
 }
 
 void msl::textbox::view_start_update_from_end()
@@ -679,10 +690,13 @@ void msl::textbox::view_start_update_from_end()
 	update_display_dimensions();
 
 	view_start_=view_end_;
-	double textbox_max_width=display_width-padding_*3;
+	double textbox_max_width=display_width-padding_*2;
 
 	while(view_start_>0&&msl::text_width(value.substr(view_start_,view_end_-view_start_))<textbox_max_width)
 		--view_start_;
+
+	if((unsigned int)view_start_<value.size())
+		++view_start_;
 }
 
 void msl::textbox::backspace()
@@ -742,13 +756,13 @@ void msl::textbox::repeat_update()
 
 void msl::textbox::update_display_dimensions()
 {
-	display_width=width;
-
 	if(width<0)
 		display_width=msl::text_width(value)+padding_*2;
-
-	display_height=height;
+	else
+		display_width=width;
 
 	if(height<0)
-		display_height=padding_*2+msl::text_height("test");
+		display_height=msl::text_height(value)+padding_*2;
+	else
+		display_height=height;
 }
