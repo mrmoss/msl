@@ -260,13 +260,13 @@ double msl::text_width(const std::string& str)
 	if(msl_text_font->Error())
 		throw std::runtime_error("msl::text_width() - Font not found!");
 
-	FTBBox box=msl_text_font->BBox((str+"B").c_str());
+	FTBBox box=msl_text_font->BBox(("B"+str+"B").c_str());
 	FTBBox sub=msl_text_font->BBox("B");
 
 	double box_width=box.Upper().X()-box.Lower().X();
 	double sub_width=sub.Upper().X()-sub.Lower().X();
 
-	return box_width-sub_width;
+	return box_width-sub_width*2;
 }
 
 //Text Height Function (Returns height of text in pixels)

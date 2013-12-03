@@ -565,6 +565,7 @@ void msl::textbox::loop(const double dt)
 				{
 					--cursor;
 					value.erase(cursor,1);
+					find_end();
 					repeat_check(kb_backspace);
 				}
 			}
@@ -575,6 +576,7 @@ void msl::textbox::loop(const double dt)
 				if((unsigned int)cursor<value.size())
 				{
 					value.erase(cursor,1);
+					find_end();
 					repeat_check(kb_delete);
 				}
 			}
