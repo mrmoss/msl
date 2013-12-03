@@ -1,6 +1,6 @@
 //2D Utilities Header
 //	Created By:		Mike Moss
-//	Modified On:	11/29/2013
+//	Modified On:	12/02/2013
 
 //Required Libraries:
 //	ftgl
@@ -9,7 +9,6 @@
 //	glew
 //	glu
 //	glut/freeglut
-//	soil
 
 //Begin Define Guards
 #ifndef MSL_2D_UTIL_H

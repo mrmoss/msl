@@ -1,12 +1,14 @@
 //Glut User Interface Source
-//        Created By:                Mike Moss
-//        Modified On:        11/23/2013
+//	Created By:		Mike Moss
+//	Modified On:	12/02/2013
 
 //Required Libraries:
-//        gl
-//        glew
-//        glu
-//        glut/freeglut
+//	ftgl
+//	freetype
+//	gl
+//	glew
+//	glu
+//	glut/freeglut
 
 //Definitions for "glut_ui.hpp"
 #include "glut_ui.hpp"

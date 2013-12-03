@@ -1,12 +1,13 @@
 //Glut User Interface Header
 //	Created By:		Mike Moss
-//	Modified On:	11/23/2013
+//	Modified On:	12/02/2013
 
 //Required Libraries:
+//	ftgl
+//	freetype
 //	gl
 //	glew
 //	glu
-//	glui
 //	glut/freeglut
 
 //Begin Define Guards
