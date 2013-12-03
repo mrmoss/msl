@@ -670,7 +670,7 @@ void msl::textbox::draw()
 		//Draw Cursor
 		if(focus&&blink_show_)
 		{
-			double cursor_x_start=-display_width/2.0+padding;
+			double cursor_x_start=x-display_width/2.0+padding;
 			std::string cursor_x_text=value.substr(view_start,cursor-view_start);
 			double cursor_x_text_width=msl::text_width(cursor_x_text);
 			double cursor_x=cursor_x_start+cursor_x_text_width;
