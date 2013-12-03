@@ -144,37 +144,29 @@ namespace msl
 			void loop(const double dt);
 			void draw();
 
-			std::string value;
-			int cursor;
-			int max_length;
 			bool focus;
+			std::string value;
+			int max_length;
 			bool readonly;
-			msl::color background_color;
-			msl::color background_color_disabled;
 			double padding;
+			int cursor;
 			int view_start;
 			int view_end;
+			msl::color background_color;
+			msl::color background_color_disabled;
 
 		private:
-			void constrain_cursor();
-			void update_cursor();
-			void view_end_update_from_start();
-			void view_start_update_from_end();
-			void backspace();
-			void del();
-			void type(const char key);
+			void find_end();
+			void find_start();
 			void repeat_check(const int key);
-			void repeat_update();
-			void update_display_dimensions();
 
 			long blink_timer_;
+			int blink_wait_;
 			bool blink_show_;
 			long repeat_timer_;
-			int repeat_wait_;
-			int repeat_max_;
-			int repeat_min_;
+			int repeat_initial_wait_;
+			int repeat_key_wait_;
 			int repeat_key_;
-			bool repeat_;
 	};
 }
 
