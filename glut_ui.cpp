@@ -584,10 +584,13 @@ void msl::textbox::loop(const double dt)
 			{
 				if(msl::input_check_pressed(ii)||(repeat_key_==ii&&repeat==true))
 				{
-					value.insert(value.begin()+cursor,ii);
-					++cursor;
-					find_end();
-					repeat_check(ii);
+					if(cursor>=0&&(unsigned int)cursor<=value.size())
+					{
+						value.insert(value.begin()+cursor,(char)ii);
+						++cursor;
+						find_end();
+						repeat_check(ii);
+					}
 				}
 			}
 		}
