@@ -110,7 +110,7 @@ void msl::button::draw()
 
 		msl::draw_rectangle_gradient(x,y,display_width,display_height,true,but_col_from,but_col_from,but_col_to,but_col_to);
 		msl::draw_rectangle(x,y,display_width,display_height,false,out_col);
-		msl::draw_text(x-text_width/2.0,y-text_height/2.0,value,tex_col);
+		msl::draw_text(x-text_width/2.0,y-text_height/2.0+padding/2.0,value,tex_col);
 	}
 }
 
@@ -244,7 +244,7 @@ void msl::dropdown::draw()
 
 		//Draw Selected Option Text
 		if(value>=0&&value<options.size())
-			msl::draw_text(text_draw_x,text_draw_y,options[value],tex_col);
+			msl::draw_text(text_draw_x,text_draw_y+padding/2.0,options[value],tex_col);
 
 		//Draw Menu
 		if(selected)
@@ -287,7 +287,7 @@ void msl::dropdown::draw()
 				}
 
 				//Draw Option Text
-				msl::draw_text(text_draw_x,text_draw_y-text_height*(ii+1),options[ii],option_col);
+				msl::draw_text(text_draw_x,text_draw_y-text_height*(ii+1)+padding/2.0,options[ii],option_col);
 			}
 
 			//Choose selected option...breaks rules of graphics...I can live with it though...
@@ -664,7 +664,7 @@ void msl::textbox::draw()
 		//Draw Text
 		std::string display_text=value.substr(view_start,view_end-view_start);
 		double display_text_x=x-display_width/2.0+padding;
-		double display_text_y=y-msl::text_height(display_text)/2.0;
+		double display_text_y=y-(msl::text_height(display_text)-padding)/2.0;
 		msl::draw_text(display_text_x,display_text_y,display_text,tex_col);
 
 		//Draw Cursor
