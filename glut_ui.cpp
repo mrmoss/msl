@@ -110,7 +110,7 @@ void msl::button::draw()
 
 		msl::draw_rectangle_gradient(x,y,display_width,display_height,true,but_col_from,but_col_from,but_col_to,but_col_to);
 		msl::draw_rectangle(x,y,display_width,display_height,false,out_col);
-		msl::draw_text(x-text_width/2.0,y-text_height/2.0+padding/2.0,value,tex_col);
+		msl::draw_text(x-text_width/2.0,y-text_height/3.0,value,tex_col);
 	}
 }
 
@@ -178,7 +178,7 @@ msl::dropdown::dropdown(const double x,const double y):widget(x,y,-1,-1),value(-
 	highlighted_background_color(0.2,0.3,1,1),highlighted_text_color(1,1,1,1),button_("",x,y),
 	selected(false)
 {}
-
+#include <iostream>
 void msl::dropdown::loop(const double dt)
 {
 	//Figure Out Max Width
@@ -238,30 +238,31 @@ void msl::dropdown::draw()
 		msl::draw_triangle(triangle_draw_x,y-padding/2.0,triangle_draw_x+padding,y+padding/2.0,triangle_draw_x-padding,y+padding/2.0,true,tex_col);
 
 		//Setup Text Drawing Coordinates
-		double text_height=msl::text_height(options[selected])+padding*2;
+		double text_height=msl::text_height(options[selected]);
 		double text_draw_x=x-display_width/2.0+padding;
-		double text_draw_y=y-text_height/2.0+padding;
+		double text_draw_y=y-text_height/3.0;
 
 		//Draw Selected Option Text
 		if(value>=0&&value<options.size())
-			msl::draw_text(text_draw_x,text_draw_y+padding/2.0,options[value],tex_col);
+			msl::draw_text(text_draw_x,text_draw_y,options[value],tex_col);
 
 		//Draw Menu
 		if(selected)
 		{
 			//Figure Out Draw Coordinates and Dimensions
 			double drop_menu_width=display_width;
-			double drop_menu_height=options.size()*text_height;
-			double drop_menu_y=y-(display_height+drop_menu_height)/2.0;
+			double drop_menu_height=options.size()*display_height;
+			double drop_menu_y=y-display_height/2.0;
+			double drop_menu_draw_y=y-display_height/2.0-drop_menu_height/2.0;
 
 			//Draw Menu Background
-			msl::draw_rectangle(x,drop_menu_y,drop_menu_width,drop_menu_height,true,msl::color(0.7,0.7,0.7,1));
+			msl::draw_rectangle(x,drop_menu_draw_y,drop_menu_width,drop_menu_height,true,msl::color(0.7,0.7,0.7,1));
 
 			//Figure Out Highlight Index
-			double diff=(drop_menu_y+drop_menu_height/2.0)-mouse_y;
-			int index=diff/text_height;
+			double diff=drop_menu_y-mouse_y;
+			int index=diff/button_.display_height;
 
-			if((unsigned int)index>=options.size()||mouse_x<x-display_width/2.0||mouse_x>x+display_width/2.0)
+			if((unsigned int)index>=options.size()||mouse_x<x-display_width/2.0||mouse_x>x+display_width/2.0||diff<0)
 			{
 				index=-1;
 				hover=false;
@@ -280,14 +281,14 @@ void msl::dropdown::draw()
 					option_col=highlighted_text_color;
 
 					//Figure Out Selection Rectangle Y
-					double selection_y=text_draw_y-padding-text_height*(ii+1)+text_height/2.0;
+					double selection_y=drop_menu_y-display_height*(ii+0.5);
 
 					//Draw Selection Background
-					msl::draw_rectangle(x,selection_y,display_width,text_height,true,highlighted_background_color);
+					msl::draw_rectangle(x,selection_y,display_width,display_height,true,highlighted_background_color);
 				}
 
 				//Draw Option Text
-				msl::draw_text(text_draw_x,text_draw_y-text_height*(ii+1)+padding/2.0,options[ii],option_col);
+				msl::draw_text(text_draw_x,text_draw_y-display_height*(ii+1),options[ii],option_col);
 			}
 
 			//Choose selected option...breaks rules of graphics...I can live with it though...
@@ -295,7 +296,7 @@ void msl::dropdown::draw()
 				value=index;
 
 			//Draw Menu Border
-			msl::draw_rectangle(x,drop_menu_y,drop_menu_width,drop_menu_height,false,msl::color(0,0,0,1));
+			msl::draw_rectangle(x,drop_menu_draw_y,drop_menu_width,drop_menu_height,false,msl::color(0,0,0,1));
 		}
 	}
 }
@@ -318,6 +319,7 @@ void msl::dropdown::update_button(const double dt)
 	button_.outline_color_disabled=outline_color_disabled;
 	button_.text_color=text_color;
 	button_.text_color_disabled=text_color_disabled;
+	button_.padding=padding;
 
 	button_.loop(dt);
 }
@@ -664,7 +666,7 @@ void msl::textbox::draw()
 		//Draw Text
 		std::string display_text=value.substr(view_start,view_end-view_start);
 		double display_text_x=x-display_width/2.0+padding;
-		double display_text_y=y-(msl::text_height(display_text)-padding)/2.0;
+		double display_text_y=y-msl::text_height(display_text)/3.0;
 		msl::draw_text(display_text_x,display_text_y,display_text,tex_col);
 
 		//Draw Cursor
