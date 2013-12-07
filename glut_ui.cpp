@@ -312,6 +312,8 @@ void msl::dropdown::update_button(const double dt)
 	height=button_.height;
 	display_width=button_.display_width;
 	display_height=button_.display_height;
+	button_.x=x;
+	button_.y=y;
 	button_.background_color_from=background_color_from;
 	button_.background_color_to=background_color_to;
 	button_.outline_color=outline_color;
