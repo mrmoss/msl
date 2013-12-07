@@ -116,7 +116,7 @@ namespace msl
 	{
 
 		public:
-			slider(const double value,const double min,const double max,const double x,const double y,const bool vertical=false,const double length=100);
+			slider(const double value,const double min,const double max,const double x=0,const double y=0,const bool vertical=false,const double length=100);
 
 			void loop(const double dt);
 			void draw();
