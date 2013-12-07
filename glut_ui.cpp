@@ -238,7 +238,7 @@ void msl::dropdown::draw()
 		msl::draw_triangle(triangle_draw_x,y-padding/2.0,triangle_draw_x+padding,y+padding/2.0,triangle_draw_x-padding,y+padding/2.0,true,tex_col);
 
 		//Setup Text Drawing Coordinates
-		double text_height=msl::text_height(options[selected]);
+		double text_height=msl::text_height("Give Me Height!");
 		double text_draw_x=x-display_width/2.0+padding;
 		double text_draw_y=y-text_height/3.0;
 
@@ -377,9 +377,13 @@ void msl::slider::draw()
 	if(visible)
 	{
 		if(vertical)
+		{
 			button_.x=x;
+		}
 		else
+		{
 			button_.y=y;
+		}
 
 		msl::color track_col=track_color;
 
