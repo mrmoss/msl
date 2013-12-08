@@ -97,10 +97,10 @@ namespace msl
 	int serial_available(const SERIAL port,const long time_out=0);
 
 	//Serial Read Function (Returns Number of Bytes Read, -1 on Error)
-	int serial_read(const SERIAL port,void* buffer,const unsigned int size,const long time_out=200);
+	int serial_read(const SERIAL port,void* buffer,const unsigned int size,const long time_out=0);
 
 	//Serial Write Function (Returns Number of Bytes Sent, -1 on Error)
-	int serial_write(const SERIAL port,void* buffer,const unsigned int size,const long time_out=200);
+	int serial_write(const SERIAL port,void* buffer,const unsigned int size,const long time_out=0);
 }
 
 //End Define Guards

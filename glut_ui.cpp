@@ -188,8 +188,11 @@ void msl::dropdown::loop(const double dt)
 		if(msl::text_width(options[ii])>max_width)
 			max_width=msl::text_width(options[ii]);
 
-	//Set Max Width (With padding between text and triangle)
-	button_.width=max_width+padding*5;
+	//Set Width (With padding between text and triangle)
+	if(width<0)
+		button_.width=max_width+padding*5;
+	else
+		button_.width=width;
 
 	//Update if Visible
 	if(visible)
@@ -303,13 +306,12 @@ void msl::dropdown::draw()
 
 void msl::dropdown::update_button(const double dt)
 {
+	button_.height=height;
 	hover=button_.hover;
 	down=button_.down;
 	pressed=button_.pressed;
 	button_.disabled=disabled;
 	button_.visible=visible;
-	width=button_.width;
-	height=button_.height;
 	display_width=button_.display_width;
 	display_height=button_.display_height;
 	button_.x=x;
