@@ -1,9 +1,9 @@
 //Web Server Source
 //	Created By:		Mike Moss
-//	Modified On:	09/24/2013
+//	Modified On:	12/09/2013
 
 //Required Libraries:
-//	wsock32 (windows only)
+//	Ws2_32 (windows only)
 
 //Definitions for "webserver.hpp"
 #include "webserver.hpp"
@@ -19,6 +19,9 @@
 
 //String Utility Header
 #include "string_util.hpp"
+
+//Time Utility Header
+#include "time_util.hpp"
 
 //Constructor (Default)
 msl::webserver::webserver(const std::string& address,bool(*user_service_client)(msl::socket& client,const std::string& message),

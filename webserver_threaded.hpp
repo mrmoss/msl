@@ -4,7 +4,7 @@
 
 //Required Libraries:
 // 	pthread
-//	wsock32 (windows only)
+//	Ws2_32 (windows only)
 
 //Begin Define Guards
 #ifndef MSL_WEBSERVER_THREADED_H

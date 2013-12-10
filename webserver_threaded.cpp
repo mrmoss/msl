@@ -1,10 +1,10 @@
 //Web Server Threaded Source
 //	Created By:		Mike Moss
-//	Modified On:	10/03/2013
+//	Modified On:	12/09/2013
 
 //Required Libraries:
 // 	pthread
-//	wsock32 (windows only)
+//	Ws2_32 (windows only)
 
 //Definitions for "webserver_threaded.hpp"
 #include "webserver_threaded.hpp"
@@ -20,6 +20,9 @@
 
 //String Utility Header
 #include "string_util.hpp"
+
+//Time Utility Header
+#include "time_util.hpp"
 
 //Thread Argument Passing Container
 class client_thread_arg
