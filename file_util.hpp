@@ -1,9 +1,6 @@
 //File Utility Source
 //	Created By:		Mike Moss
-//	Modified On:	11/08/2013
-
-//Requires POSIX File System, if on Windows running Visual Studios, use:
-//	http://www.softagalleria.net/dirent.php
+//	Modified On:	12/09/2013
 
 //Begin Define Guards
 #ifndef MSL_FILE_UTIL_H
