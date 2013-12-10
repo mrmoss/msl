@@ -22,6 +22,9 @@
 //Glut Input Header
 #include "glut_input.hpp"
 
+//Glut UI Header
+#include "glut_ui.hpp"
+
 //Sprite Header
 #include "sprite.hpp"
 
