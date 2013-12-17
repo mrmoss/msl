@@ -741,14 +741,19 @@ void msl::textbox::repeat_check(const int key)
 }
 
 msl::dock::dock(const double x,const double y):widget(x,y),padding(8)
-{}
+{
+	background_color_from=background_color_to;
+}
 
 msl::dock::~dock()
 {}
 
 void msl::dock::draw()
 {
-	msl::draw_rectangle(x,y,display_width,display_height,true,msl::color(0.7,0.7,0.7,1));
+	msl::draw_rectangle_gradient(x,y,display_width,display_height,true,background_color_from,
+		background_color_from,background_color_to,background_color_to);
+
+	msl::draw_rectangle(x,y,display_width,display_height,false,outline_color);
 
 	for(unsigned int ii=0;ii<widgets.size();++ii)
 		if(widgets[ii]!=NULL)
