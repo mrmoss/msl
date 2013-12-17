@@ -40,6 +40,8 @@ namespace msl
 				const msl::color& text_color=msl::color(0.0,0.0,0.0,1.0),
 				const msl::color& text_color_disabled=msl::color(0.3,0.3,0.3,1));
 
+			virtual ~widget();
+
 			virtual void loop(const double dt)=0;
 			virtual void draw()=0;
 
@@ -168,6 +170,37 @@ namespace msl
 			int repeat_initial_wait_;
 			int repeat_key_wait_;
 			int repeat_key_;
+	};
+
+	class dock:public widget
+	{
+		public:
+			dock(const double x=0,const double y=0);
+			virtual ~dock();
+
+			virtual void loop(const double dt)=0;
+			void draw();
+
+			double padding;
+			std::vector<msl::widget*> widgets;
+	};
+
+	class hdock:public dock
+	{
+		public:
+			hdock(const double x=0,const double y=0);
+			virtual ~hdock();
+
+			virtual void loop(const double dt);
+	};
+
+	class vdock:public dock
+	{
+		public:
+			vdock(const double x=0,const double y=0);
+			virtual ~vdock();
+
+			virtual void loop(const double dt);
 	};
 }
 

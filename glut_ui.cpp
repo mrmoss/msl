@@ -41,6 +41,9 @@ msl::widget::widget(const double x,const double y,const double width,const doubl
 		text_color(text_color),text_color_disabled(text_color_disabled)
 {}
 
+msl::widget::~widget()
+{}
+
 msl::button::button(const std::string& value,const double x,const double y):widget(x,y),value(value),padding(4)
 {}
 
@@ -734,5 +737,92 @@ void msl::textbox::repeat_check(const int key)
 	{
 		repeat_key_=key;
 		repeat_timer_=msl::millis()+repeat_initial_wait_;
+	}
+}
+
+msl::dock::dock(const double x,const double y):widget(x,y),padding(8)
+{}
+
+msl::dock::~dock()
+{}
+
+void msl::dock::draw()
+{
+	msl::draw_rectangle(x,y,display_width,display_height,true,msl::color(0.7,0.7,0.7,1));
+
+	for(unsigned int ii=0;ii<widgets.size();++ii)
+		if(widgets[ii]!=NULL)
+			widgets[ii]->draw();
+}
+
+msl::hdock::hdock(const double x,const double y):dock(x,y)
+{}
+
+msl::hdock::~hdock()
+{}
+
+void msl::hdock::loop(const double dt)
+{
+	display_width=padding;
+	display_height=0;
+
+	for(unsigned int ii=0;ii<widgets.size();++ii)
+	{
+		if(widgets[ii]!=NULL)
+		{
+			widgets[ii]->x=display_width+widgets[ii]->display_width/2.0;
+			widgets[ii]->y=y;
+
+			display_width+=widgets[ii]->display_width+padding;
+
+			if(widgets[ii]->display_height>display_height)
+				display_height=widgets[ii]->display_height;
+		}
+	}
+
+
+	for(unsigned int ii=0;ii<widgets.size();++ii)
+	{
+		if(widgets[ii]!=NULL)
+		{
+			widgets[ii]->x-=display_width/2.0;
+			widgets[ii]->loop(dt);
+		}
+	}
+}
+
+msl::vdock::vdock(const double x,const double y):dock(x,y)
+{}
+
+msl::vdock::~vdock()
+{}
+
+void msl::vdock::loop(const double dt)
+{
+	display_width=0;
+	display_height=padding;
+
+	for(int ii=widgets.size()-1;ii>=0;--ii)
+	{
+		if(widgets[ii]!=NULL)
+		{
+			widgets[ii]->x=x;
+			widgets[ii]->y=display_height+widgets[ii]->display_height/2.0;
+
+			if(widgets[ii]->display_width>display_width)
+				display_width=widgets[ii]->display_width;
+
+				display_height+=widgets[ii]->display_height+padding;
+		}
+	}
+
+
+	for(unsigned int ii=0;ii<widgets.size();++ii)
+	{
+		if(widgets[ii]!=NULL)
+		{
+			widgets[ii]->y-=display_height/2.0;
+			widgets[ii]->loop(dt);
+		}
 	}
 }
