@@ -782,7 +782,7 @@ void msl::hdock::loop(const double dt)
 	{
 		if(widgets[ii]!=NULL)
 		{
-			widgets[ii]->x=display_width+widgets[ii]->display_width/2.0;
+			widgets[ii]->x=x+display_width+widgets[ii]->display_width/2.0;
 			widgets[ii]->y=y;
 
 			display_width+=widgets[ii]->display_width+padding;
@@ -819,7 +819,7 @@ void msl::vdock::loop(const double dt)
 		if(widgets[ii]!=NULL)
 		{
 			widgets[ii]->x=x;
-			widgets[ii]->y=display_height+widgets[ii]->display_height/2.0;
+			widgets[ii]->y=y+display_height+widgets[ii]->display_height/2.0;
 
 			if(widgets[ii]->display_width>display_width)
 				display_width=widgets[ii]->display_width;
