@@ -181,7 +181,7 @@ msl::dropdown::dropdown(const double x,const double y):widget(x,y,-1,-1),value(-
 	highlighted_background_color(0.2,0.3,1,1),highlighted_text_color(1,1,1,1),button_("",x,y),
 	selected(false)
 {}
-#include <iostream>
+
 void msl::dropdown::loop(const double dt)
 {
 	//Figure Out Max Width
@@ -617,6 +617,13 @@ void msl::textbox::loop(const double dt)
 		{
 			cursor=0;
 		}
+	}
+
+	//Update Size if Disabled
+	else
+	{
+		cursor=0;
+		find_end();
 	}
 
 	//Check For Repeat Key Release
