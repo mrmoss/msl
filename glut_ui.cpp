@@ -354,7 +354,7 @@ void msl::list::loop(const double dt)
 	if(height>=0)
 		display_height=height;
 	else
-		display_height=(msl::text_height("Give Me Height!")+padding*2)*options.size();
+		display_height=(msl::text_height("Give Me Height!")+padding*2)*options.size()+1;
 }
 
 void msl::list::draw()
