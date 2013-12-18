@@ -375,15 +375,9 @@ void msl::list::draw()
 			tex_col=text_color_disabled;
 		}
 
-		//Setup Text Drawing Coordinates
+		//Setup Text Sizes
 		double text_height=msl::text_height("Give Me Height!");
-		double text_draw_x=x-display_width/2.0+padding;
-		double text_draw_y=y+text_height-text_height/2.0;
 		double entry_draw_height=text_height+padding*2;
-
-		//Draw Selected Option Text
-		if(value>=0&&value<options.size())
-			msl::draw_text(text_draw_x,text_draw_y,options[value],tex_col);
 
 		//Draw Menu
 		//Figure Out Draw Coordinates and Dimensions
@@ -391,6 +385,10 @@ void msl::list::draw()
 		double drop_menu_height=options.size()*entry_draw_height;
 		double drop_menu_y=y+drop_menu_height/2.0;
 		double drop_menu_draw_y=drop_menu_y-drop_menu_height/2.0;
+
+		//Setup Text Drawing Coordinates
+		double text_draw_x=x-display_width/2.0+padding;
+		double text_draw_y=y+drop_menu_height/2.0-(text_height+padding*2)/2.0-text_height/3.0;
 
 		//Draw Menu Background
 		msl::draw_rectangle(x,drop_menu_draw_y,drop_menu_width,drop_menu_height,true,msl::color(0.7,0.7,0.7,1));
@@ -406,13 +404,12 @@ void msl::list::draw()
 		}
 
 		//Selection
-		if(msl::input_check_released(mb_left)&&index>=0)
+		if(!disabled&&msl::input_check_released(mb_left)&&index>=0)
 			value=index;
 
 		//Clicked Outside
-		if(index<0&&(msl::input_check_released(mb_left)||msl::input_check_released(mb_middle)||msl::input_check_released(mb_right)))
-			value=-1;
-
+		//if(index<0&&(msl::input_check_released(mb_left)||msl::input_check_released(mb_middle)||msl::input_check_released(mb_right)))
+			//value=-1;
 
 		//Draw Options
 		for(unsigned int ii=0;ii<options.size();++ii)
@@ -421,19 +418,7 @@ void msl::list::draw()
 			msl::color option_col=tex_col;
 
 			//If Selected
-			if(ii==(unsigned int)index)
-			{
-				//Change Text Color
-				option_col=highlighted_text_color;
-
-				//Figure Out Selection Rectangle Y
-				double selection_y=drop_menu_y-entry_draw_height*(ii+0.5);
-
-				//Draw Selection Background
-				msl::draw_rectangle(x,selection_y,display_width,entry_draw_height,true,highlighted_background_color);
-			}
-
-			if(ii==value)
+			if((!disabled&&ii==(unsigned int)index)||ii==value)
 			{
 				//Change Text Color
 				option_col=highlighted_text_color;
@@ -804,59 +789,69 @@ void msl::textbox::draw()
 		//Draw Border
 		msl::draw_rectangle(x,y,display_width,display_height,false,out_col);
 
-		//Draw Text
-		std::string display_text=value.substr(view_start,view_end-view_start);
-		double display_text_x=x-display_width/2.0+padding;
-		double display_text_y=y-msl::text_height(display_text)/3.0;
-		msl::draw_text(display_text_x,display_text_y,display_text,tex_col);
-
-		//Draw Cursor
-		if(focus&&blink_show_)
+		//Check for Valid Substring
+		if(view_start>=0&&(unsigned int)(view_end-view_start)<=value.size()&&value.size()>0)
 		{
-			double cursor_x_start=x-display_width/2.0+padding;
-			std::string cursor_x_text=value.substr(view_start,cursor-view_start);
-			double cursor_x_text_width=msl::text_width(cursor_x_text);
-			double cursor_x=cursor_x_start+cursor_x_text_width;
-			double cursor_height=msl::text_height(display_text);
-			msl::draw_line(cursor_x,y+cursor_height/2.0,cursor_x,y-cursor_height/2.0,msl::color(0,0,0,1));
+			//Draw Text
+			std::string display_text=value.substr(view_start,view_end-view_start);
+			double display_text_x=x-display_width/2.0+padding;
+			double display_text_y=y-msl::text_height(display_text)/3.0;
+			msl::draw_text(display_text_x,display_text_y,display_text,tex_col);
+
+			//Draw Cursor
+			if(focus&&blink_show_)
+			{
+				double cursor_x_start=x-display_width/2.0+padding;
+				std::string cursor_x_text=value.substr(view_start,cursor-view_start);
+				double cursor_x_text_width=msl::text_width(cursor_x_text);
+				double cursor_x=cursor_x_start+cursor_x_text_width;
+				double cursor_height=msl::text_height(display_text);
+				msl::draw_line(cursor_x,y+cursor_height/2.0,cursor_x,y-cursor_height/2.0,msl::color(0,0,0,1));
+			}
 		}
 	}
 }
 
 void msl::textbox::find_end()
 {
-	//Determine Max Text Width
-	double max_text_width=display_width-padding*2;
-
-	//Check if Everything Fits
-	if(msl::text_width(value.substr(view_start,value.size()-view_start))<=max_text_width)
+	if(view_start>=0&&(unsigned int)(view_end-view_start)<=value.size()&&value.size()>0)
 	{
-		view_end=value.size()-view_start;
-		return;
-	}
+		//Determine Max Text Width
+		double max_text_width=display_width-padding*2;
 
-	//Find View End
-	for(unsigned int ii=view_start;ii<value.size();++ii)
-	{
-		if(msl::text_width(value.substr(view_start,ii-view_start))<=max_text_width)
-			view_end=ii;
-		else
-			break;
+		//Check if Everything Fits
+		if(msl::text_width(value.substr(view_start,value.size()-view_start))<=max_text_width)
+		{
+			view_end=value.size()-view_start;
+			return;
+		}
+
+		//Find View End
+		for(unsigned int ii=view_start;ii<value.size();++ii)
+		{
+			if(msl::text_width(value.substr(view_start,ii-view_start))<=max_text_width)
+				view_end=ii;
+			else
+				break;
+		}
 	}
 }
 
 void msl::textbox::find_start()
 {
-	//Determine Max Text Width
-	double max_text_width=display_width-padding*2;
-
-	//Find View Start
-	for(int ii=0;ii<view_end;++ii)
+	if(view_start>=0&&(unsigned int)(view_end-view_start)<=value.size()&&value.size()>0)
 	{
-		if(msl::text_width(value.substr(ii,view_end-ii))<=max_text_width)
+		//Determine Max Text Width
+		double max_text_width=display_width-padding*2;
+
+		//Find View Start
+		for(int ii=0;ii<view_end;++ii)
 		{
-			view_start=ii;
-			break;
+			if(msl::text_width(value.substr(ii,view_end-ii))<=max_text_width)
+			{
+				view_start=ii;
+				break;
+			}
 		}
 	}
 }
