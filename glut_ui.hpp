@@ -1,6 +1,6 @@
 //Glut User Interface Header
 //	Created By:		Mike Moss
-//	Modified On:	12/02/2013
+//	Modified On:	12/17/2013
 
 //Required Libraries:
 //	ftgl
@@ -111,6 +111,24 @@ namespace msl
 			void update_button(const double dt);
 
 			button button_;
+			bool selected;
+	};
+
+	class list:public widget
+	{
+		public:
+			list(const double x=0,const double y=0);
+
+			void loop(const double dt);
+			void draw();
+
+			unsigned int value;
+			std::vector<std::string> options;
+			double padding;
+			msl::color highlighted_background_color;
+			msl::color highlighted_text_color;
+
+		private:
 			bool selected;
 	};
 

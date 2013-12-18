@@ -1,6 +1,6 @@
 //Glut User Interface Source
 //	Created By:		Mike Moss
-//	Modified On:	12/02/2013
+//	Modified On:	12/17/2013
 
 //Required Libraries:
 //	ftgl
@@ -330,6 +330,244 @@ void msl::dropdown::update_button(const double dt)
 
 	button_.loop(dt);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+msl::list::list(const double x,const double y):widget(x,y,-1,-1),value(-1),padding(4),
+	highlighted_background_color(0.2,0.3,1,1),highlighted_text_color(1,1,1,1),selected(false)
+{}
+
+void msl::list::loop(const double dt)
+{
+	//Figure Out Max Width
+	double max_width=0;
+
+	for(unsigned int ii=0;ii<options.size();++ii)
+		if(msl::text_width(options[ii])>max_width)
+			max_width=msl::text_width(options[ii]);
+
+	//Set Width
+	if(width<0)
+		display_width=max_width+padding*2;
+	else
+		display_width=width+padding*2;
+
+	//Set Height
+	if(height>=0)
+		display_height=height;
+	else
+		display_height=100;
+
+}
+
+void msl::list::draw()
+{
+	//To draw or not to draw...
+	if(visible)
+	{
+		//Figure Out Colors
+		msl::color out_col=outline_color;
+		msl::color tex_col=text_color;
+
+		if(hover)
+			out_col=outline_color_hover;
+
+		if(disabled)
+		{
+			out_col=outline_color_disabled;
+			tex_col=text_color_disabled;
+		}
+
+		//Setup Text Drawing Coordinates
+		double text_height=msl::text_height("Give Me Height!");
+		double text_draw_x=x-display_width/2.0+padding;
+		double text_draw_y=y+text_height-text_height/3.0;
+		double entry_draw_height=text_height+padding*2;
+
+		//Draw Selected Option Text
+		if(value>=0&&value<options.size())
+			msl::draw_text(text_draw_x,text_draw_y,options[value],tex_col);
+
+		//Draw Menu
+		//Figure Out Draw Coordinates and Dimensions
+		double drop_menu_width=display_width;
+		double drop_menu_height=options.size()*entry_draw_height;
+		double drop_menu_y=y+drop_menu_height/2.0;
+		double drop_menu_draw_y=drop_menu_y-drop_menu_height/2.0;
+
+		//Draw Menu Background
+		msl::draw_rectangle(x,drop_menu_draw_y,drop_menu_width,drop_menu_height,true,msl::color(0.7,0.7,0.7,1));
+
+		//Figure Out Highlight Index
+		double diff=drop_menu_y-mouse_y;
+		int index=diff/entry_draw_height;
+
+		if((unsigned int)index>=options.size()||mouse_x<x-display_width/2.0||mouse_x>x+display_width/2.0||diff<0)
+		{
+			index=-1;
+			hover=false;
+		}
+
+		//Selection
+		if(msl::input_check_released(mb_left)&&index>=0)
+			value=index;
+
+		//Clicked Outside
+		if(index<0&&(msl::input_check_released(mb_left)||msl::input_check_released(mb_middle)||msl::input_check_released(mb_right)))
+			value=-1;
+
+
+		//Draw Options
+		for(unsigned int ii=0;ii<options.size();++ii)
+		{
+			//Text Color
+			msl::color option_col=tex_col;
+
+			//If Selected
+			if(ii==(unsigned int)index)
+			{
+				//Change Text Color
+				option_col=highlighted_text_color;
+
+				//Figure Out Selection Rectangle Y
+				double selection_y=drop_menu_y-entry_draw_height*(ii+0.5);
+
+				//Draw Selection Background
+				msl::draw_rectangle(x,selection_y,display_width,entry_draw_height,true,highlighted_background_color);
+			}
+
+			if(ii==value)
+			{
+				//Change Text Color
+				option_col=highlighted_text_color;
+
+				//Figure Out Selection Rectangle Y
+				double selection_y=drop_menu_y-entry_draw_height*(ii+0.5);
+
+				//Draw Selection Background
+				msl::draw_rectangle(x,selection_y,display_width,entry_draw_height,true,highlighted_background_color);
+			}
+
+			//Draw Option Text
+			msl::draw_text(text_draw_x,text_draw_y-entry_draw_height*ii,options[ii],option_col);
+		}
+
+		//Draw Menu Border
+		msl::draw_rectangle(x,drop_menu_draw_y,drop_menu_width,drop_menu_height,false,msl::color(0,0,0,1));
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 msl::slider::slider(const double value,const double min,const double max,const double x,const double y,
 	const bool vertical,const double length):
