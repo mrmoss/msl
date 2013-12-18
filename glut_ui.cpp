@@ -354,7 +354,7 @@ void msl::list::loop(const double dt)
 	if(height>=0)
 		display_height=height;
 	else
-		display_height=(msl::text_height("Give Me Height!")+padding)*options.size()+padding;
+		display_height=(msl::text_height("Give Me Height!")+padding*2)*options.size();
 }
 
 void msl::list::draw()
@@ -378,7 +378,7 @@ void msl::list::draw()
 		//Setup Text Drawing Coordinates
 		double text_height=msl::text_height("Give Me Height!");
 		double text_draw_x=x-display_width/2.0+padding;
-		double text_draw_y=y+text_height-text_height/3.0;
+		double text_draw_y=y+text_height-text_height/2.0;
 		double entry_draw_height=text_height+padding*2;
 
 		//Draw Selected Option Text
