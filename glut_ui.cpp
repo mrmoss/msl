@@ -61,23 +61,24 @@ void msl::button::loop(const double dt)
 
 	if(visible)
 	{
+		bool new_hover=(msl::mouse_x>=x-display_width/2.0&&msl::mouse_x<=x+display_width/2.0&&
+				msl::mouse_y>=y-display_height/2.0&&msl::mouse_y<=y+display_height/2.0)&&!disabled;
+
+		if(hover&&!new_hover)
+			glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
+
+		if(!hover&&new_hover)
+			glutSetCursor(GLUT_CURSOR_INFO);
+
+		hover=new_hover;
+
 		if(!disabled)
 		{
-			bool new_hover=(msl::mouse_x>=x-display_width/2.0&&msl::mouse_x<=x+display_width/2.0&&
-				msl::mouse_y>=y-display_height/2.0&&msl::mouse_y<=y+display_height/2.0);
-
-			if(hover&!new_hover)
-				glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
-
-			if(!hover&new_hover)
-				glutSetCursor(GLUT_CURSOR_INFO);
-
-			hover=new_hover;
-
 			down=hover&&msl::input_check(mb_left);
 			pressed=hover&&msl::input_check_released(mb_left);
 		}
-		else
+
+		if(disabled)
 		{
 			hover=false;
 			down=false;
@@ -354,11 +355,13 @@ void msl::list::loop(const double dt)
 	if(height>=0)
 		display_height=height;
 	else
-		display_height=(msl::text_height("Give Me Height!")+padding*2)*options.size()+1;
+		display_height=(msl::text_height("Give Me Height!")+padding*2)*options.size();
 }
 
 void msl::list::draw()
 {
+	display_height=(msl::text_height("Give Me Height!")+padding*2)*options.size();
+
 	//To draw or not to draw...
 	if(visible)
 	{
@@ -382,16 +385,15 @@ void msl::list::draw()
 		//Draw Menu
 		//Figure Out Draw Coordinates and Dimensions
 		double drop_menu_width=display_width;
-		double drop_menu_height=options.size()*entry_draw_height;
-		double drop_menu_y=y+drop_menu_height/2.0;
-		double drop_menu_draw_y=drop_menu_y-drop_menu_height/2.0;
+		double drop_menu_y=y+display_height/2.0;
+		double drop_menu_draw_y=drop_menu_y-display_height/2.0;
 
 		//Setup Text Drawing Coordinates
 		double text_draw_x=x-display_width/2.0+padding;
-		double text_draw_y=y+drop_menu_height/2.0-(text_height+padding*2)/2.0-text_height/3.0;
+		double text_draw_y=y+display_height/2.0-(text_height+padding*2)/2.0-text_height/3.0;
 
 		//Draw Menu Background
-		msl::draw_rectangle(x,drop_menu_draw_y,drop_menu_width,drop_menu_height,true,msl::color(0.7,0.7,0.7,1));
+		msl::draw_rectangle(x,drop_menu_draw_y,drop_menu_width,display_height,true,msl::color(0.7,0.7,0.7,1));
 
 		//Figure Out Highlight Index
 		double diff=drop_menu_y-mouse_y;
@@ -435,8 +437,10 @@ void msl::list::draw()
 		}
 
 		//Draw Menu Border
-		msl::draw_rectangle(x,drop_menu_draw_y,drop_menu_width,drop_menu_height,false,msl::color(0,0,0,1));
+		msl::draw_rectangle(x,drop_menu_draw_y,drop_menu_width,display_height,false,msl::color(0,0,0,1));
 	}
+
+	display_height=(msl::text_height("Give Me Height!")+padding*2)*options.size();
 }
 
 msl::slider::slider(const double value,const double min,const double max,const double x,const double y,
@@ -576,24 +580,20 @@ void msl::textbox::loop(const double dt)
 	if(height<0)
 		display_height=msl::text_height(value)+padding*2;
 
+	bool new_hover=(msl::mouse_x>=x-display_width/2.0&&msl::mouse_x<=x+display_width/2.0&&
+		msl::mouse_y>=y-display_height/2.0&&msl::mouse_y<=y+display_height/2.0)&&!disabled&&!readonly;
+
+	if(hover&&!new_hover)
+		glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
+
+	if(!hover&&new_hover)
+		glutSetCursor(GLUT_CURSOR_TEXT);
+
+	hover=new_hover;
+
 	//Only Work When Enabled and Writable
 	if(!disabled&&!readonly)
 	{
-		//Determine Mouse Hover
-		bool new_hover=(msl::mouse_x>=x-display_width/2.0&&msl::mouse_x<=x+display_width/2.0&&
-			msl::mouse_y>=y-display_height/2.0&&msl::mouse_y<=y+display_height/2.0);
-
-		//Check For Mouse Leave
-		if(hover&!new_hover)
-			glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
-
-		//Check For Mouse Enter
-		if(!hover&new_hover)
-			glutSetCursor(GLUT_CURSOR_TEXT);
-
-		//Set Hover
-		hover=new_hover;
-
 		//Determine Down and Pressed
 		down=hover&&msl::input_check(mb_left);
 		pressed=hover&&msl::input_check_released(mb_left);
