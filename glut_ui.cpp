@@ -28,7 +28,7 @@
 	#include <GLEW/glew.h>
 	#include <GLUT/glut.h>
 #endif
-#include <iostream>
+
 msl::widget::widget(const double x,const double y,const double width,const double height,
 	const bool hover,const bool down,const bool pressed,const bool disabled,const bool readonly,
 	const bool visible,const double padding,const msl::color& background_color_from,
@@ -249,18 +249,6 @@ void msl::checkbox::update_dimensions()
 		display_height=8+padding*2;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 msl::slider::slider(const double min,const double max,const double x,const double y):
 		widget(x,y,max-min),value(min),min(min),max(max),vertical(false),
 		track_color(msl::color(0.3,0.3,0.3,1)),track_color_disabled(msl::color(0.4,0.4,0.4,1)),
@@ -389,10 +377,13 @@ void msl::slider::update_button(const double dt)
 
 void msl::slider::update_dimensions()
 {
+	//Update Dimensions
 	if(vertical)
 	{
+		//Update Width
 		display_width=handle.display_width;
 
+		//Update Height
 		display_height=height;
 
 		if(height<0)
@@ -400,13 +391,14 @@ void msl::slider::update_dimensions()
 	}
 	else
 	{
-		display_width=width;
-		display_height=handle.display_height;
-
+		//Update Width
 		display_width=width;
 
 		if(width<0)
 			display_width=max-min;
+
+		//Update Height
+		display_height=handle.display_height;
 	}
 }
 
@@ -775,8 +767,51 @@ void msl::textbox::repeat_check(const int key)
 	}*/
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 msl::dock::dock(const double x,const double y):widget(x,y)
 {
+	//No Gradients By Default...
 	background_color_from=background_color_to;
 }
 
@@ -785,11 +820,14 @@ msl::dock::~dock()
 
 void msl::dock::draw()
 {
+	//Draw Background
 	msl::draw_rectangle_gradient(x,y,display_width,display_height,true,background_color_from,
 		background_color_from,background_color_to,background_color_to);
 
+	//Draw Outline
 	msl::draw_rectangle(x,y,display_width,display_height,false,outline_color);
 
+	//Draw Widgets
 	for(unsigned int ii=0;ii<widgets.size();++ii)
 		if(widgets[ii]!=NULL)
 			widgets[ii]->draw();
@@ -803,29 +841,40 @@ msl::hdock::~hdock()
 
 void msl::hdock::loop(const double dt)
 {
+	//Initial Dimensions
 	display_width=padding;
 	display_height=0;
 
+	//Go Through Widgets
 	for(unsigned int ii=0;ii<widgets.size();++ii)
 	{
+		//Check for Bad Pointers
 		if(widgets[ii]!=NULL)
 		{
-			widgets[ii]->x=x+display_width+widgets[ii]->display_width/2.0;
+			//Set Widget Position
+			widgets[ii]->x=x+display_width;
 			widgets[ii]->y=y;
 
+			//Increase Width
 			display_width+=widgets[ii]->display_width+padding;
 
+			//Find Max Height
 			if(widgets[ii]->display_height>display_height)
 				display_height=widgets[ii]->display_height;
 		}
 	}
 
-
+	//Go Through Widgets Again (Need to Find Max Height First...)
 	for(unsigned int ii=0;ii<widgets.size();++ii)
 	{
+		//Check for Bad Pointers
 		if(widgets[ii]!=NULL)
 		{
-			widgets[ii]->x-=display_width/2.0;
+			//Set Widget Y Position
+			widgets[ii]->y-=display_height/2.0;
+			widgets[ii]->y+=widgets[ii]->display_height/2.0;
+
+			//Update Widget
 			widgets[ii]->loop(dt);
 		}
 	}
@@ -839,29 +888,40 @@ msl::vdock::~vdock()
 
 void msl::vdock::loop(const double dt)
 {
+	//Initial Dimensions
 	display_width=0;
 	display_height=padding;
 
-	for(int ii=widgets.size()-1;ii>=0;--ii)
+	//Go Through Widgets
+	for(unsigned int ii=0;ii<widgets.size();++ii)
 	{
+		//Check for Bad Pointers
 		if(widgets[ii]!=NULL)
 		{
+			//Set Widget Position
 			widgets[ii]->x=x;
-			widgets[ii]->y=y+display_height+widgets[ii]->display_height/2.0;
+			widgets[ii]->y=y-display_height;
 
+			//Increase Height
+			display_height+=widgets[ii]->display_height+padding;
+
+			//Find Max Width
 			if(widgets[ii]->display_width>display_width)
 				display_width=widgets[ii]->display_width;
-
-				display_height+=widgets[ii]->display_height+padding;
 		}
 	}
 
-
+	//Go Through Widgets Again (Need to Find Max Width First...)
 	for(unsigned int ii=0;ii<widgets.size();++ii)
 	{
+		//Check for Bad Pointers
 		if(widgets[ii]!=NULL)
 		{
-			widgets[ii]->y-=display_height/2.0;
+			//Set Widget X Position
+			widgets[ii]->x+=display_width/2.0;
+			widgets[ii]->x-=widgets[ii]->display_width/2.0;
+
+			//Update Widget
 			widgets[ii]->loop(dt);
 		}
 	}
