@@ -1,6 +1,6 @@
 //2D Graphics Source
 //	Created By:		Mike Moss
-//	Modified On:	11/22/2013
+//	Modified On:	12/27/2013
 
 //Required Libraries:
 //	gl

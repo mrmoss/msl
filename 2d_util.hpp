@@ -1,6 +1,6 @@
 //2D Utilities Header
 //	Created By:		Mike Moss
-//	Modified On:	12/02/2013
+//	Modified On:	12/27/2013
 
 //Required Libraries:
 //	ftgl
