@@ -20,6 +20,20 @@
 //MSL Namespace
 namespace msl
 {
+	enum halign
+	{
+		LEFT,
+		CENTER,
+		RIGHT
+	};
+
+	enum valign
+	{
+		TOP,
+		MIDDLE,
+		BOTTOM
+	};
+
 	//Color Class Declaration
 	class color
 	{
@@ -75,7 +89,8 @@ namespace msl
 	double text_height(const std::string& text);
 
 	//Text Drawing Function
-	void draw_text(const double x,const double y,const std::string& text,const msl::color& color=msl::color(1,1,1,1));
+	void draw_text(const double x,const double y,const std::string& text,const msl::halign horizontal_alignment=LEFT,
+		const msl::valign vertical_alignment=BOTTOM,const msl::color& color=msl::color(1,1,1,1));
 }
 
 //End Define Guards

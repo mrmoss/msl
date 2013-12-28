@@ -347,13 +347,27 @@ double msl::text_height(const std::string& str)
 }
 
 //Text Drawing Function
-void msl::draw_text(const double x,const double y,const std::string& str,const msl::color& col)
+void msl::draw_text(const double x,const double y,const std::string& str,const msl::halign horizontal_alignment,
+	const msl::valign vertical_alignment,const msl::color& col)
 {
 	if(msl_text_font->Error())
 		throw std::runtime_error("msl::draw_text() - Font not found!");
 
+	double text_position_x=glutGet(GLUT_WINDOW_WIDTH)/2.0+x;
+	double text_position_y=glutGet(GLUT_WINDOW_HEIGHT)/2.0+y;
+
+	if(horizontal_alignment==CENTER)
+		text_position_x-=msl::text_width(str)/2.0;
+	if(horizontal_alignment==RIGHT)
+		text_position_x-=msl::text_width(str);
+
+	if(vertical_alignment==MIDDLE)
+		text_position_y-=msl::text_height(str)/2.0-msl::text_height(str)/6.0;
+	else if(vertical_alignment==TOP)
+		text_position_y-=msl::text_height(str);
+
 	glPixelTransferf(GL_RED_BIAS,col.r-1);
 	glPixelTransferf(GL_GREEN_BIAS,col.g-1);
 	glPixelTransferf(GL_BLUE_BIAS,col.b-1);
-	msl_text_font->Render(str.c_str(),-1,FTPoint(glutGet(GLUT_WINDOW_WIDTH)/2.0+x,glutGet(GLUT_WINDOW_HEIGHT)/2.0+y));
+	msl_text_font->Render(str.c_str(),-1,FTPoint(text_position_x,text_position_y));
 }

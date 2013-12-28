@@ -29,9 +29,9 @@ namespace msl
 	class widget
 	{
 		public:
-			widget(const double x,const double y,const double width=-1,const double height=-1,
+			explicit widget(const double x,const double y,const double width=-1,const double height=-1,
 				const bool hover=false,const bool down=false,const bool pressed=false,const bool disabled=false,
-				const bool visible=true,
+				const bool readonly=false,const bool visible=true,const double padding=4,
 				const msl::color& background_color_from=msl::color(0.9,0.9,0.9,1.0),
 				const msl::color& background_color_to=msl::color(0.6,0.6,0.6,1.0),
 				const msl::color& outline_color=msl::color(0.3,0.3,0.3,1),
@@ -55,7 +55,9 @@ namespace msl
 			bool down;
 			bool pressed;
 			bool disabled;
+			bool readonly;
 			bool visible;
+			double padding;
 			msl::color background_color_from;
 			msl::color background_color_to;
 			msl::color outline_color;
@@ -68,19 +70,21 @@ namespace msl
 	class button:public widget
 	{
 		public:
-			button(const std::string& value="",const double x=0,const double y=0);
+			explicit button(const std::string& value="",const double x=0,const double y=0);
 
 			void loop(const double dt);
 			void draw();
 
 			std::string value;
-			double padding;
+
+		private:
+			void update_dimensions();
 	};
 
 	class checkbox:public widget
 	{
 		public:
-			checkbox(const bool value=false,const double x=0,const double y=0);
+			explicit checkbox(const bool value=false,const double x=0,const double y=0);
 
 			void loop(const double dt);
 			void draw();
@@ -88,55 +92,13 @@ namespace msl
 			bool value;
 
 		private:
-			void update_button(const double dt);
-
-			button button_;
-	};
-
-	class dropdown:public widget
-	{
-		public:
-			dropdown(const double x=0,const double y=0);
-
-			void loop(const double dt);
-			void draw();
-
-			unsigned int value;
-			std::vector<std::string> options;
-			double padding;
-			msl::color highlighted_background_color;
-			msl::color highlighted_text_color;
-
-		private:
-			void update_button(const double dt);
-
-			button button_;
-			bool selected;
-	};
-
-	class list:public widget
-	{
-		public:
-			list(const double x=0,const double y=0);
-
-			void loop(const double dt);
-			void draw();
-
-			unsigned int value;
-			std::vector<std::string> options;
-			double padding;
-			msl::color highlighted_background_color;
-			msl::color highlighted_text_color;
-
-		private:
-			bool selected;
+			void update_dimensions();
 	};
 
 	class slider:public widget
 	{
-
 		public:
-			slider(const double value,const double min,const double max,const double x=0,const double y=0,const bool vertical=false,const double length=100);
+			explicit slider(const double min,const double max,const double x=0,const double y=0);
 
 			void loop(const double dt);
 			void draw();
@@ -145,14 +107,13 @@ namespace msl
 			double min;
 			double max;
 			bool vertical;
-			double length;
 			msl::color track_color;
 			msl::color track_color_disabled;
+			button handle;
 
 		private:
 			void update_button(const double dt);
-
-			button button_;
+			void update_dimensions();
 			bool drag_;
 	};
 
@@ -168,8 +129,6 @@ namespace msl
 			bool focus;
 			std::string value;
 			int max_length;
-			bool readonly;
-			double padding;
 			int cursor;
 			int view_start;
 			int view_end;
@@ -199,7 +158,6 @@ namespace msl
 			virtual void loop(const double dt)=0;
 			void draw();
 
-			double padding;
 			std::vector<msl::widget*> widgets;
 	};
 
