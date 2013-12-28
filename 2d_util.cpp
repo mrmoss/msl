@@ -152,10 +152,39 @@ void msl::draw_rectangle(const double x,const double y,const double width,const 
     else
 		glBegin(GL_LINE_LOOP);
 
-		glVertex2d(x-width/2.0-0.2,y+height/2.0+0.2);
-		glVertex2d(x+width/2.0+0.2,y+height/2.0+0.2);
-		glVertex2d(x+width/2.0+0.2,y-height/2.0-0.2);
-		glVertex2d(x-width/2.0-0.2,y-height/2.0-0.2);
+		glVertex2d(x,y);
+		glVertex2d(x+width,y);
+		glVertex2d(x+width,y-height);
+		glVertex2d(x,y-height);
+	glEnd();
+
+	//Disable Transparency
+	glDisable(GL_BLEND);
+}
+
+//Draw Rectangle Center Function
+void msl::draw_rectangle_center(const double x,const double y,const double width,const double height,const bool fill,const msl::color& color)
+{
+	//Enable Transparency
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	//Disable Culling
+	glDisable(GL_CULL_FACE);
+
+	//Set Color
+	glColor4d(color.r,color.g,color.b,color.a);
+
+	//Draw Rectangle
+	if(fill)
+		glBegin(GL_QUADS);
+    else
+		glBegin(GL_LINE_LOOP);
+
+		glVertex2d(x-width/2.0,y+height/2.0);
+		glVertex2d(x+width/2.0,y+height/2.0);
+		glVertex2d(x+width/2.0,y-height/2.0);
+		glVertex2d(x-width/2.0,y-height/2.0);
 	glEnd();
 
 	//Disable Transparency
@@ -164,6 +193,38 @@ void msl::draw_rectangle(const double x,const double y,const double width,const 
 
 //Draw Rectangle Gradient Function
 void msl::draw_rectangle_gradient(const double x,const double y,const double width,const double height,const bool fill,
+	const msl::color& color_top_left,const msl::color& color_top_right,const msl::color& color_bottom_right,
+	const msl::color& color_bottom_left)
+{
+	//Enable Transparency
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	//Disable Culling
+	glDisable(GL_CULL_FACE);
+
+	//Draw Rectangle
+	if(fill)
+		glBegin(GL_QUADS);
+    else
+		glBegin(GL_LINE_LOOP);
+
+		glColor4d(color_top_left.r,color_top_left.g,color_top_left.b,color_top_left.a);
+		glVertex2d(x,y);
+		glColor4d(color_top_right.r,color_top_right.g,color_top_right.b,color_top_right.a);
+		glVertex2d(x+width,y);
+		glColor4d(color_bottom_right.r,color_bottom_right.g,color_bottom_right.b,color_bottom_right.a);
+		glVertex2d(x+width,y-height);
+		glColor4d(color_bottom_left.r,color_bottom_left.g,color_bottom_left.b,color_bottom_left.a);
+		glVertex2d(x,y-height);
+	glEnd();
+
+	//Disable Transparency
+	glDisable(GL_BLEND);
+}
+
+//Draw Rectangle Center Gradient Function
+void msl::draw_rectangle_center_gradient(const double x,const double y,const double width,const double height,const bool fill,
 	const msl::color& color_top_left,const msl::color& color_top_right,const msl::color& color_bottom_right,
 	const msl::color& color_bottom_left)
 {

@@ -132,7 +132,7 @@ static void display()
 }
 
 //2D Start Function
-void msl::start_2d(const std::string& window_title,const int view_width,const int view_height,const bool window_scale,
+int msl::start_2d(const std::string& window_title,const int view_width,const int view_height,const bool window_scale,
 	const msl::color& color,int argc,char** argv)
 {
 	//Set Window Parameters
@@ -176,6 +176,9 @@ void msl::start_2d(const std::string& window_title,const int view_width,const in
 
 	//Start Glut
 	glutMainLoop();
+
+	//Return
+	return 0;
 }
 
 //2D Stop Function

@@ -49,7 +49,7 @@ namespace msl
 	extern double window_height;
 
 	//2D Start Function
-	void start_2d(const std::string& window_title="",const int window_width=640,const int window_height=480,const bool window_scale=true,
+	int start_2d(const std::string& window_title="",const int window_width=640,const int window_height=480,const bool window_scale=true,
 		const msl::color& color=msl::color(0.5,0.5,0.5,1),int argc=0,char** argv=NULL);
 
 	//2D Stop Function
