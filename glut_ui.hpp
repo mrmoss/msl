@@ -1,6 +1,6 @@
 //Glut User Interface Header
 //	Created By:		Mike Moss
-//	Modified On:	12/17/2013
+//	Modified On:	12/18/2013
 
 //Required Libraries:
 //	ftgl

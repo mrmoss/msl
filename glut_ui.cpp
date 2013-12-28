@@ -1,6 +1,6 @@
 //Glut User Interface Source
 //	Created By:		Mike Moss
-//	Modified On:	12/17/2013
+//	Modified On:	12/18/2013
 
 //Required Libraries:
 //	ftgl
@@ -402,58 +402,6 @@ void msl::slider::update_dimensions()
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 msl::textbox::textbox(const std::string& value,const double x,const double y):widget(x,y,-1,-1),focus(false),
 	value(value),max_length(-1),cursor(0),view_start(1),view_end(1),background_color(1,1,1,1),
 	background_color_disabled(0.8,0.8,0.8,1),blink_timer_(0),blink_wait_(500),blink_show_(false),repeat_timer_(0),
@@ -462,7 +410,7 @@ msl::textbox::textbox(const std::string& value,const double x,const double y):wi
 
 void msl::textbox::loop(const double dt)
 {
-	/*//Limit Size
+	//Limit Size
 	if(max_length>=0&&value.size()>(unsigned int)max_length)
 		value.resize(max_length);
 
@@ -482,15 +430,19 @@ void msl::textbox::loop(const double dt)
 	if(height<0)
 		display_height=msl::text_height(value)+padding*2;
 
-	bool new_hover=(msl::mouse_x>=x-display_width/2.0&&msl::mouse_x<=x+display_width/2.0&&
-		msl::mouse_y>=y-display_height/2.0&&msl::mouse_y<=y+display_height/2.0)&&!disabled&&!readonly;
+	//Determine Mouse Hover
+	bool new_hover=(msl::mouse_x>=x&&msl::mouse_x<=x+display_width&&
+		msl::mouse_y<=y&&msl::mouse_y>=y-display_height)&&!disabled;
 
+	//Mouse Leave
 	if(hover&&!new_hover)
 		glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
 
+	//Mouse Enter
 	if(!hover&&new_hover)
 		glutSetCursor(GLUT_CURSOR_TEXT);
 
+	//Update Hover Status
 	hover=new_hover;
 
 	//Only Work When Enabled and Writable
@@ -519,7 +471,7 @@ void msl::textbox::loop(const double dt)
 			if(focus)
 			{
 				//Get Cursor Difference
-				double text_start_x=x-display_width/2.0+padding;
+				double text_start_x=x+padding;
 				double cursor_difference=mouse_x-text_start_x;
 
 				//Put Cursor All the Way Back
@@ -648,7 +600,7 @@ void msl::textbox::loop(const double dt)
 		cursor=value.size();
 
 	//Limit View Start
-	if(cursor<view_start)
+	if(view_start>cursor)
 	{
 		view_start=cursor;
 		find_end();
@@ -662,12 +614,12 @@ void msl::textbox::loop(const double dt)
 	}
 
 	if((unsigned int)view_end>value.size())
-		view_end=value.size();*/
+		view_end=value.size();
 }
 
 void msl::textbox::draw()
 {
-	/*//To draw or not to draw...
+	//To draw or not to draw...
 	if(visible)
 	{
 		//Figure Out Colors
@@ -691,123 +643,74 @@ void msl::textbox::draw()
 		//Draw Border
 		msl::draw_rectangle(x,y,display_width,display_height,false,out_col);
 
-		//Check for Valid Substring
-		if(view_start>=0&&(unsigned int)(view_end-view_start)<=value.size()&&value.size()>0)
-		{
-			//Draw Text
-			std::string display_text=value.substr(view_start,view_end-view_start);
-			double display_text_x=x-display_width/2.0+padding;
-			double display_text_y=y-msl::text_height(display_text)/3.0;
-			msl::draw_text(display_text_x,display_text_y,display_text,tex_col);
+		//Draw Text
+		std::string display_text=value.substr(view_start,view_end-view_start);
+		double display_text_x=x+padding;
+		double display_text_y=y-display_height/2.0;
+		msl::draw_text(display_text_x,display_text_y,display_text,msl::LEFT,msl::MIDDLE,tex_col);
 
-			//Draw Cursor
-			if(focus&&blink_show_)
-			{
-				double cursor_x_start=x-display_width/2.0+padding;
-				std::string cursor_x_text=value.substr(view_start,cursor-view_start);
-				double cursor_x_text_width=msl::text_width(cursor_x_text);
-				double cursor_x=cursor_x_start+cursor_x_text_width;
-				double cursor_height=msl::text_height(display_text);
-				msl::draw_line(cursor_x,y+cursor_height/2.0,cursor_x,y-cursor_height/2.0,msl::color(0,0,0,1));
-			}
+		//Draw Cursor
+		if(focus&&blink_show_)
+		{
+			std::string cursor_x_text=value.substr(view_start,cursor-view_start);
+			double cursor_x=x+padding+msl::text_width(cursor_x_text);
+			double cursor_y=y-display_height/2.0;
+			double cursor_height=msl::text_height(display_text);
+			msl::draw_line(cursor_x,cursor_y+cursor_height/2.0,cursor_x,cursor_y-cursor_height/2.0,tex_col);
 		}
-	}*/
+	}
 }
 
 void msl::textbox::find_end()
 {
-	/*if(view_start>=0&&(unsigned int)(view_end-view_start)<=value.size()&&value.size()>0)
-	{
-		//Determine Max Text Width
-		double max_text_width=display_width-padding*2;
+	//Limit Start
+	if(view_start<0)
+		view_start=0;
 
-		//Check if Everything Fits
-		if(msl::text_width(value.substr(view_start,value.size()-view_start))<=max_text_width)
-		{
-			view_end=value.size()-view_start;
-			return;
-		}
+	if((unsigned int)view_start>value.size())
+		view_start=value.size();
 
-		//Find View End
-		for(unsigned int ii=view_start;ii<value.size();++ii)
-		{
-			if(msl::text_width(value.substr(view_start,ii-view_start))<=max_text_width)
-				view_end=ii;
-			else
-				break;
-		}
-	}*/
+	//Set End to Start
+	view_end=value.size();
+
+	//Determine Max Text Width
+	double max_text_width=display_width-padding*2;
+
+	//Find View End
+	while(msl::text_width(value.substr(view_start,view_end-view_start))>max_text_width&&view_end>view_start)
+		--view_end;
 }
 
 void msl::textbox::find_start()
 {
-	/*if(view_start>=0&&(unsigned int)(view_end-view_start)<=value.size()&&value.size()>0)
-	{
-		//Determine Max Text Width
-		double max_text_width=display_width-padding*2;
+	//Limit End
+	if(view_end<0)
+		view_end=0;
 
-		//Find View Start
-		for(int ii=0;ii<view_end;++ii)
-		{
-			if(msl::text_width(value.substr(ii,view_end-ii))<=max_text_width)
-			{
-				view_start=ii;
-				break;
-			}
-		}
-	}*/
+	if((unsigned int)view_end>value.size())
+		view_end=value.size();
+
+	//Set Start to End
+	view_start=0;
+
+	//Determine Max Text Width
+	double max_text_width=display_width-padding*2;
+
+	//Find View Start
+	while(msl::text_width(value.substr(view_start,view_end-view_start))>max_text_width&&view_start<view_end)
+		++view_start;
 }
 
 void msl::textbox::repeat_check(const int key)
 {
-	/*if(repeat_key_==-1)
+	//If Not Currently Repeating a Key
+	if(repeat_key_==-1)
 	{
+		//Set Repeat Key and Set Timer
 		repeat_key_=key;
 		repeat_timer_=msl::millis()+repeat_initial_wait_;
-	}*/
+	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 msl::dock::dock(const double x,const double y):widget(x,y)
 {
