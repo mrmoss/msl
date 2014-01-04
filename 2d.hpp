@@ -25,6 +25,9 @@
 //Glut UI Header
 #include "glut_ui.hpp"
 
+//Math Header
+#include <math.h>
+
 //Sprite Header
 #include "sprite.hpp"
 
