@@ -14,6 +14,9 @@
 #ifndef MSL_2D_UTIL_H
 #define MSL_2D_UTIL_H
 
+//PI Definition
+#define PI 3.14159265359
+
 //String Header
 #include <string>
 
