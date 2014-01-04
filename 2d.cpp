@@ -175,7 +175,7 @@ int msl::start_2d(const std::string& window_title,const int view_width,const int
 	dt_start=glutGet(GLUT_ELAPSED_TIME);
 
 	//Set Default Font
-	msl::set_text_font("verdana.ttf");
+	msl::set_text_font("msl/verdana.ttf");
 	msl::set_text_size(12);
 
 	//Start Glut
