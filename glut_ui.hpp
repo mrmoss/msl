@@ -140,10 +140,10 @@ namespace msl
 			void find_start();
 			void repeat_check(const int key);
 
-			long blink_timer_;
+			unsigned long blink_timer_;
 			int blink_wait_;
 			bool blink_show_;
-			long repeat_timer_;
+			unsigned long repeat_timer_;
 			int repeat_initial_wait_;
 			int repeat_key_wait_;
 			int repeat_key_;

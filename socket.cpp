@@ -282,7 +282,7 @@ SOCKET socket_create(const msl::ipv4 ip,const long time_out,const bool UDP,const
 	socket_init();
 
 	//Connection Variables
-	long time_start=msl::millis();
+	unsigned long time_start=msl::millis();
 	sockaddr_in address=ip.build();
 	socklen_t address_length=sizeof(address);
 	int on=1;
@@ -342,7 +342,7 @@ SOCKET socket_connect(const msl::ipv4 ip,const long time_out,const bool UDP)
 	socket_init();
 
 	//Connection Variables
-	long time_start=msl::millis();
+	unsigned long time_start=msl::millis();
 	sockaddr_in address=ip.build();
 	int type=SOCK_STREAM;
 	SOCKET ret=SOCKET_ERROR;
@@ -378,7 +378,7 @@ SOCKET socket_accept(const SOCKET socket,msl::ipv4& client_ip,const long time_ou
 	socket_init();
 
 	//Connection Variables
-	long time_start=msl::millis();
+	unsigned long time_start=msl::millis();
 	sockaddr_in address;
 	socklen_t address_length=sizeof(address);
 	SOCKET ret=SOCKET_ERROR;
@@ -463,7 +463,7 @@ int socket_read(const SOCKET socket,void* buffer,const unsigned int size,const l
 
 	//Reading Variables
 	unsigned int bytes_unread=size;
-	long time_start=msl::millis();
+	unsigned long time_start=msl::millis();
 
 	//While Socket is Good and There are Bytes to Read
 	do
@@ -500,7 +500,7 @@ int socket_write(const SOCKET socket,const void* buffer,const unsigned int size,
 
 	//Writing Variables
 	unsigned int bytes_unsent=size;
-	long time_start=msl::millis();
+	unsigned long time_start=msl::millis();
 
 	//While Socket is Good and There are Bytes to Send
 	do

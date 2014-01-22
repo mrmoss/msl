@@ -654,9 +654,9 @@ void msl::textbox::draw()
 		{
 			std::string cursor_x_text=value.substr(view_start,cursor-view_start);
 			double cursor_x=x+padding+msl::text_width(cursor_x_text);
-			double cursor_y=y-display_height/2.0;
+			double cursor_y=y-padding;
 			double cursor_height=msl::text_height(display_text);
-			msl::draw_line(cursor_x,cursor_y+cursor_height/2.0,cursor_x,cursor_y-cursor_height/2.0,tex_col);
+			msl::draw_line(cursor_x,cursor_y,cursor_x,cursor_y-cursor_height,tex_col);
 		}
 	}
 }
