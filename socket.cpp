@@ -228,13 +228,13 @@ int msl::socket::available() const
 }
 
 //Read Function (Returns -1 on Error Else Returns Number of Bytes Read)
-int msl::socket::read(void* buffer,const unsigned int size,const long time_out,const int flags) const
+int msl::socket::read(void* buffer,const unsigned int size,const unsigned long time_out,const int flags) const
 {
 	return socket_read(_socket,buffer,size,time_out,flags);
 }
 
 //Write Function (Returns -1 on Error Else Returns Number of Bytes Sent)
-int msl::socket::write(const void* buffer,const unsigned int size,const long time_out,const int flags) const
+int msl::socket::write(const void* buffer,const unsigned int size,const unsigned long time_out,const int flags) const
 {
 	return socket_write(_socket,buffer,size,time_out,flags);
 }
@@ -276,7 +276,7 @@ void socket_init()
 }
 
 //Socket Create Function (Hosts a Socket Locally)
-SOCKET socket_create(const msl::ipv4 ip,const long time_out,const bool UDP,const unsigned int buffersize)
+SOCKET socket_create(const msl::ipv4 ip,const unsigned long time_out,const bool UDP,const unsigned int buffersize)
 {
 	//Initialize Sockets
 	socket_init();
@@ -336,7 +336,7 @@ SOCKET socket_create(const msl::ipv4 ip,const long time_out,const bool UDP,const
 }
 
 //Socket Connection Function (Connects to a Remote Socket)
-SOCKET socket_connect(const msl::ipv4 ip,const long time_out,const bool UDP)
+SOCKET socket_connect(const msl::ipv4 ip,const unsigned long time_out,const bool UDP)
 {
 	//Initialize Sockets
 	socket_init();
@@ -368,7 +368,7 @@ SOCKET socket_connect(const msl::ipv4 ip,const long time_out,const bool UDP)
 }
 
 //Socket Accept Function (Accepts a Remote Connection to a Local Socket)
-SOCKET socket_accept(const SOCKET socket,msl::ipv4& client_ip,const long time_out)
+SOCKET socket_accept(const SOCKET socket,msl::ipv4& client_ip,const unsigned long time_out)
 {
 	//Check for Bad Host
 	if(socket==static_cast<unsigned int>(SOCKET_ERROR))
@@ -426,7 +426,7 @@ SOCKET socket_close(const SOCKET socket)
 }
 
 //Socket Available Function (Checks if there are Bytes to be Read, -1 on Error)
-int socket_available(const SOCKET socket,const long time_out)
+int socket_available(const SOCKET socket,const unsigned long time_out)
 {
 	//Check for Bad Socket
 	if(socket==static_cast<unsigned int>(SOCKET_ERROR))
@@ -446,13 +446,13 @@ int socket_available(const SOCKET socket,const long time_out)
 }
 
 //Socket Peek Function (Same as socket_read but Leaves Bytes in Socket Buffer)
-int socket_peek(const SOCKET socket,void* buffer,const unsigned int size,const long time_out,const int flags)
+int socket_peek(const SOCKET socket,void* buffer,const unsigned int size,const unsigned long time_out,const int flags)
 {
 	return socket_read(socket,buffer,size,time_out,MSG_PEEK|flags);
 }
 
 //Socket Read Function (Reads Bytes from Socket Buffer)
-int socket_read(const SOCKET socket,void* buffer,const unsigned int size,const long time_out,const int flags)
+int socket_read(const SOCKET socket,void* buffer,const unsigned int size,const unsigned long time_out,const int flags)
 {
 	//Check for Bad Socket
 	if(socket==static_cast<unsigned int>(SOCKET_ERROR))
@@ -489,7 +489,7 @@ int socket_read(const SOCKET socket,void* buffer,const unsigned int size,const l
 }
 
 //Socket Write Function (Writes Bytes to Socket)
-int socket_write(const SOCKET socket,const void* buffer,const unsigned int size,const long time_out,const int flags)
+int socket_write(const SOCKET socket,const void* buffer,const unsigned int size,const unsigned long time_out,const int flags)
 {
 	//Check for Bad Socket
 	if(socket==static_cast<unsigned int>(SOCKET_ERROR))
