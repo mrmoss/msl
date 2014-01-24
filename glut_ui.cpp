@@ -578,6 +578,7 @@ void msl::textbox::loop(const double dt)
 		else
 		{
 			cursor=0;
+			find_end();
 		}
 	}
 
