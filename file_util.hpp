@@ -18,7 +18,7 @@
 //MSL Namespace
 namespace msl
 {
-	//List Directory Function (Lists files in directory as strings in a vector)
+	//List Directory Function (Lists files and folders in directory as strings in a vector)
 	std::vector<std::string> list_directory(const std::string& path_name=".");
 
 	//List Directory Files Function (Lists files in directory as strings in a vector)
