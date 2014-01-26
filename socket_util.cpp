@@ -1,6 +1,6 @@
 //Socket Utility Source
 //	Created By:		Mike Moss
-//	Modified On:	10/16/2013
+//	Modified On:	01/26/2014
 
 //Required Libraries:
 //	Ws2_32 (windows only)
@@ -19,7 +19,6 @@
 	#define _WIN32_WINNT 0x0501
 	#include <winsock2.h>
 	#include <ws2tcpip.h>
-	#pragma comment(lib,"Ws2_32.lib")
 
 //Unix Dependencies
 #else

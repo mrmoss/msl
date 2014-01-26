@@ -1,6 +1,6 @@
 //Web Server Header
 //	Created By:		Mike Moss
-//	Modified On:	12/09/2013
+//	Modified On:	01/26/2014
 
 //Required Libraries:
 //	Ws2_32 (windows only)
@@ -78,6 +78,9 @@ namespace msl
 
 //String Stream Header
 #include <sstream>
+
+//Time Utility Header
+#include "msl/time_util.hpp"
 
 //Web Server Header
 #include "msl/webserver.hpp"
