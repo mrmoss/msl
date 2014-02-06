@@ -67,9 +67,6 @@ namespace msl
 			//Write Function (Returns Number of Bytes Sent, -1 on Error)
 			int write(void* buffer,const unsigned int size,const unsigned int time_out=0);
 
-			//Connection Timeout Mutator
-			void set_timeout(const unsigned long time_out);
-
 			//Connection Timeout Accessor
 			unsigned long timeout() const;
 
