@@ -1,6 +1,6 @@
 //Serial Header
 //	Created By:		Mike Moss
-//	Modified On:	05/20/2013
+//	Modified On:	02/05/2014
 
 //Begin Define Guards
 #ifndef MSL_SERIAL_H
