@@ -91,7 +91,7 @@ std::string msl::ipv4::str() const
 }
 
 //Constructor(Default)
-msl::socket::socket(const std::string& address):std::ostream(reinterpret_cast<std::streambuf*>(NULL)),_socket(SOCKET_ERROR),_hosting(false)
+msl::socket::socket(const std::string& address):_socket(SOCKET_ERROR),_hosting(false)
 {
 	//Parsing Variables
 	unsigned char ip[4]={0,0,0,0};
@@ -130,8 +130,7 @@ msl::socket::socket(const std::string& address):std::ostream(reinterpret_cast<st
 }
 
 //Copy Constructor
-msl::socket::socket(const msl::socket& copy):std::ostream(reinterpret_cast<std::streambuf*>(NULL)),
-	_address(copy._address),_socket(copy._socket),_hosting(copy._hosting)
+msl::socket::socket(const msl::socket& copy):_address(copy._address),_socket(copy._socket),_hosting(copy._hosting)
 {}
 
 //Copy Assignment Operator
