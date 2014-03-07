@@ -70,8 +70,8 @@ namespace msl
 			unsigned short _port;
 	};
 
-	//Socket Class Declaration (NOT SURE IF BEING A STD::OSTREAM CHILD IS THE WAY TO GO HERE)
-	class socket:public std::ostream
+	//Socket Class Declaration
+	class socket
 	{
 		public:
 			//Constructor (Default)
@@ -121,31 +121,12 @@ namespace msl
 			//System Socket Accessor
 			SOCKET system_socket() const;
 
-			//Stream Out Operator
-			template <typename T> friend msl::socket& operator<<(msl::socket& lhs,const T& rhs);
-
 		private:
 			//Member Variables
 			msl::ipv4 _address;
 			SOCKET _socket;
 			bool _hosting;
 	};
-
-	//Socket Class Stream Operator (Templated Function)
-	template <typename T> msl::socket& operator<<(msl::socket& lhs,const T& rhs)
-	{
-		//Create a String Stream
-		std::ostringstream ostr;
-
-		//Put in Data
-		ostr<<rhs;
-
-		//Write Data
-		lhs.write(reinterpret_cast<void*>(const_cast<char*>(ostr.str().c_str())),ostr.str().size(),200);
-
-		//Return Stream
-		return lhs;
-	}
 }
 
 //Socket Initialize Function (Sets up the use of sockets, operating system dependent...)
@@ -346,11 +327,17 @@ void service_client(msl::socket& client,const std::string& message)
 
 		//Load File
 		if(msl::file_to_string(web_root+request,file,true))
-			client<<msl::http_pack_string(file,mime_type,false);
+		{
+			std::string response=msl::http_pack_string(file,mime_type,false);
+			client.write(response.c_str(),response.size());
+		}
 
 		//Bad File
 		else if(msl::file_to_string(web_root+"/not_found.html",file,true))
-			client<<msl::http_pack_string(file);
+		{
+			std::string response=msl::http_pack_string(file);
+			client.write(response.c_str(),response.size());
+		}
 
 		//Close Connection
 		client.close();
