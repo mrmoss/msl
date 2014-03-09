@@ -89,6 +89,12 @@ namespace msl
 			//Not Operator (For Boolean Operator)
 			bool operator!() const;
 
+			//Equality Operation
+			bool operator==(const msl::socket& rhs) const;
+
+			//Not Equality Operation
+			bool operator!=(const msl::socket& rhs) const;
+
 			//Good Function (Tests if Socket is Good)
 			bool good() const;
 

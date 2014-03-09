@@ -158,6 +158,18 @@ bool msl::socket::operator!() const
 	return !static_cast<bool>(*this);
 }
 
+//Equality Operation
+bool msl::socket::operator==(const msl::socket& rhs) const
+{
+	return _socket==rhs._socket;
+}
+
+//Not Equality Operation
+bool msl::socket::operator!=(const msl::socket& rhs) const
+{
+	return !(*this==rhs);
+}
+
 //Good Function (Tests if Socket is Good)
 bool msl::socket::good() const
 {
