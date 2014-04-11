@@ -1,6 +1,6 @@
 //Web Server Threaded Header
 //	Created By:		Mike Moss
-//	Modified On:	03/30/2014
+//	Modified On:	04/11/2014
 
 //Required Libraries:
 // 	pthread
@@ -123,7 +123,7 @@ int main(int argc,char* argv[])
 		server.update();
 
 		//Give OS a Break
-		usleep(0);
+		msl::nsleep(1000000);
 	}
 
 	//Call Me Plz T_T

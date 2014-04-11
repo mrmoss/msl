@@ -1,6 +1,6 @@
 //Web Server Source
 //	Created By:		Mike Moss
-//	Modified On:	04/02/2014
+//	Modified On:	04/11/2014
 
 //Required Libraries:
 //	Ws2_32 (windows only)
@@ -111,7 +111,7 @@ void msl::webserver::update()
 
 
 	//Give OS a Break
-	usleep(0);
+	msl::nsleep(1000000);
 }
 
 //Close Function (Closes Server)
