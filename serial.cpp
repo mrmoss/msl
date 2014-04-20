@@ -140,7 +140,7 @@ int msl::serial::write(const void* buffer,const unsigned int size,const unsigned
 //Write String Function (Returns -1 on Error Else Returns Number of Bytes Sent)
 int msl::serial::write(const std::string& str,const unsigned int time_out)
 {
-	return write(str.c_str(),str.size(),timeout);
+	return write(str.c_str(),str.size(),time_out);
 }
 
 //System Port Accessor
