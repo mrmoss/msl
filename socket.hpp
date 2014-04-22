@@ -1,6 +1,6 @@
 //Socket Header
 //	Created By:		Mike Moss
-//	Modified On:	04/20/2014
+//	Modified On:	04/21/2014
 
 //Required Libraries:
 //	Ws2_32 (windows only)
@@ -119,8 +119,8 @@ namespace msl
 			int read(void* buffer,const unsigned int size,const unsigned long time_out=0,const int flags=0) const;
 
 			//Write Function (Returns Number of Bytes Sent, -1 on Error)
-			int write(const void* buffer,const unsigned int size,const unsigned long time_out=0,const int flags=0) const;
-			int write(const std::string& str,const unsigned int time_out=0);
+			int write(const void* buffer,const unsigned int size,const unsigned long time_out=0,const int flags=0);
+			int write(const std::string& str);
 
 			//IP Address Accessor (Read Only)
 			msl::ipv4 ip() const;
