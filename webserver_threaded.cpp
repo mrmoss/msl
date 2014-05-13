@@ -54,6 +54,9 @@ void service_client(msl::socket client,const std::string&message,const std::stri
 			//Translate Request
 			request=msl::http_to_ascii(request);
 
+			//Remove ../'s
+			request=msl::search_and_replace(request,"..","");
+
 			//Check for Index
 			if(request=="/")
 				request="/index.html";

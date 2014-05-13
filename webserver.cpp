@@ -149,6 +149,9 @@ void msl::webserver::service_client(msl::socket& client,const std::string& messa
 			//Translate Request
 			request=msl::http_to_ascii(request);
 
+			//Remove ../'s
+			request=msl::search_and_replace(request,"..","");
+
 			//Check for Index
 			if(request=="/")
 				request="/index.html";
