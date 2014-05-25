@@ -12,6 +12,9 @@
 //Definitions for "sprite.hpp"
 #include "sprite.hpp"
 
+//C Standard Library Header
+#include <cstdlib>
+
 //Exception Header
 #include <stdexcept>
 
