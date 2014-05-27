@@ -134,7 +134,9 @@ void msl::draw_triangle(const double x1,const double y1,const double x2,const do
 }
 
 //Draw Rectangle Function
-void msl::draw_rectangle(const double x,const double y,const double width,const double height,const bool fill,const msl::color& color)
+void msl::draw_rectangle(const double x,const double y,
+	const double width,const double height,const bool fill,
+	const msl::color& color,const double rotation)
 {
 	//Enable Transparency
 	glEnable(GL_BLEND);
@@ -146,24 +148,45 @@ void msl::draw_rectangle(const double x,const double y,const double width,const 
 	//Set Color
 	glColor4d(color.r,color.g,color.b,color.a);
 
+	//Limit Rotation
+	double rotation_limited=rotation;
+
+	while(rotation_limited>=360)
+		rotation_limited-=360;
+
+	while(rotation_limited<=0)
+		rotation_limited+=360;
+
+	//Save Matrix
+	glPushMatrix();
+
+	//Set Position and Rotation
+	glTranslated(x,y,0);
+	glRotated(rotation_limited+180,0,0,1);
+
 	//Draw Rectangle
 	if(fill)
 		glBegin(GL_QUADS);
     else
 		glBegin(GL_LINE_LOOP);
 
-		glVertex2d(x,y);
-		glVertex2d(x+width,y);
-		glVertex2d(x+width,y-height);
-		glVertex2d(x,y-height);
+		glVertex2d(0,0);
+		glVertex2d(0+width,0);
+		glVertex2d(+width,-height);
+		glVertex2d(0,-height);
 	glEnd();
 
 	//Disable Transparency
 	glDisable(GL_BLEND);
+
+	//Load Matrix
+	glPopMatrix();
 }
 
 //Draw Rectangle Center Function
-void msl::draw_rectangle_center(const double x,const double y,const double width,const double height,const bool fill,const msl::color& color)
+void msl::draw_rectangle_center(const double x,const double y,
+	const double width,const double height,const bool fill,
+	const msl::color& color,const double rotation)
 {
 	//Enable Transparency
 	glEnable(GL_BLEND);
@@ -175,26 +198,45 @@ void msl::draw_rectangle_center(const double x,const double y,const double width
 	//Set Color
 	glColor4d(color.r,color.g,color.b,color.a);
 
+	//Limit Rotation
+	double rotation_limited=rotation;
+
+	while(rotation_limited>=360)
+		rotation_limited-=360;
+
+	while(rotation_limited<=0)
+		rotation_limited+=360;
+
+	//Save Matrix
+	glPushMatrix();
+
+	//Set Position and Rotation
+	glTranslated(x,y,0);
+	glRotated(rotation_limited+180,0,0,1);
+
 	//Draw Rectangle
 	if(fill)
 		glBegin(GL_QUADS);
     else
 		glBegin(GL_LINE_LOOP);
 
-		glVertex2d(x-width/2.0,y+height/2.0);
-		glVertex2d(x+width/2.0,y+height/2.0);
-		glVertex2d(x+width/2.0,y-height/2.0);
-		glVertex2d(x-width/2.0,y-height/2.0);
+		glVertex2d(-width/2.0,+height/2.0);
+		glVertex2d(+width/2.0,+height/2.0);
+		glVertex2d(+width/2.0,-height/2.0);
+		glVertex2d(-width/2.0,-height/2.0);
 	glEnd();
 
 	//Disable Transparency
 	glDisable(GL_BLEND);
+
+	//Load Matrix
+	glPopMatrix();
 }
 
 //Draw Rectangle Gradient Function
 void msl::draw_rectangle_gradient(const double x,const double y,const double width,const double height,const bool fill,
 	const msl::color& color_top_left,const msl::color& color_top_right,const msl::color& color_bottom_right,
-	const msl::color& color_bottom_left)
+	const msl::color& color_bottom_left,const double rotation)
 {
 	//Enable Transparency
 	glEnable(GL_BLEND);
@@ -203,6 +245,22 @@ void msl::draw_rectangle_gradient(const double x,const double y,const double wid
 	//Disable Culling
 	glDisable(GL_CULL_FACE);
 
+	//Limit Rotation
+	double rotation_limited=rotation;
+
+	while(rotation_limited>=360)
+		rotation_limited-=360;
+
+	while(rotation_limited<=0)
+		rotation_limited+=360;
+
+	//Save Matrix
+	glPushMatrix();
+
+	//Set Position and Rotation
+	glTranslated(x,y,0);
+	glRotated(rotation_limited+180,0,0,1);
+
 	//Draw Rectangle
 	if(fill)
 		glBegin(GL_QUADS);
@@ -210,23 +268,26 @@ void msl::draw_rectangle_gradient(const double x,const double y,const double wid
 		glBegin(GL_LINE_LOOP);
 
 		glColor4d(color_top_left.r,color_top_left.g,color_top_left.b,color_top_left.a);
-		glVertex2d(x,y);
+		glVertex2d(0,0);
 		glColor4d(color_top_right.r,color_top_right.g,color_top_right.b,color_top_right.a);
-		glVertex2d(x+width,y);
+		glVertex2d(+width,0);
 		glColor4d(color_bottom_right.r,color_bottom_right.g,color_bottom_right.b,color_bottom_right.a);
-		glVertex2d(x+width,y-height);
+		glVertex2d(+width,-height);
 		glColor4d(color_bottom_left.r,color_bottom_left.g,color_bottom_left.b,color_bottom_left.a);
-		glVertex2d(x,y-height);
+		glVertex2d(0,-height);
 	glEnd();
 
 	//Disable Transparency
 	glDisable(GL_BLEND);
+
+	//Load Matrix
+	glPopMatrix();
 }
 
 //Draw Rectangle Center Gradient Function
 void msl::draw_rectangle_center_gradient(const double x,const double y,const double width,const double height,const bool fill,
 	const msl::color& color_top_left,const msl::color& color_top_right,const msl::color& color_bottom_right,
-	const msl::color& color_bottom_left)
+	const msl::color& color_bottom_left,const double rotation)
 {
 	//Enable Transparency
 	glEnable(GL_BLEND);
@@ -235,6 +296,22 @@ void msl::draw_rectangle_center_gradient(const double x,const double y,const dou
 	//Disable Culling
 	glDisable(GL_CULL_FACE);
 
+	//Limit Rotation
+	double rotation_limited=rotation;
+
+	while(rotation_limited>=360)
+		rotation_limited-=360;
+
+	while(rotation_limited<=0)
+		rotation_limited+=360;
+
+	//Save Matrix
+	glPushMatrix();
+
+	//Set Position and Rotation
+	glTranslated(x,y,0);
+	glRotated(rotation_limited+180,0,0,1);
+
 	//Draw Rectangle
 	if(fill)
 		glBegin(GL_QUADS);
@@ -242,17 +319,20 @@ void msl::draw_rectangle_center_gradient(const double x,const double y,const dou
 		glBegin(GL_LINE_LOOP);
 
 		glColor4d(color_top_left.r,color_top_left.g,color_top_left.b,color_top_left.a);
-		glVertex2d(x-width/2.0,y+height/2.0);
+		glVertex2d(-width/2.0,+height/2.0);
 		glColor4d(color_top_right.r,color_top_right.g,color_top_right.b,color_top_right.a);
-		glVertex2d(x+width/2.0,y+height/2.0);
+		glVertex2d(+width/2.0,+height/2.0);
 		glColor4d(color_bottom_right.r,color_bottom_right.g,color_bottom_right.b,color_bottom_right.a);
-		glVertex2d(x+width/2.0,y-height/2.0);
+		glVertex2d(+width/2.0,-height/2.0);
 		glColor4d(color_bottom_left.r,color_bottom_left.g,color_bottom_left.b,color_bottom_left.a);
-		glVertex2d(x-width/2.0,y-height/2.0);
+		glVertex2d(-width/2.0,-height/2.0);
 	glEnd();
 
 	//Disable Transparency
 	glDisable(GL_BLEND);
+
+	//Load Matrix
+	glPopMatrix();
 }
 
 //Draw Circle Function
