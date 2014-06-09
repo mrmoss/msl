@@ -1,6 +1,6 @@
 //2D Utilities Source
 //	Created By:		Mike Moss
-//	Modified On:	12/27/2013
+//	Modified On:	06/09/2014
 
 //Required Libraries:
 //	ftgl
@@ -170,10 +170,10 @@ void msl::draw_rectangle(const double x,const double y,
     else
 		glBegin(GL_LINE_LOOP);
 
-		glVertex2d(0,0);
-		glVertex2d(0+width,0);
-		glVertex2d(+width,-height);
 		glVertex2d(0,-height);
+		glVertex2d(-width,-height);
+		glVertex2d(-width,0);
+		glVertex2d(0,0);
 	glEnd();
 
 	//Disable Transparency
@@ -220,10 +220,10 @@ void msl::draw_rectangle_center(const double x,const double y,
     else
 		glBegin(GL_LINE_LOOP);
 
-		glVertex2d(-width/2.0,+height/2.0);
-		glVertex2d(+width/2.0,+height/2.0);
 		glVertex2d(+width/2.0,-height/2.0);
 		glVertex2d(-width/2.0,-height/2.0);
+		glVertex2d(-width/2.0,+height/2.0);
+		glVertex2d(+width/2.0,+height/2.0);
 	glEnd();
 
 	//Disable Transparency
@@ -266,15 +266,14 @@ void msl::draw_rectangle_gradient(const double x,const double y,const double wid
 		glBegin(GL_QUADS);
     else
 		glBegin(GL_LINE_LOOP);
-
 		glColor4d(color_top_left.r,color_top_left.g,color_top_left.b,color_top_left.a);
-		glVertex2d(0,0);
-		glColor4d(color_top_right.r,color_top_right.g,color_top_right.b,color_top_right.a);
-		glVertex2d(+width,0);
-		glColor4d(color_bottom_right.r,color_bottom_right.g,color_bottom_right.b,color_bottom_right.a);
-		glVertex2d(+width,-height);
-		glColor4d(color_bottom_left.r,color_bottom_left.g,color_bottom_left.b,color_bottom_left.a);
 		glVertex2d(0,-height);
+		glColor4d(color_top_right.r,color_top_right.g,color_top_right.b,color_top_right.a);
+		glVertex2d(-width,-height);
+		glColor4d(color_bottom_right.r,color_bottom_right.g,color_bottom_right.b,color_bottom_right.a);
+		glVertex2d(-width,0);
+		glColor4d(color_bottom_left.r,color_bottom_left.g,color_bottom_left.b,color_bottom_left.a);
+		glVertex2d(0,0);
 	glEnd();
 
 	//Disable Transparency
@@ -319,13 +318,13 @@ void msl::draw_rectangle_center_gradient(const double x,const double y,const dou
 		glBegin(GL_LINE_LOOP);
 
 		glColor4d(color_top_left.r,color_top_left.g,color_top_left.b,color_top_left.a);
-		glVertex2d(-width/2.0,+height/2.0);
-		glColor4d(color_top_right.r,color_top_right.g,color_top_right.b,color_top_right.a);
-		glVertex2d(+width/2.0,+height/2.0);
-		glColor4d(color_bottom_right.r,color_bottom_right.g,color_bottom_right.b,color_bottom_right.a);
 		glVertex2d(+width/2.0,-height/2.0);
-		glColor4d(color_bottom_left.r,color_bottom_left.g,color_bottom_left.b,color_bottom_left.a);
+		glColor4d(color_top_right.r,color_top_right.g,color_top_right.b,color_top_right.a);
 		glVertex2d(-width/2.0,-height/2.0);
+		glColor4d(color_bottom_right.r,color_bottom_right.g,color_bottom_right.b,color_bottom_right.a);
+		glVertex2d(-width/2.0,+height/2.0);
+		glColor4d(color_bottom_left.r,color_bottom_left.g,color_bottom_left.b,color_bottom_left.a);
+		glVertex2d(+width/2.0,+height/2.0);
 	glEnd();
 
 	//Disable Transparency
