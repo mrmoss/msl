@@ -1,6 +1,6 @@
 //2D Graphics Source
 //	Created By:		Mike Moss
-//	Modified On:	12/27/2013
+//	Modified On:	06/13/2014
 
 //Required Libraries:
 //	gl
@@ -12,15 +12,6 @@
 
 //Definitions for "2d.hpp"
 #include "2d.hpp"
-
-//OpenGL Headers
-#ifndef __APPLE__
-	#include <GL/glew.h>
-	#include <GL/glut.h>
-#else
-	#include <GLEW/glew.h>
-	#include <GLUT/glut.h>
-#endif
 
 //Exception Header
 #include <stdexcept>

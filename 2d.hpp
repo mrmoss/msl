@@ -1,6 +1,6 @@
 //2D Graphics Header
 //	Created By:		Mike Moss
-//	Modified On:	12/27/2013
+//	Modified On:	06/13/2014
 
 //Required Libraries:
 //	gl
@@ -27,6 +27,15 @@
 
 //Math Header
 #include <math.h>
+
+//OpenGL Headers
+#ifndef __APPLE__
+	#include <GL/glew.h>
+	#include <GL/glut.h>
+#else
+	#include <GLEW/glew.h>
+	#include <GLUT/glut.h>
+#endif
 
 //Sprite Header
 #include "sprite.hpp"
