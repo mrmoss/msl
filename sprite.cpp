@@ -62,9 +62,12 @@ msl::sprite::sprite(const unsigned int texture,const unsigned int number_of_fram
 	:_texture(texture),_number_of_frames(number_of_frames),_origin_x(0.0),_origin_y(0.0)
 {
 	//Get Texture Size
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D,_texture);
-	glDisable(GL_TEXTURE_2D);
+	if(_texture!=0)
+	{
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D,_texture);
+		glDisable(GL_TEXTURE_2D);
+	}
 
 	//Check Number of Frames
 	if(_number_of_frames==0)
