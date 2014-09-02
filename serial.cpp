@@ -395,7 +395,8 @@ int msl::serial_write(const SERIAL port,const void* buffer,const unsigned int si
 	do
 	{
 		//Get Bytes in Send Buffer
-		unsigned int bytes_sent=write(port,reinterpret_cast<const char*>(buffer)+(size-bytes_unsent),bytes_unsent);
+		unsigned int 
+bytes_sent=write(port,(void*)(reinterpret_cast<const char*>(buffer)+(size-bytes_unsent)),bytes_unsent);
 
 		//If Bytes Were Sent
 		if(bytes_sent>0)
